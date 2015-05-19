@@ -10,7 +10,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var debug = require('debug')('realstates-api:server');
 var http = require('http');
-var dbUrl = process.env.MONGOHQ_URL || 'mongodb://@127.0.0.1:27017/bienesraices';
+var dbUrl = process.env.MONGO_URL || 'mongodb://@127.0.0.1:27017/bienesraices';
 var mongoose = require('mongoose');
 mongoose.connect(dbUrl);
 
