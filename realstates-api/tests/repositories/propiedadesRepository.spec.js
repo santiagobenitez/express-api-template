@@ -21,13 +21,15 @@ var newPropiedad = {
 };
 
 describe('propiedadesRepository', function() {
+
+
   describe('function declaratios', function() {
     it('should have crear defined', function() {
       expect(propiedadesRepository.crear).to.exist;
     });
   });
 
-  describe('crear', function () {
+  describe('crear', function() {
     it('should create a new propiedad when it is a valid property', function(done) {
 
       propiedadesRepository.crear(newPropiedad, function(e, obj) {
@@ -35,7 +37,27 @@ describe('propiedadesRepository', function() {
         expect(obj).to.exist;
         done();
       })
-    })
+    });
+
+    it('should return an error object when the ambientes property is not specified', function(done) {
+      var newPropiedad = {
+        direccion: {
+          codigoPostal: '8000',
+          direccion: 'Charlone 650',
+          ciudad: 'bahia blanca',
+          provincia: 'buenos aires',
+          pais: 'argentina'
+        },
+        expensas: 1,
+        metrosCuadrados: 1,
+      };
+
+      propiedadesRepository.crear(newPropiedad, function(e, obj) {
+        expect(e).not.to.be.null;
+        expect(e.ambientes.message).to.exist;
+        done();
+      })
+    });
   });
 
 });

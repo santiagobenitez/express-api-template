@@ -8,7 +8,7 @@ function crear(newPropiedad, cb) {
       return cb(e, null);
     }
 
-    return cb(null, obj);
+    cb(null, obj);
   });
 }
 

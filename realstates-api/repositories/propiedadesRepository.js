@@ -6,10 +6,10 @@ var Propiedad = mongoose.model('propiedades');
 function crear(newPropiedad, cb) {
   Propiedad.create(newPropiedad, function(e, obj) {
     if (e) {
-      return cb(e, null);
+      return cb(e.errors, null);
     }
 
-    return cb(null, obj._id);
+    cb(null, obj._id);
   });
 }
 
