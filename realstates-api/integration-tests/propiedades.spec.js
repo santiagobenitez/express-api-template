@@ -19,6 +19,8 @@ describe('propiedades api', function() {
       superagent.post('http://localhost:3003/api/propiedades')
       .send(propiedad1)
       .end(function(e, res) {
+        console.log(e);
+        console.log(res.body);
         expect(e).to.be.null;
         expect(res.body.length).to.eql(1);
         expect(res.body[0]._id.length).to.eql(24);

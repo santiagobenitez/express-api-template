@@ -1,9 +1,7 @@
 var dbUrl = 'mongodb://@127.0.0.1:27017/testbienesraices';
 var mongoose = require('mongoose');
 var expect = require('chai').expect;
-mongoose.connect(dbUrl);
-require('../../models')();
-var propiedadesRepository = require('../../repositories/propiedadesRepository');
+var propiedadesRepository = require('../../data/propiedades.repository');
 
 
 var newPropiedad = {
@@ -21,7 +19,13 @@ var newPropiedad = {
 };
 
 describe('propiedadesRepository', function() {
-
+  before(function() {
+    mongoose.connect(dbUrl);
+  });
+  after(function() {
+    mongoose.connection.db.dropDatabase();
+    mongoose.disconnect();
+  });
 
   describe('function declaratios', function() {
     it('should have crear defined', function() {

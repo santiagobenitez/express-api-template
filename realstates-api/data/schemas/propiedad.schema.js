@@ -1,7 +1,7 @@
 'use strict';
 
 var mongoose = require('mongoose');
-var DireccionSchema = require('./direccion');
+var DireccionSchema = require('./direccion.schema');
 var PropiedadSchema = new mongoose.Schema({
   direccion: [DireccionSchema],
   ambientes: {

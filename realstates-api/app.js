@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-
 'use strict';
 
 var express = require('express');
@@ -18,8 +17,6 @@ mongoose.connection.on('error', console.error.bind(console, 'connection error:')
 mongoose.connection.once('open', function() {
   console.info('connected to database');
 });
-
-require('./models')();
 
 var configureRoutes = require('./routes');
 

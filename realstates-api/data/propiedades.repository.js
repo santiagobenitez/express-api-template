@@ -1,7 +1,8 @@
 'use strict';
 
 var mongoose = require('mongoose');
-var Propiedad = mongoose.model('propiedades');
+var PropiedadSchema = require('./schemas/propiedad.schema');
+var Propiedad = mongoose.model('propiedades', PropiedadSchema);
 
 function crear(newPropiedad, cb) {
   Propiedad.create(newPropiedad, function(e, obj) {
@@ -9,7 +10,8 @@ function crear(newPropiedad, cb) {
       return cb(e.errors, null);
     }
 
-    cb(null, obj._id);
+    //return a plain js object
+    cb(null, obj.toObject());
   });
 }
 
