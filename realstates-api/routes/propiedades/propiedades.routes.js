@@ -7,6 +7,7 @@ function getAllPropiedades(req, res, next) {
 }
 
 function postPropiedades(req, res, next) {
+  debugger;
   propiedadesService.crear(req.body, function(e, obj) {
     if (e) return next(e);
 

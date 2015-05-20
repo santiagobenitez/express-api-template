@@ -2,9 +2,19 @@ var superagent = require('superagent');
 var expect = require('chai').expect;
 var app = require('../app');
 
-var propiedad1  = {
-
-}
+var newPropiedad = {
+  direccion: {
+    codigoPostal: '8000',
+    direccion: 'Charlone 650',
+    ciudad: 'bahia blanca',
+    provincia: 'buenos aires',
+    pais: 'argentina'
+  },
+  ambientes: 1,
+  banios: 1,
+  expensas: 1,
+  metrosCuadrados: 1,
+};
 
 describe('propiedades api', function() {
   beforeEach(function () {
@@ -17,14 +27,11 @@ describe('propiedades api', function() {
   describe('endpoints', function() {
     it('deberia crear una nueva propiedad cuando una solicitud post es realizada correctamente', function(done) {
       superagent.post('http://localhost:3003/api/propiedades')
-      .send(propiedad1)
+      .send(newPropiedad)
       .end(function(e, res) {
-        console.log(e);
-        console.log(res.body);
         expect(e).to.be.null;
-        expect(res.body.length).to.eql(1);
-        expect(res.body[0]._id.length).to.eql(24);
-        propiedad1.id = res.body[0]._id;
+        expect(res.body._id.length).to.exist;
+        newPropiedad.id = res._id;
         done();
       });
     });
