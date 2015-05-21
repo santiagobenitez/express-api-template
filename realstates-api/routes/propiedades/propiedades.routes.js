@@ -3,13 +3,23 @@
 var propiedadesService = require('../../services/propiedades.service');
 
 function getAllPropiedades(req, res, next) {
-    res.send('<h1>Hello World</h1>');
+
+  propiedadesService.getAll(function(e, objs) {
+    if (e) {
+      return next(e);
+    }
+
+    return res.status(200).json({
+      items: objs
+    });
+  });
 }
 
 function postPropiedades(req, res, next) {
-  debugger;
-  propiedadesService.crear(req.body, function(e, obj) {
-    if (e) return next(e);
+  propiedadesService.create(req.body, function(e, obj) {
+    if (e) {
+      return next(e);
+    }
 
     return res.status(200).json({
       _id: obj._id
@@ -17,7 +27,19 @@ function postPropiedades(req, res, next) {
   });
 }
 
+function getPropiedad(req, res, next) {
+
+  propiedadesService.get(req.params.id, function(e, obj) {
+    if (e) {
+      return next(e);
+    }
+
+    return res.status(200).json(obj);
+  });
+}
+
 module.exports = {
   postPropiedades: postPropiedades,
-  getAllPropiedades: getAllPropiedades
+  getAllPropiedades: getAllPropiedades,
+  getPropiedad:getPropiedad
 };
