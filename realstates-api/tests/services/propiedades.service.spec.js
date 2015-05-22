@@ -116,4 +116,48 @@ describe('propiedadesService', function() {
       expect(inputCallbackSpy.getCall(0).args[1]).to.eql(obj);
     });
   });
+
+  describe('remove', function() {
+    afterEach(function() {
+      if (propiedadesRepository.remove.restore) propiedadesRepository.remove.restore();
+    });
+
+    it('should call remove of the propiedadesRepository', function() {
+      var id = 1;
+      var mock = sinon.mock(propiedadesRepository);
+      mock.expects('remove').exactly(1).withArgs(id);
+
+      propiedadesService.remove(id, function(e, obj) {});
+
+      mock.verify();
+    });
+
+    it('should call the cb function with an error when remove returns an error', function() {
+      var id = 1;
+
+      var stub = sinon.stub(propiedadesRepository, 'remove');
+      var error = new Error('unexpected error');
+      var inputCallbackSpy = sinon.spy();
+
+      propiedadesService.remove(id, inputCallbackSpy);
+      //call the function gave to our repository stub
+      stub.getCall(0).args[1](error, null);
+      expect(inputCallbackSpy.getCall(0).args[0]).to.eql(error);
+    });
+
+    it('should call the cb function with a null error when there are no errors while removing the propiedada', function() {
+      var id = 1;
+
+      var stub = sinon.stub(propiedadesRepository, 'remove');
+      var obj = {
+        _id: '123'
+      };
+      var inputCallbackSpy = sinon.spy();
+
+      propiedadesService.remove(id, inputCallbackSpy);
+      //call the function gave to our repository stub
+      stub.getCall(0).args[1](null, obj);
+      expect(inputCallbackSpy.getCall(0).args[0]).to.be.null;
+    });
+  });
 });

@@ -34,6 +34,18 @@ function get(id, cb) {
   });
 }
 
+function remove(id, cb) {
+  propiedadesRepository.remove(id, function(e) {
+
+    if (e) {
+      return cb(e);
+    }
+
+    cb(null);
+  });
+}
+
 module.exports.create = create;
 module.exports.getAll = getAll;
 module.exports.get = get;
+module.exports.remove = remove;

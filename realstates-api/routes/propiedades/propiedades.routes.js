@@ -9,7 +9,7 @@ function getAllPropiedades(req, res, next) {
       return next(e);
     }
 
-    return res.status(200).json({
+    res.status(200).json({
       items: objs
     });
   });
@@ -21,7 +21,7 @@ function postPropiedades(req, res, next) {
       return next(e);
     }
 
-    return res.status(200).json({
+    res.status(200).json({
       _id: obj._id
     });
   });
@@ -34,12 +34,22 @@ function getPropiedad(req, res, next) {
       return next(e);
     }
 
-    return res.status(200).json(obj);
+    res.status(200).json(obj);
+  });
+}
+
+function deletePropiedad(req, res, next) {
+  propiedadesService.remove(req.params.id, function(e) {
+    if (e) {
+      return next(e);
+    }
+    res.status(200).end();
   });
 }
 
 module.exports = {
   postPropiedades: postPropiedades,
   getAllPropiedades: getAllPropiedades,
-  getPropiedad:getPropiedad
+  getPropiedad: getPropiedad,
+  deletePropiedad: deletePropiedad
 };

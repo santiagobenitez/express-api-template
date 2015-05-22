@@ -69,7 +69,6 @@ describe('propiedadesRoutes', function() {
 
       expect(resObj.status.getCall(0).args[0]).to.eql(200);
       expect(jsonSpy.getCall(0).args[0]._id).to.eql("123");
-
     });
 
   });
@@ -136,7 +135,7 @@ describe('propiedadesRoutes', function() {
 
   });
 
-describe('getPropiedad', function() {
+  describe('getPropiedad', function() {
 
     afterEach(function() {
       if (propiedadesService.get.restore) propiedadesService.get.restore();
@@ -145,7 +144,9 @@ describe('getPropiedad', function() {
     it('should call propiedadesService to get the propiedad with the id specified in the params', function() {
       var mock = sinon.mock(propiedadesService);
       var req = {
-        params: {id:'123'}
+        params: {
+          id: '123'
+        }
       };
       mock.expects('get').exactly(1).withArgs(req.params.id);
 
@@ -160,7 +161,9 @@ describe('getPropiedad', function() {
 
       var error = new Error('test error');
       var req = {
-        params: {id:'123'}
+        params: {
+          id: '123'
+        }
       };
 
       propiedadesRoutes.getPropiedad(req, null, nextSpy);
@@ -184,7 +187,11 @@ describe('getPropiedad', function() {
       var statusStub = sinon.stub(resObj, 'status');
 
       statusStub.onFirstCall().returns(jsonObj);
-      var req = {params: {id: '123'}};
+      var req = {
+        params: {
+          id: '123'
+        }
+      };
       propiedadesRoutes.getPropiedad(req, resObj, null);
       _cb = stub.getCall(0).args[1];
       var item = {
@@ -194,6 +201,74 @@ describe('getPropiedad', function() {
 
       expect(resObj.status.getCall(0).args[0]).to.eql(200);
       expect(jsonSpy.getCall(0).args[0]._id).to.eql(item._id);
+    });
+
+  });
+
+  describe('deletePropiedad', function() {
+
+    afterEach(function() {
+      if (propiedadesService.remove.restore) propiedadesService.remove.restore();
+    });
+
+    it('should call propiedadesService to remove the propiedad with the id specified in the params', function() {
+      var mock = sinon.mock(propiedadesService);
+      var req = {
+        params: {
+          id: '123'
+        }
+      };
+      mock.expects('remove').exactly(1).withArgs(req.params.id);
+
+      propiedadesRoutes.deletePropiedad(req, null, null);
+      mock.verify();
+    });
+
+    it('should call next with the error given by the propiedadesService when there is an error in the remove call', function() {
+      var _cb;
+      var stub = sinon.stub(propiedadesService, 'remove');
+      var nextSpy = sinon.spy();
+
+      var error = new Error('test error');
+      var req = {
+        params: {
+          id: '123'
+        }
+      };
+
+      propiedadesRoutes.deletePropiedad(req, null, nextSpy);
+      _cb = stub.getCall(0).args[1];
+      _cb(error, null);
+
+      expect(nextSpy.withArgs(error).calledOnce).to.be.true;
+    });
+
+    it('should call res with status 200 when the propidad was removed successfuly', function() {
+
+      var _cb;
+      var stub = sinon.stub(propiedadesService, 'remove');
+      var endfn = {
+        end : function() {}
+      }
+      var resObj = {
+        status: function() {}
+      }
+      var endSpy = sinon.spy(endfn, 'end');
+      var statusStub = sinon.stub(resObj, 'status');
+
+      statusStub.onFirstCall().returns(endfn);
+      var req = {
+        params: {
+          id: '123'
+        }
+      };
+      propiedadesRoutes.deletePropiedad(req, resObj, null);
+      _cb = stub.getCall(0).args[1];
+
+      _cb(null);
+
+      expect(resObj.status.getCall(0).args[0]).to.eql(200);
+      expect(endSpy.calledOnce).to.be.true;
     });
 
   });

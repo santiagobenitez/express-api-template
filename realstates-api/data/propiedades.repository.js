@@ -30,13 +30,22 @@ function get(id, cb) {
     if (e) {
       return cb(e, null);
     }
-
     cb(null, obj);
+  });
+}
+
+function remove(id, cb) {
+  Propiedad.findByIdAndRemove(id, function(e, result) {
+    if (e) {
+      return cb(e);
+    }
+    return cb(null);
   });
 }
 
 module.exports = {
   create: create,
   getAll: getAll,
-  get: get
+  get: get,
+  remove: remove
 };

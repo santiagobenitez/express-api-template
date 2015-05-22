@@ -100,4 +100,21 @@ describe('propiedadesRepository', function() {
     })
   });
 
+  describe('remove', function() {
+    it('should return an error when the object was not removed', function(done) {
+      propiedadesRepository.remove(newPropiedad._id + "a", function(e) {
+        expect(e).to.exist;
+        done();
+      });
+    })
+
+    it('should return a null error when the recently created propiedad was removed successfuly', function(done) {
+
+      propiedadesRepository.remove(newPropiedad._id, function(e) {
+        expect(e).to.be.null;
+        done();
+      });
+    });
+  });
+
 });

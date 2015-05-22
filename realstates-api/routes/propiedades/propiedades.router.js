@@ -7,5 +7,6 @@ var router = express.Router();
 router.get('/', routes.getAllPropiedades);
 router.get('/:id', routes.getPropiedad);
 router.post('/', routes.postPropiedades);
+router.delete('/:id', routes.deletePropiedad);
 
 module.exports = router;

@@ -57,7 +57,19 @@ describe('propiedades api', function() {
           expect(res.body._id).to.eql(newPropiedad._id);
           done();
         });
-    })
+    });
+
+    it('should remove the the recently created propiedad when requesting delete /api/propiedades/{id}', function(done) {
+
+      superagent.del('http://localhost:3003/api/propiedades/' + newPropiedad._id)
+        .end(function(e, res) {
+          expect(e).to.be.null;
+          expect(res.ok).to.be.true;
+          done();
+        });
+    });
+
+
 
   });
 });
