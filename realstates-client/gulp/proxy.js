@@ -21,7 +21,7 @@ var chalk = require('chalk');
 /*
  * Location of your backend server
  */
-var proxyTarget = 'http://server/context/';
+var proxyTarget = 'http://localhost:3003/api';
 
 var proxy = httpProxy.createProxyServer({
   target: proxyTarget
@@ -62,6 +62,10 @@ function proxyMiddleware(req, res, next) {
  */
 
 //module.exports = [proxyMiddleware];
+// module.exports = function() {
+//   return [];
+// };
+
 module.exports = function() {
-  return [];
-};
+    return [proxyMiddleware];
+}

@@ -43,6 +43,42 @@
 .md-shadow-bottom-z-2 {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4);
 }
+
+.btn {
+    transition: box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), background-color 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)
+}
+
+.btn.md-fab {
+    z-index: 20;
+    line-height: 44px;
+    min-width: 0;
+    width: 56px;
+    height: 56px;
+    vertical-align: middle;
+    border-radius: 50%;
+    background-clip: padding-box;
+    overflow: hidden;
+    transition: 0.2s linear;
+    transition-property: background-color, box-shadow;
+}
+
+.jumbotron-main-action {
+    position: absolute;
+    bottom: -20px;
+    left: 10px;
+}
+
+.jumbotron {
+    position: relative;
+}
+
+@media screen and (min-width: 768px) {
+    .jumbotron h1,
+    .jumbotron .h1 {
+        font-size: 40px;
+    }
+}
+
 /* Do not remove this comments bellow. It's the markers used by gulp-inject to inject
    all your less files automatically */
 

@@ -11,6 +11,7 @@ var debug = require('debug')('realstates-api:server');
 var http = require('http');
 var dbUrl = process.env.MONGO_URL || 'mongodb://@127.0.0.1:27017/bienesraices';
 var mongoose = require('mongoose');
+var cors = require('cors');
 mongoose.connect(dbUrl);
 
 mongoose.connection.on('error', console.error.bind(console, 'connection error:'));
@@ -28,6 +29,7 @@ var port = normalizePort(process.env.PORT || '3003');
 app.set('port', port);
 
 //app.use(favicon(__dirname + '/public/favicon.ico'));
+app.use(cors());
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({

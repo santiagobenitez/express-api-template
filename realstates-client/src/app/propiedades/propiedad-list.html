@@ -1,0 +1,27 @@
+<div class="jumbotron md-whiteframe-z1" style="position: relative">
+    <h1>Mis propiedades </h1>
+    <a href='#/propiedades/new' class="btn btn-primary md-shadow-bottom-z-2 md-fab jumbotron-main-action"><span class="glyphicon glyphicon-plus"></span></a>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Direccion</th>
+            <th>Codigo Postal</th>
+            <th>Ambientes</th>
+            <th>Banios</th>
+            <th>Expensas</th>
+            <th>M2</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="prop in vm.propiedades">
+            <tr>{{prop.direccion.direccion}} {{prop.direccion.ciudad}} {{prop.direccion.provincia}}</tr>
+            <tr>{{prop.direccion.codigoPostal}}</tr>
+            <tr>{{prop.ambientes}}</tr>
+            <tr>{{prop.banios}}</tr>
+            <tr>{{prop.expensas}}</tr>
+            <tr>{{prop.metrosCuadrados}}</tr>
+        </tr>
+    </tbody>
+</table>
