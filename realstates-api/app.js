@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 'use strict';
 
 var express = require('express');
@@ -58,18 +59,15 @@ if (app.get('env') === 'development') {
       error: err
     });
   });
-}
-
-// production error handler
-// no stacktraces leaked to user
-app.use(function(err, req, res) {
-  res.status(err.status || 500);
-  res.render('error', {
-    message: err.message,
-    error: {}
+} else {
+  app.use(function(err, req, res) {
+    res.status(err.status || 500);
+    res.render('error', {
+      message: err.message,
+      error: {}
+    });
   });
-});
-
+}
 
 /**
  * Create HTTP server.
