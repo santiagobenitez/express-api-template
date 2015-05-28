@@ -1,1 +1,79 @@
-propiedad-editar.html
+<div class="jumbotron md-whiteframe-z1" style="position: relative">
+    <h1>Crear Propiedad</h1>
+</div>
+<div class="row">
+    <form name="form" class="col-md-8">
+        <div class="form-group" ng-class="{'has-success': (form.$submitted || form.direccion.$touched) && !form.direccion.$error.required,
+                     'has-error': (form.$submitted || form.direccion.$touched) && (form.direccion.$error.required),
+                     'has-feedback': (form.$submitted || form.direccion.$touched)}">
+            <label class="control-label" for="direccion">Direccion</label>
+            <input type="text" class="form-control" ng-model="vm.propiedad.direccion.direccion" name="direccion" id="direccion" required="required" placeholder="direccion">
+            <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-show="form.$submitted || form.direccion.$touched" ng-class="{'glyphicon-ok': !form.direccion.$error.required, 'glyphicon-remove': form.direccion.$error.required}">
+            </span>
+            <div ng-show="form.$submitted || form.direccion.$touched">
+                <span class='control-error' ng-show="form.direccion.$error.required">La direccion es requerida</span>
+            </div>
+        </div>
+        <div class="form-group" ng-class="{'has-success': (form.$submitted || form.ciudad.$touched) && !form.ciudad.$error.required,
+          'has-error': (form.$submitted || form.ciudad.$touched) && (form.ciudad.$error.required),
+          'has-feedback': (form.$submitted || form.ciudad.$touched)}">
+            <label class="control-label" for="ciudad">Ciudad</label>
+            <input type="number" class="form-control" ng-model="vm.propiedad.direccion.ciudad" name="ciudad" id="ciudad" required="required" placeholder="ciudad">
+            <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-show="form.$submitted || form.ciudad.$touched"
+            ng-class="{'glyphicon-ok': !form.ciudad.$error.required, 'glyphicon-remove': form.ciudad.$error.required }">
+            </span>
+            <div ng-show="form.$submitted || form.ciudad.$touched">
+                <span class='control-error' ng-show="form.ciudad.$error.required">La ciudad es requerida</span>
+            </div>
+        </div>
+        <div class="form-group" ng-class="{'has-success': (form.$submitted || form.provincia.$touched) && !form.provincia.$error.required,
+          'has-error': (form.$submitted || form.provincia.$touched) && (form.provincia.$error.required),
+          'has-feedback': (form.$submitted || form.provincia.$touched)}">
+            <label class="control-label" for="provincia">Provincia</label>
+            <input type="number" class="form-control" ng-model="vm.propiedad.direccion.provincia" name="provincia" id="provincia" required="required" placeholder="provincia">
+            <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-show="form.$submitted || form.provincia.$touched"
+            ng-class="{'glyphicon-ok': !form.provincia.$error.required, 'glyphicon-remove': form.provincia.$error.required }">
+            </span>
+            <div ng-show="form.$submitted || form.provincia.$touched">
+                <span class='control-error' ng-show="form.provincia.$error.required">La provincia es requerida</span>
+            </div>
+        </div>
+        <div class="form-group" ng-class="{'has-success': (form.$submitted || form.codigoPostal.$touched) && !form.codigoPostal.$error.required,
+          'has-error': (form.$submitted || form.codigoPostal.$touched) && (form.codigoPostal.$error.required),
+          'has-feedback': (form.$submitted || form.codigoPostal.$touched)}">
+            <label class="control-label" for="codigoPostal">Codigo Postal</label>
+            <input type="number" class="form-control" ng-model="vm.propiedad.direccion.codigoPostal" name="codigoPostal" id="codigoPostal" required="required" placeholder="codigo postal">
+            <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-show="form.$submitted || form.codigoPostal.$touched"
+            ng-class="{'glyphicon-ok': !form.codigoPostal.$error.required, 'glyphicon-remove': form.codigoPostal.$error.required }">
+            </span>
+            <div ng-show="form.$submitted || form.codigoPostal.$touched">
+                <span class='control-error' ng-show="form.codigoPostal.$error.required">El codigo postal es requerido</span>
+            </div>
+        </div>
+        <div class="form-group" ng-class="{'has-success': (form.$submitted || form.pais.$touched) && !form.pais.$error.required,
+          'has-error': (form.$submitted || form.pais.$touched) && (form.pais.$error.required),
+          'has-feedback': (form.$submitted || form.pais.$touched)}">
+            <label class="control-label" for="pais">Pais</label>
+            <input type="number" class="form-control" ng-model="vm.propiedad.direccion.pais" name="pais" id="pais" required="required" placeholder="pais">
+            <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-show="form.$submitted || form.pais.$touched"
+            ng-class="{'glyphicon-ok': !form.pais.$error.required, 'glyphicon-remove': form.pais.$error.required }">
+            </span>
+            <div ng-show="form.$submitted || form.pais.$touched">
+                <span class='control-error' ng-show="form.pais.$error.required">El pais es requerido</span>
+            </div>
+        </div>
+        <div class="form-group" ng-class="{'has-success': (form.$submitted || form.ambientes.$touched) && !form.ambientes.$error.required && !form.ambientes.$error.number,
+          'has-error': (form.$submitted || form.ambientes.$touched) && (form.ambientes.$error.required || form.ambientes.$error.number),
+          'has-feedback': (form.$submitted || form.ambientes.$touched)}">
+            <label class="control-label" for="ambientes">Nro. Ambientes</label>
+            <input type="number" class="form-control" ng-model="vm.propiedad.ambientes" name="ambientes" id="ambientes" required="required" placeholder="nro ambientes">
+            <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-show="form.$submitted || form.ambientes.$touched"
+            ng-class="{'glyphicon-ok': !form.ambientes.$error.required && !form.ambientes.$error.number, 'glyphicon-remove': form.ambientes.$error.required || form.ambientes.$error.number} ">
+            </span>
+            <div ng-show="form.$submitted || form.ambientes.$touched">
+                <span class='control-error' ng-show="form.ambientes.$error.required">El numero de ambientes es requerido</span>
+                <span class='control-error' ng-show="form.ambientes.$error.number">Por favor ingrese un numero valido</span>
+            </div>
+        </div>
+    </form>
+</div>
