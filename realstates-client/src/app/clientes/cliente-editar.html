@@ -30,7 +30,7 @@
                 </div>
             </div>
             <div class="col-md-6">
-              <div class="form-group" ng-class="{'has-success': (form.$submitted || form.nroTelefonoCasa.$touched) && !form.nroTelefonoCasa.$error.number,
+                <div class="form-group" ng-class="{'has-success': (form.$submitted || form.nroTelefonoCasa.$touched) && !form.nroTelefonoCasa.$error.number,
           'has-error': (form.$submitted || form.nroTelefonoCasa.$touched) && (form.nroTelefonoCasa.$error.number),
           'has-feedback': (form.$submitted || form.nroTelefonoCasa.$touched)}">
                     <label class="control-label" for="nroTelefonoCasa">Nro. Telefono</label>
@@ -46,8 +46,7 @@
           'has-feedback': (form.$submitted || form.nroTelefonoCelular.$touched)}">
                     <label class="control-label" for="nroTelefonoCelular">Nro. Celular</label>
                     <input type="number" class="form-control" ng-model="vm.cliente.nroTelefonoCelular" name="nroTelefonoCelular" id="nroTelefonoCelular" placeholder="nro nroTelefonoCelular">
-                    <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-show="form.$submitted || form.nroTelefonoCelular.$touched"
-                    ng-class="{'glyphicon-ok': !form.nroTelefonoCelular.$error.number, 'glyphicon-remove': form.nroTelefonoCelular.$error.number} ">
+                    <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-show="form.$submitted || form.nroTelefonoCelular.$touched" ng-class="{'glyphicon-ok': !form.nroTelefonoCelular.$error.number, 'glyphicon-remove': form.nroTelefonoCelular.$error.number} ">
             </span>
                     <div ng-show="form.$submitted || form.nroTelefonoCelular.$touched">
                         <span class='control-error' ng-show="form.nroTelefonoCelular.$error.number">Por favor ingrese un numero valido</span>
@@ -75,7 +74,7 @@
           'has-error': (form.$submitted || form.ciudad.$touched) && (form.ciudad.$error.required),
           'has-feedback': (form.$submitted || form.ciudad.$touched)}">
                     <label class="control-label" for="ciudad">Ciudad</label>
-                    <input type="number" class="form-control" ng-model="vm.cliente.direccion.ciudad" name="ciudad" id="ciudad" required="required" placeholder="ciudad">
+                    <input type="text" class="form-control" ng-model="vm.cliente.direccion.ciudad" name="ciudad" id="ciudad" required="required" placeholder="ciudad">
                     <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-show="form.$submitted || form.ciudad.$touched" ng-class="{'glyphicon-ok': !form.ciudad.$error.required, 'glyphicon-remove': form.ciudad.$error.required }">
             </span>
                     <div ng-show="form.$submitted || form.ciudad.$touched">
@@ -86,7 +85,7 @@
           'has-error': (form.$submitted || form.provincia.$touched) && (form.provincia.$error.required),
           'has-feedback': (form.$submitted || form.provincia.$touched)}">
                     <label class="control-label" for="provincia">Provincia</label>
-                    <input type="number" class="form-control" ng-model="vm.cliente.direccion.provincia" name="provincia" id="provincia" required="required" placeholder="provincia">
+                    <input type="text" class="form-control" ng-model="vm.cliente.direccion.provincia" name="provincia" id="provincia" required="required" placeholder="provincia">
                     <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-show="form.$submitted || form.provincia.$touched" ng-class="{'glyphicon-ok': !form.provincia.$error.required, 'glyphicon-remove': form.provincia.$error.required }">
             </span>
                     <div ng-show="form.$submitted || form.provincia.$touched">
@@ -99,7 +98,7 @@
           'has-error': (form.$submitted || form.codigoPostal.$touched) && (form.codigoPostal.$error.required),
           'has-feedback': (form.$submitted || form.codigoPostal.$touched)}">
                     <label class="control-label" for="codigoPostal">Codigo Postal</label>
-                    <input type="number" class="form-control" ng-model="vm.cliente.direccion.codigoPostal" name="codigoPostal" id="codigoPostal" required="required" placeholder="codigo postal">
+                    <input type="text" class="form-control" ng-model="vm.cliente.direccion.codigoPostal" name="codigoPostal" id="codigoPostal" required="required" placeholder="codigo postal">
                     <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-show="form.$submitted || form.codigoPostal.$touched" ng-class="{'glyphicon-ok': !form.codigoPostal.$error.required, 'glyphicon-remove': form.codigoPostal.$error.required }">
             </span>
                     <div ng-show="form.$submitted || form.codigoPostal.$touched">
@@ -110,7 +109,7 @@
           'has-error': (form.$submitted || form.pais.$touched) && (form.pais.$error.required),
           'has-feedback': (form.$submitted || form.pais.$touched)}">
                     <label class="control-label" for="pais">Pais</label>
-                    <input type="number" class="form-control" ng-model="vm.cliente.direccion.pais" name="pais" id="pais" required="required" placeholder="pais">
+                    <input type="text" class="form-control" ng-model="vm.cliente.direccion.pais" name="pais" id="pais" required="required" placeholder="pais">
                     <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-show="form.$submitted || form.pais.$touched" ng-class="{'glyphicon-ok': !form.pais.$error.required, 'glyphicon-remove': form.pais.$error.required }">
             </span>
                     <div ng-show="form.$submitted || form.pais.$touched">
@@ -120,4 +119,8 @@
             </div>
         </div>
     </fieldset>
+    <div class="pull-right" style="margin-top: 5px">
+        <a class="btn btn-default md-shadow-bottom-z-1" href="#/clientes">Cancelar</a>
+        <button type="submit" class="btn btn-primary md-shadow-bottom-z-1" ng-click="vm.saveCliente()" ng-disabled="!form.$valid">Guardar</button>
+    </div>
 </form>

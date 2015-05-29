@@ -8,9 +8,11 @@ describe('ClienteListController', function() {
   beforeEach(inject(function(_$controller_) {
     $controller = _$controller_;
   }));
+
   afterEach(function() {
     $controller = clienteController = null;
   });
+
   describe('functions/vars definition', function() {
     beforeEach(function() {
       clienteController = $controller('ClienteListController', {
@@ -25,6 +27,6 @@ describe('ClienteListController', function() {
     it('should have clientes defined', function() {
       expect(clienteController.clientes).toBeDefined();
     });
-  });
 
+  });
 });

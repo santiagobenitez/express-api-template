@@ -5,18 +5,20 @@
     "eqeqeq": true,
     "latedef": "nofunc",
     "noarg": true,
+    "sub":true,
     "undef": true,
     "unused": true,
-    "strict": true,
     "trailing": true,
     "white": true,
     "validthis": true,
     "node": true,
+    "strict": false,
     "globals": {
         "angular": false,
         // Angular Mocks
         "inject": false,
         "module": false,
+        "alertify": false,
         // JASMINE
         "describe": false,
         "it": false,
@@ -24,6 +26,8 @@
         "beforeEach": false,
         "after": false,
         "afterEach": false,
-        "expect": false
+        "expect": false,
+        "spyOn":false,
+        "jasmine": false
     }
 }

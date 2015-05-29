@@ -59,5 +59,6 @@
     "disallowSpacesInsideParentheses": true,
 
     "disallowMultipleLineBreaks": true,
-    "disallowNewlineBeforeBlockStatements": true
+    "disallowNewlineBeforeBlockStatements": true,
+    "requireDotNotation": "except_snake_case",
 }
