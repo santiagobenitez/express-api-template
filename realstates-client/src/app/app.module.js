@@ -6,7 +6,8 @@
     /* Application areas */
     'app.navbar',
     'app.propiedades',
-    'app.common'
+    'app.common',
+    'app.clientes'
   ]);
 
 }());

@@ -1,10 +1,10 @@
 'use strict';
 
-var propiedadesService = require('../../services/propiedades.service');
+var clienteService = require('../../services/cliente.service');
 
 function getAll(req, res, next) {
 
-  propiedadesService.getAll(function(e, objs) {
+  clienteService.getAll(function(e, objs) {
     if (e) {
       return next(e);
     }
@@ -16,7 +16,7 @@ function getAll(req, res, next) {
 }
 
 function post(req, res, next) {
-  propiedadesService.create(req.body, function(e, obj) {
+  clienteService.create(req.body, function(e, obj) {
     if (e) {
       return next(e);
     }
@@ -29,10 +29,11 @@ function post(req, res, next) {
 
 function get(req, res, next) {
 
-  propiedadesService.get(req.params.id, function(e, obj) {
+  clienteService.get(req.params.id, function(e, obj) {
     if (e) {
       return next(e);
     }
+
     if (!obj) {
       var error = new Error('not found');
       error.status = 404;
@@ -44,7 +45,7 @@ function get(req, res, next) {
 }
 
 function remove(req, res, next) {
-  propiedadesService.remove(req.params.id, function(e) {
+  clienteService.remove(req.params.id, function(e) {
     if (e) {
       return next(e);
     }

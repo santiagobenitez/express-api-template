@@ -31,7 +31,7 @@ describe('PropiedadCrearController', function() {
       propiedadController = null;
     });
 
-    it('should have propiedad defined and it should be a function', function() {
+    xit('should have propiedad defined and it should be a function', function() {
       expect(propiedadController.propiedad).toBeDefined();
     });
   });

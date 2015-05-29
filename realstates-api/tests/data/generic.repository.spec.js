@@ -18,7 +18,7 @@ var newPropiedad = {
   metrosCuadrados: 1,
 };
 
-describe('propiedadesRepository', function() {
+describe('generic repository functionality using Propiedad model', function() {
   before(function() {
     mongoose.connect(dbUrl);
   });

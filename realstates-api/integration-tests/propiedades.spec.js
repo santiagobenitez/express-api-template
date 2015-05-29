@@ -69,7 +69,14 @@ describe('propiedades api', function() {
         });
     });
 
-
+    it('should return an error when requesting the recently removed propiedad', function(done) {
+      superagent.get('http://localhost:3003/api/propiedades/' + newPropiedad._id)
+        .end(function(e, res) {
+          expect(e).to.exist;
+          expect(e.status).to.eql(404);
+          done();
+        });
+    });
 
   });
 });

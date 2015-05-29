@@ -1,0 +1,26 @@
+<div class="jumbotron md-whiteframe-z1" style="position: relative">
+    <h1>Clientes</h1>
+    <a href='#/clientes/new' class="btn btn-primary md-shadow-bottom-z-2 md-fab jumbotron-main-action"><span class="glyphicon glyphicon-plus"></span></a>
+</div>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Nro Telefono</th>
+            <th>Celular</th>
+            <th>Direccion</th>
+            <th>Codigo Postal</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="cliente in vm.clientes">
+            <tr>{{cliente.nombre}}</tr>
+            <tr>{{cliente.apellido}}</tr>
+            <tr>{{cliente.nroTelefonoCasa}}</tr>
+            <tr>{{cliente.nroTelefonoCelular}}</tr>
+            <tr>{{cliente.direccion.direccion}} {{cliente.direccion.ciudad}} {{cliente.direccion.provincia}}</tr>
+            <tr>{{cliente.direccion.codigoPostal}}</tr>
+        </tr>
+    </tbody>
+</table>

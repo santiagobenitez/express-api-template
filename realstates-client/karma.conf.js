@@ -17,8 +17,12 @@ module.exports = function(config) {
     plugins : [
       'karma-phantomjs-launcher',
       'karma-jasmine',
-      'karma-ng-html2js-preprocessor'
+      'karma-ng-html2js-preprocessor',
+      'karma-story-reporter'
+
     ],
+
+    reporters: ['story'],
 
     preprocessors: {
       'src/**/*.html': ['ng-html2js']

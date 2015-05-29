@@ -1,51 +1,15 @@
 'use strict';
 
 var mongoose = require('mongoose');
+var GenericRepository = require('./generic.repository');
 var PropiedadSchema = require('./schemas/propiedad.schema');
 var Propiedad = mongoose.model('propiedades', PropiedadSchema);
 
-function create(newPropiedad, cb) {
-  Propiedad.create(newPropiedad, function(e, obj) {
-    if (e) {
-      return cb(e.errors, null);
-    }
-
-    //return a plain js object
-    cb(null, obj.toObject());
-  });
+function PropiedadRepository(model) {
+  GenericRepository.call(this, model);
 }
 
-function getAll(cb) {
-  Propiedad.find().lean().exec(function(e, objs) {
-    if (e) {
-      return cb(e, null);
-    }
+PropiedadRepository.prototype = Object.create(GenericRepository.prototype);
+PropiedadRepository.prototype.constructor = PropiedadRepository;
 
-    cb(null, objs);
-  });
-}
-
-function get(id, cb) {
-  Propiedad.findById(id, function(e, obj) {
-    if (e) {
-      return cb(e, null);
-    }
-    cb(null, obj);
-  });
-}
-
-function remove(id, cb) {
-  Propiedad.findByIdAndRemove(id, function(e, result) {
-    if (e) {
-      return cb(e);
-    }
-    return cb(null);
-  });
-}
-
-module.exports = {
-  create: create,
-  getAll: getAll,
-  get: get,
-  remove: remove
-};
+module.exports = new PropiedadRepository(Propiedad);

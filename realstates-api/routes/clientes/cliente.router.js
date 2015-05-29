@@ -1,6 +1,6 @@
 'use strict';
 
-var routes = require('./propiedades.routes');
+var routes = require('./cliente.routes');
 var express = require('express');
 var router = express.Router();
 

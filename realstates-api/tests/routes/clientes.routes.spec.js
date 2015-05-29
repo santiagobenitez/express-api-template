@@ -1,38 +1,49 @@
-var propiedadesService = require('../../services/propiedades.service');
-var propiedadesRoutes = require('../../routes/propiedades/propiedades.routes');
+// jshint ignore: start
+
+var clienteService = require('../../services/cliente.service');
+var clienteRoutes = require('../../routes/clientes/cliente.routes');
 var sinon = require('sinon');
 var expect = require('chai').expect;
 
-describe('propiedadesRoutes', function() {
+describe('clienteRoutes', function() {
 
   describe('function declarations', function() {
     it('should have post defined', function() {
-      expect(propiedadesRoutes.post).to.exist;
-    })
+      expect(clienteRoutes.post).to.exist;
+    });
+    it('should have get defined', function() {
+      expect(clienteRoutes.get).to.exist;
+    });
+    it('should have getAll defined', function() {
+      expect(clienteRoutes.getAll).to.exist;
+    });
+    it('should have remove defined', function() {
+      expect(clienteRoutes.remove).to.exist;
+    });
   });
 
   describe('post', function() {
 
     afterEach(function() {
-      if (propiedadesService.create.restore) {
-        propiedadesService.create.restore();
+      if (clienteService.create.restore) {
+        clienteService.create.restore();
       }
     });
 
-    it('should call propiedadesService create when is called with the information provided', function() {
-      var mock = sinon.mock(propiedadesService);
+    it('should call clienteService create when is called with the information provided', function() {
+      var mock = sinon.mock(clienteService);
       var req = {
         body: {}
       };
       mock.expects('create').exactly(1).withArgs(req.body);
 
-      propiedadesRoutes.post(req, null, null);
+      clienteRoutes.post(req, null, null);
       mock.verify();
     });
 
-    it('should call next with the error given by the propiedadesService when there is an error in the creation of a propiedad', function() {
+    it('should call next with the error given by the clienteService when there is an error in the creation of a cliente', function() {
       var _cb;
-      var stub = sinon.stub(propiedadesService, 'create');
+      var stub = sinon.stub(clienteService, 'create');
       var nextSpy = sinon.spy();
 
       var error = new Error('test error');
@@ -40,16 +51,16 @@ describe('propiedadesRoutes', function() {
         body: {}
       };
 
-      propiedadesRoutes.post(req, null, nextSpy);
+      clienteRoutes.post(req, null, nextSpy);
       _cb = stub.getCall(0).args[1];
       _cb(error, null);
 
       expect(nextSpy.withArgs(error).calledOnce).to.be.true;
     });
 
-    it('should call res with status 200 and the id provided when the propiedad was successfuly created', function() {
+    it('should call res with status 200 and the id provided when the cliente was successfuly created', function() {
       var _cb;
-      var stub = sinon.stub(propiedadesService, 'create');
+      var stub = sinon.stub(clienteService, 'create');
       var jsonObj = {
         json: function() {}
       }
@@ -61,7 +72,7 @@ describe('propiedadesRoutes', function() {
 
       statusStub.onFirstCall().returns(jsonObj);
       var req = {};
-      propiedadesRoutes.post(req, resObj, null);
+      clienteRoutes.post(req, resObj, null);
       _cb = stub.getCall(0).args[1];
       _cb(null, {
         _id: '123'
@@ -76,23 +87,23 @@ describe('propiedadesRoutes', function() {
   describe('getAll', function() {
 
     afterEach(function() {
-      if (propiedadesService.getAll.restore) propiedadesService.getAll.restore();
+      if (clienteService.getAll.restore) clienteService.getAll.restore();
     });
 
-    it('should call propiedadesService to get all the propiedades when it is called', function() {
-      var mock = sinon.mock(propiedadesService);
+    it('should call clienteService to get all the clientes when it is called', function() {
+      var mock = sinon.mock(clienteService);
       var req = {
         body: {}
       };
       mock.expects('getAll').exactly(1);
 
-      propiedadesRoutes.getAll(req, null, null);
+      clienteRoutes.getAll(req, null, null);
       mock.verify();
     });
 
-    it('should call next with the error given by the propiedadesService when there is an error in the getAll call', function() {
+    it('should call next with the error given by the clienteService when there is an error in the getAll call', function() {
       var _cb;
-      var stub = sinon.stub(propiedadesService, 'getAll');
+      var stub = sinon.stub(clienteService, 'getAll');
       var nextSpy = sinon.spy();
 
       var error = new Error('test error');
@@ -100,16 +111,16 @@ describe('propiedadesRoutes', function() {
         body: {}
       };
 
-      propiedadesRoutes.getAll(req, null, nextSpy);
+      clienteRoutes.getAll(req, null, nextSpy);
       _cb = stub.getCall(0).args[0];
       _cb(error, null);
 
       expect(nextSpy.withArgs(error).calledOnce).to.be.true;
     });
 
-    it('should call res with status 200 and the items provided when the propidades were returned successfuly', function() {
+    it('should call res with status 200 and the items provided when the clientes were returned successfuly', function() {
       var _cb;
-      var stub = sinon.stub(propiedadesService, 'getAll');
+      var stub = sinon.stub(clienteService, 'getAll');
       var jsonObj = {
         json: function() {}
       }
@@ -121,7 +132,7 @@ describe('propiedadesRoutes', function() {
 
       statusStub.onFirstCall().returns(jsonObj);
       var req = {};
-      propiedadesRoutes.getAll(req, resObj, null);
+      clienteRoutes.getAll(req, resObj, null);
       _cb = stub.getCall(0).args[0];
       var items = [{
         _id: '123'
@@ -138,11 +149,11 @@ describe('propiedadesRoutes', function() {
   describe('get', function() {
 
     afterEach(function() {
-      if (propiedadesService.get.restore) propiedadesService.get.restore();
+      if (clienteService.get.restore) clienteService.get.restore();
     });
 
-    it('should call propiedadesService to get the propiedad with the id specified in the params', function() {
-      var mock = sinon.mock(propiedadesService);
+    it('should call clienteService to get the cliente with the id specified in the params', function() {
+      var mock = sinon.mock(clienteService);
       var req = {
         params: {
           id: '123'
@@ -150,13 +161,13 @@ describe('propiedadesRoutes', function() {
       };
       mock.expects('get').exactly(1).withArgs(req.params.id);
 
-      propiedadesRoutes.get(req, null, null);
+      clienteRoutes.get(req, null, null);
       mock.verify();
     });
 
-    it('should call next with the error given by the propiedadesService when there is an error in the get call', function() {
+    it('should call next with the error given by the clienteService when there is an error in the get call', function() {
       var _cb;
-      var stub = sinon.stub(propiedadesService, 'get');
+      var stub = sinon.stub(clienteService, 'get');
       var nextSpy = sinon.spy();
 
       var error = new Error('test error');
@@ -166,16 +177,16 @@ describe('propiedadesRoutes', function() {
         }
       };
 
-      propiedadesRoutes.get(req, null, nextSpy);
+      clienteRoutes.get(req, null, nextSpy);
       _cb = stub.getCall(0).args[1];
       _cb(error, null);
 
       expect(nextSpy.withArgs(error).calledOnce).to.be.true;
     });
 
-    it('should call next with the error of not found 404 when the object return by the propiedadService is null', function() {
+    it('should call next with the error of not found 404 when the object return by the clienteService is null', function() {
       var _cb;
-      var stub = sinon.stub(propiedadesService, 'get');
+      var stub = sinon.stub(clienteService, 'get');
       var nextSpy = sinon.spy();
 
       var req = {
@@ -184,17 +195,17 @@ describe('propiedadesRoutes', function() {
         }
       };
 
-      propiedadesRoutes.get(req, null, nextSpy);
+      clienteRoutes.get(req, null, nextSpy);
       _cb = stub.getCall(0).args[1];
       _cb(null, null);
 
       expect(nextSpy.getCall(0).args[0].status).to.eql(404);
     });
 
-    it('should call res with status 200 and the propiedad when the propidad was returned successfuly', function() {
+    it('should call res with status 200 and the propiedad when the cliente was returned successfuly', function() {
 
       var _cb;
-      var stub = sinon.stub(propiedadesService, 'get');
+      var stub = sinon.stub(clienteService, 'get');
       var jsonObj = {
         json: function() {}
       }
@@ -210,7 +221,7 @@ describe('propiedadesRoutes', function() {
           id: '123'
         }
       };
-      propiedadesRoutes.get(req, resObj, null);
+      clienteRoutes.get(req, resObj, null);
       _cb = stub.getCall(0).args[1];
       var item = {
         _id: '123'
@@ -226,11 +237,11 @@ describe('propiedadesRoutes', function() {
   describe('remove', function() {
 
     afterEach(function() {
-      if (propiedadesService.remove.restore) propiedadesService.remove.restore();
+      if (clienteService.remove.restore) clienteService.remove.restore();
     });
 
-    it('should call propiedadesService to remove the propiedad with the id specified in the params', function() {
-      var mock = sinon.mock(propiedadesService);
+    it('should call clienteService to remove the cliente with the id specified in the params', function() {
+      var mock = sinon.mock(clienteService);
       var req = {
         params: {
           id: '123'
@@ -238,13 +249,13 @@ describe('propiedadesRoutes', function() {
       };
       mock.expects('remove').exactly(1).withArgs(req.params.id);
 
-      propiedadesRoutes.remove(req, null, null);
+      clienteRoutes.remove(req, null, null);
       mock.verify();
     });
 
-    it('should call next with the error given by the propiedadesService when there is an error in the remove call', function() {
+    it('should call next with the error given by the clienteService when there is an error in the remove call', function() {
       var _cb;
-      var stub = sinon.stub(propiedadesService, 'remove');
+      var stub = sinon.stub(clienteService, 'remove');
       var nextSpy = sinon.spy();
 
       var error = new Error('test error');
@@ -254,19 +265,19 @@ describe('propiedadesRoutes', function() {
         }
       };
 
-      propiedadesRoutes.remove(req, null, nextSpy);
+      clienteRoutes.remove(req, null, nextSpy);
       _cb = stub.getCall(0).args[1];
       _cb(error, null);
 
       expect(nextSpy.withArgs(error).calledOnce).to.be.true;
     });
 
-    it('should call res with status 200 when the propidad was removed successfuly', function() {
+    it('should call res with status 200 when the cliente was removed successfuly', function() {
 
       var _cb;
-      var stub = sinon.stub(propiedadesService, 'remove');
+      var stub = sinon.stub(clienteService, 'remove');
       var endfn = {
-        end : function() {}
+        end: function() {}
       }
       var resObj = {
         status: function() {}
@@ -280,7 +291,7 @@ describe('propiedadesRoutes', function() {
           id: '123'
         }
       };
-      propiedadesRoutes.remove(req, resObj, null);
+      clienteRoutes.remove(req, resObj, null);
       _cb = stub.getCall(0).args[1];
 
       _cb(null);
