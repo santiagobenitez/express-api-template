@@ -17,7 +17,7 @@
         }
       })
       .state('propiedades-detalle', {
-        url: '/propiedades/{id:int}',
+        url: '/propiedades/{id}/detalle',
         templateUrl: 'app/propiedades/propiedad-detalle.html',
         controller: 'PropiedadDetalleController',
         controllerAs: 'vm',
@@ -49,11 +49,20 @@
           clientes: getAllClientes
         }
       })
-      .state('clientes-new', {
+      .state('cliente-new', {
         url: '/clientes/new',
         templateUrl: 'app/clientes/cliente-editar.html',
         controller: 'ClienteCrearController',
         controllerAs: 'vm'
+      })
+      .state('cliente-details', {
+        url: '/clientes/{id}/editar',
+        templateUrl: 'app/clientes/cliente-editar.html',
+        controller: 'ClienteEditarController',
+        controllerAs: 'vm',
+        resolve: {
+          cliente: getCliente
+        }
       });
 
     $urlRouterProvider.otherwise('/');
@@ -71,9 +80,13 @@
     }
 
     getAllClientes.$inject = ['clienteService'];
-
     function getAllClientes(clienteService) {
       return clienteService.getAll();
+    }
+
+    getCliente.$inject = ['clienteService', '$stateParams'];
+    function getCliente(clienteService, $stateParams) {
+      return clienteService.get($stateParams.id);
     }
   }
 

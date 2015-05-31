@@ -1,4 +1,4 @@
-REPORTER = list
+REPORTER = spec
 MOCHA_OPTS = --ui tdd
 
 test:
@@ -7,7 +7,7 @@ test:
 	./node_modules/mocha/bin/mocha \
 	--reporter $(REPORTER) \
 	$(MOCHA_OPTS) \
-	unit-tests/*.js
+	tests/**/*.js
 	echo Ending test *************
 
 test-w:
@@ -16,7 +16,14 @@ test-w:
 	--growl \
 	--watch \
 	$(MOCHA_OPTS) \
-	unit-tests/*.js
+	tests/**/*.js
+
+test-cliente-repo:
+	./node_modules/mocha/bin/mocha \
+	--reporter $(REPORTER) \
+	--growl \
+	$(MOCHA_OPTS) \
+	tests/data/cliente.repository.spec.js
 
 test-i:
 	clear
@@ -27,4 +34,4 @@ test-i:
 	integration-tests/*.js
 	echo Ending test *************
 
-.PHONY: test test-w test-i
+.PHONY: test test-w test-cliente-repo test-i

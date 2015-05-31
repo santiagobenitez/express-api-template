@@ -13,13 +13,18 @@
     };
 
     function get(id) {
-      return {};
+
+      return $http.get(URL.api + 'clientes/' + id).then(function(response) {
+        return response.data;
+      }, function(err) {
+        return $q.reject(err.data.message);
+      });
     }
 
     function getAll() {
 
       return $http.get(URL.api + 'clientes').then(function(response) {
-        return response.data;
+        return response.data.items;
       }, function(err) {
         return $q.reject(err.data.message);
       });

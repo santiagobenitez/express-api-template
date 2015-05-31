@@ -48,6 +48,10 @@
     transition: box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), background-color 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)
 }
 
+.bs-transition(@property: all; @duration: 0.4s; @effect: cubic-bezier(0.25, 0.8, 0.25, 1)){
+  transition: @property @duration @effect;
+}
+
 .btn.md-fab {
     z-index: 20;
     line-height: 44px;
@@ -74,6 +78,39 @@
 
 .has-error .control-error {
   color: #a94442;
+}
+
+.bs-table {
+  th {
+    color: rgb(57%, 57%, 57%);
+    font-size: 1.2em;
+  }
+
+  td {
+     color: rgb(13%, 13%, 13%);
+     font-size: 1.3em;
+     line-height: 40px !important;
+  }
+
+  td.text, th.text {
+    text-align: left !important;
+  }
+
+  td.number, th.number, th.actions, td.actions {
+    text-align: right !important;
+  }
+
+  td.actions > a {
+    color: rgb(54%, 54%, 54%);
+  }
+
+  tbody tr {
+    .bs-transition(background-color, 0.6s);
+  }
+
+  tbody tr:hover{
+    background-color: #EEEEEE;
+  }
 }
 
 @media screen and (min-width: 768px) {
