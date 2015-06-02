@@ -12,6 +12,9 @@ var ClienteSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  email: {
+    type: String
+  },
   nroTelefonoCasa: {
     type: Number
   },
@@ -20,4 +23,4 @@ var ClienteSchema = new mongoose.Schema({
   }
 });
 
-module.exports = ClienteSchema;
+module.exports = mongoose.model('clientes', ClienteSchema);

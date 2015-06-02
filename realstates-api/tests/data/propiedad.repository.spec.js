@@ -2,6 +2,7 @@ var dbUrl = 'mongodb://@127.0.0.1:27017/testbienesraices';
 var mongoose = require('mongoose');
 var expect = require('chai').expect;
 var clienteRepository = require('../../data/cliente.repository');
+var propiedadRepository = require('../../data/cliente.repository');
 
 
 var newCliente = {

@@ -70,6 +70,18 @@
         <legend>Detalles del inmueble</legend>
         <div class="row">
             <div class="col-md-6">
+                <div class="form-group" ng-class="{'has-success': (form.$submitted || form.propietarioId.$touched) && !form.ambientes.$error.required && !form.ambientes.$error.number,
+          'has-error': (form.$submitted || form.ambientes.$touched) && (form.ambientes.$error.required || form.ambientes.$error.number),
+          'has-feedback': (form.$submitted || form.ambientes.$touched)}">
+                    <label class="control-label" for="ambientes">Nro. Ambientes</label>
+                    <input type="number" class="form-control" ng-model="vm.propiedad.ambientes" name="ambientes" id="ambientes" required="required" placeholder="nro ambientes">
+                    <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-show="form.$submitted || form.ambientes.$touched" ng-class="{'glyphicon-ok': !form.ambientes.$error.required && !form.ambientes.$error.number, 'glyphicon-remove': form.ambientes.$error.required || form.ambientes.$error.number} ">
+            </span>
+                    <div ng-show="form.$submitted || form.ambientes.$touched">
+                        <span class='control-error' ng-show="form.ambientes.$error.required">El numero de ambientes es requerido</span>
+                        <span class='control-error' ng-show="form.ambientes.$error.number">Por favor ingrese un numero valido</span>
+                    </div>
+                </div>
                 <div class="form-group" ng-class="{'has-success': (form.$submitted || form.ambientes.$touched) && !form.ambientes.$error.required && !form.ambientes.$error.number,
           'has-error': (form.$submitted || form.ambientes.$touched) && (form.ambientes.$error.required || form.ambientes.$error.number),
           'has-feedback': (form.$submitted || form.ambientes.$touched)}">

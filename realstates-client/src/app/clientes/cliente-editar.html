@@ -1,5 +1,7 @@
 <div class="jumbotron md-whiteframe-z1" style="position: relative">
-    <h1>Nuevo Cliente</h1>
+    <h1 ng-if='!vm.cliente._id'>Nuevo Cliente</h1>
+    <h1 ng-if='vm.cliente._id'>Editar Cliente</h1>
+
 </div>
 <form name="form" novalidate>
     <fieldset>
@@ -28,6 +30,18 @@
                         <span class='control-error' ng-show="form.apellido.$error.required">El apellido es requerido</span>
                     </div>
                 </div>
+                 <div class="form-group" ng-class="{'has-success': (form.$submitted || form.email.$touched) && !form.email.$error.email,
+          'has-error': (form.$submitted || form.email.$touched) && (form.email.$error.email),
+          'has-feedback': (form.$submitted || form.email.$touched)}">
+                    <label class="control-label" for="email">email</label>
+                    <input type="email" class="form-control" ng-model="vm.cliente.email" name="email" id="email" placeholder="e-mail">
+                    <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-show="form.$submitted || form.email.$touched" ng-class="{'glyphicon-ok': !form.email.$error.required, 'glyphicon-remove': form.email.$error.required} ">
+            </span>
+                    <div ng-show="form.$submitted || form.email.$touched">
+                        <span class='control-error' ng-show="form.email.$error.email">El mail es invalido</span>
+                    </div>
+                </div>
+
             </div>
             <div class="col-md-6">
                 <div class="form-group" ng-class="{'has-success': (form.$submitted || form.nroTelefonoCasa.$touched) && !form.nroTelefonoCasa.$error.number,

@@ -9,7 +9,8 @@
     return {
       get: get,
       getAll: getAll,
-      create: create
+      create: create,
+      update: update
     };
 
     function get(id) {
@@ -34,6 +35,14 @@
 
       return $http.post(URL.api + 'clientes', newCliente).then(function(response) {
         return response.data._id;
+      }, function(err) {
+        return $q.reject(err.data.message);
+      });
+    }
+
+    function update(cliente) {
+      return $http.put(URL.api + 'clientes/' + cliente._id, cliente).then(function(response) {
+        return response.data;
       }, function(err) {
         return $q.reject(err.data.message);
       });

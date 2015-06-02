@@ -1,9 +1,7 @@
 'use strict';
 
-var mongoose = require('mongoose');
 var GenericRepository = require('./generic.repository');
-var ClienteSchema = require('./schemas/cliente.schema');
-var Cliente = mongoose.model('clientes', ClienteSchema);
+var Cliente = require('./schemas/cliente.model');
 
 function ClienteRepository(model) {
   GenericRepository.call(this, model);
@@ -25,11 +23,12 @@ ClienteRepository.prototype.create = function(newObj, cb) {
 };
 
 ClienteRepository.prototype.get = function(id, cb) {
-  this.model.findById(id, function(e, obj) {
+  this.model.findById(id, function(e, doc) {
+
     if (e) {
       return cb(e, null);
     }
-    cb(null, mapToCliente(obj));
+    cb(null, doc ? mapToCliente(doc.toObject()) : null);
   });
 };
 

@@ -66,7 +66,7 @@ describe('ClienteCrearController', function() {
       spyOn($state, 'go').and.callFake(function(state, data) {
         _state = state;
         _data = data;
-      })
+      });
 
       clienteController.saveCliente();
       _successFn('123');

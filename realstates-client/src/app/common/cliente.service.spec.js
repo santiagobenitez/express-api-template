@@ -35,7 +35,9 @@ describe('clienteService', function() {
     it('should have create defined', function() {
       expect(clienteService.create).toBeDefined();
     });
-
+    it('should have update defined', function() {
+      expect(clienteService.update).toBeDefined();
+    });
   });
 
   describe('getAll', function() {
@@ -49,7 +51,9 @@ describe('clienteService', function() {
     });
     it("should return an empty array when there are no clientes", function() {
       //arrange
-      var fakeClientes = {items: []};
+      var fakeClientes = {
+        items: []
+      };
       var _clientes;
       $httpBackend.whenGET(urlConstants.api + 'clientes').respond(fakeClientes);
       //act
@@ -63,9 +67,11 @@ describe('clienteService', function() {
 
     it("should return a cliente when there is one cliente", function() {
       //arrange
-      var fakeClientes = { items: [{
-        _id: '123'
-      }]};
+      var fakeClientes = {
+        items: [{
+          _id: '123'
+        }]
+      };
       var _clientes;
       $httpBackend.whenGET(urlConstants.api + 'clientes').respond(fakeClientes);
       //act
@@ -81,9 +87,7 @@ describe('clienteService', function() {
 
     it("should return an error msg when there was an error while processing the getAll", function() {
       //arrange
-      var fakeClientes = [{
-        _id: '123'
-      }];
+
       var _error;
       $httpBackend.whenGET(urlConstants.api + 'clientes').respond(400, {
         message: 'unexpected error'
@@ -145,7 +149,7 @@ describe('clienteService', function() {
 
   });
 
-describe('get', function() {
+  describe('get', function() {
     beforeEach(inject(function(_clienteService_) {
       clienteService = _clienteService_;
     }));
@@ -182,6 +186,55 @@ describe('get', function() {
       });
       //act
       clienteService.get('1').then(null, function(err) {
+        _error = err;
+      });
+      $httpBackend.flush();
+      //assert
+      expect(_error).toBe('unexpected error');
+    });
+
+  });
+
+  describe('update', function() {
+    beforeEach(inject(function(_clienteService_) {
+      clienteService = _clienteService_;
+    }));
+    afterEach(function() {
+      clienteService = null;
+      $httpBackend.verifyNoOutstandingExpectation();
+      $httpBackend.verifyNoOutstandingRequest();
+    });
+
+
+    it("should return a client when a cliente was updated successfully", function() {
+      //arrange
+      var clienteToUpdate = {
+        _id: '1'
+      };
+
+      var _cliente;
+      $httpBackend.whenPUT(urlConstants.api + 'clientes/1').respond(clienteToUpdate);
+      //act
+      clienteService.update(clienteToUpdate).then(function(cliente) {
+        _cliente = cliente;
+      });
+      $httpBackend.flush();
+      //assert
+      expect(_cliente._id).toBe('1');
+    });
+
+
+    it("should return an error msg when there was an error while updating the cliente", function() {
+      //arrange
+       var clienteToUpdate = {
+        _id: '1'
+      };
+      var _error;
+      $httpBackend.whenPUT(urlConstants.api + 'clientes/1').respond(400, {
+        message: 'unexpected error'
+      });
+      //act
+      clienteService.update(clienteToUpdate).then(null, function(err) {
         _error = err;
       });
       $httpBackend.flush();

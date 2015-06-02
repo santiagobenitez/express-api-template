@@ -12,7 +12,7 @@ var newCliente = {
   },
   nombre: 'santiago',
   apellido: 'benitez',
-  nroTelefonoCasa: 12345678 ,
+  nroTelefonoCasa: 12345678,
   nroTelefonoCelular: 123213456,
 };
 
@@ -56,6 +56,21 @@ describe('clientes api', function() {
           expect(e).to.be.null;
           expect(res.body._id).to.exist;
           expect(res.body._id).to.eql(newCliente._id);
+          done();
+        });
+    });
+
+    it('should update the the recently created cliente when requesting put /api/clientes/{id}', function(done) {
+      newCliente.direccion.direccion = "Balbin 2325";
+      newCliente.nombre = 'carmelo'
+      superagent.put('http://localhost:3003/api/clientes/' + newCliente._id, newCliente)
+        .end(function(e, res) {
+          expect(e).to.be.null;
+          expect(res.body._id).to.exist;
+          expect(res.body._id).to.eql(newCliente._id);
+          expect(res.body.nombre).to.eql('carmelo');
+          expect(res.body.direccion.direccion).to.eql('Balbin 2325');
+          newCliente = res.body;
           done();
         });
     });

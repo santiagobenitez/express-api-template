@@ -29,7 +29,6 @@ function get(id, cb) {
     if (e) {
       return cb(e, null);
     }
-
     cb(null, obj);
   });
 }
