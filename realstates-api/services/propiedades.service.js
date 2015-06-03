@@ -45,7 +45,20 @@ function remove(id, cb) {
   });
 }
 
+function update(id, objToUpdate, cb) {
+  propiedadesRepository.update(id, objToUpdate, function(e, obj) {
+
+    if (e) {
+      return cb(e, null);
+    }
+
+    cb(null, obj);
+  });
+}
+
+
 module.exports.create = create;
 module.exports.getAll = getAll;
 module.exports.get = get;
 module.exports.remove = remove;
+module.exports.update = update;

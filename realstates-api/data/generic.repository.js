@@ -43,4 +43,23 @@ GenericRepository.prototype.remove = function remove(id, cb) {
   });
 };
 
+GenericRepository.prototype.update = function(id, obj, cb) {
+
+  delete obj._id;
+  this.model.findById(id, function(e, doc) {
+    if (e) {
+      return cb(e, null);
+    }
+    doc.set(obj);
+    doc.save(function(err) {
+      if (e) {
+        return cb(err, null);
+      }
+
+      //return a plain js object
+      cb(null, doc.toObject());
+    });
+  });
+};
+
 module.exports = GenericRepository;

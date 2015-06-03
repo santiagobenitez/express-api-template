@@ -38,7 +38,10 @@
         url: '/propiedades/new',
         templateUrl: 'app/propiedades/propiedad-editar.html',
         controller: 'PropiedadCrearController',
-        controllerAs: 'vm'
+        controllerAs: 'vm',
+        resolve: {
+          clientes: getAllClientes
+        }
       })
       .state('clientes-list', {
         url: '/clientes',

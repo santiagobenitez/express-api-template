@@ -266,7 +266,7 @@ describe('propiedadesRoutes', function() {
       var _cb;
       var stub = sinon.stub(propiedadesService, 'remove');
       var endfn = {
-        end : function() {}
+        end: function() {}
       }
       var resObj = {
         status: function() {}
@@ -289,5 +289,84 @@ describe('propiedadesRoutes', function() {
       expect(endSpy.calledOnce).to.be.true;
     });
 
+  });
+
+  describe('update', function() {
+
+    afterEach(function() {
+      if (propiedadesService.update.restore) propiedadesService.update.restore();
+    });
+
+    it('should call propiedadesService to update the propiedad with the id specified in the params', function() {
+      var mock = sinon.mock(propiedadesService);
+      var req = {
+        params: {
+          id: '123'
+        },
+        body: {
+          ambientes: 1
+        }
+      };
+
+      mock.expects('update').exactly(1).withArgs(req.params.id, req.body);
+
+      propiedadesRoutes.update(req, null, null);
+      mock.verify();
+    });
+
+    it('should call next with the error given by the propiedadesService when there is an error in the update call', function() {
+      var _cb;
+      var stub = sinon.stub(propiedadesService, 'update');
+      var nextSpy = sinon.spy();
+
+      var error = new Error('test error');
+      var req = {
+        params: {
+          id: '123'
+        },
+        body: {
+          ambientes: 1
+        }
+      };
+
+      propiedadesRoutes.update(req, null, nextSpy);
+      _cb = stub.getCall(0).args[2];
+      _cb(error, null);
+
+      expect(nextSpy.withArgs(error).calledOnce).to.be.true;
+    });
+
+    it('should call res with status 200 and the propiedad when the propiedad was updated successfuly', function() {
+
+      var _cb;
+      var stub = sinon.stub(propiedadesService, 'update');
+      var jsonObj = {
+        json: function() {}
+      }
+      var resObj = {
+        status: function() {}
+      }
+      var jsonSpy = sinon.spy(jsonObj, 'json');
+      var statusStub = sinon.stub(resObj, 'status');
+
+      statusStub.onFirstCall().returns(jsonObj);
+      var req = {
+        params: {
+          id: '123'
+        },
+        body: {
+          ambientes: 1
+        }
+      };
+      propiedadesRoutes.update(req, resObj, null);
+      _cb = stub.getCall(0).args[2];
+      var item = {
+        _id: '123'
+      };
+      _cb(null, item);
+
+      expect(resObj.status.getCall(0).args[0]).to.eql(200);
+      expect(jsonSpy.getCall(0).args[0]._id).to.eql(item._id);
+    });
   });
 });

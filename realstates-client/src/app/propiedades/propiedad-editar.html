@@ -70,16 +70,21 @@
         <legend>Detalles del inmueble</legend>
         <div class="row">
             <div class="col-md-6">
-                <div class="form-group" ng-class="{'has-success': (form.$submitted || form.propietarioId.$touched) && !form.ambientes.$error.required && !form.ambientes.$error.number,
-          'has-error': (form.$submitted || form.ambientes.$touched) && (form.ambientes.$error.required || form.ambientes.$error.number),
-          'has-feedback': (form.$submitted || form.ambientes.$touched)}">
-                    <label class="control-label" for="ambientes">Nro. Ambientes</label>
-                    <input type="number" class="form-control" ng-model="vm.propiedad.ambientes" name="ambientes" id="ambientes" required="required" placeholder="nro ambientes">
-                    <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-show="form.$submitted || form.ambientes.$touched" ng-class="{'glyphicon-ok': !form.ambientes.$error.required && !form.ambientes.$error.number, 'glyphicon-remove': form.ambientes.$error.required || form.ambientes.$error.number} ">
+                <div class="form-group" ng-class="{'has-success': (form.$submitted || form.propietario.$touched) && !form.propietario.$error.required,
+          'has-error': (form.$submitted || form.propietario.$touched) && (form.propietario.$error.required),
+          'has-feedback': (form.$submitted || form.propietario.$touched)}">
+                    <label class="control-label" for="propietario">Propietario</label>
+                    <ui-select ng-model="vm.propiedad.propietario" theme="bootstrap" reset-search-input="false">
+                        <ui-select-match placeholder="Nombre propietario">{{$select.selected.nombre}}, {{$select.selected.apellido}} </ui-select-match>
+                        <ui-select-choices repeat="cliente._id as cliente in vm.clientes">
+                            <span ng-bind-html="cliente.nombre | highlight: $select.search"></span>
+                            <span ng-bind-html="cliente.apellido | highlight: $select.search"></span>
+                        </ui-select-choices>
+                    </ui-select>
+                    <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-show="form.$submitted || form.propietario.$touched" ng-class="{'glyphicon-ok': !form.propietario.$error.required, 'glyphicon-remove': form.propietario.$error.required } ">
             </span>
-                    <div ng-show="form.$submitted || form.ambientes.$touched">
-                        <span class='control-error' ng-show="form.ambientes.$error.required">El numero de ambientes es requerido</span>
-                        <span class='control-error' ng-show="form.ambientes.$error.number">Por favor ingrese un numero valido</span>
+                    <div ng-show="form.$submitted || form.propietario.$touched">
+                        <span class='control-error' ng-show="form.propietario.$error.required">El numero de propietario es requerido</span>
                     </div>
                 </div>
                 <div class="form-group" ng-class="{'has-success': (form.$submitted || form.ambientes.$touched) && !form.ambientes.$error.required && !form.ambientes.$error.number,

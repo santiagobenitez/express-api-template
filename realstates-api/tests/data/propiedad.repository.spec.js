@@ -2,7 +2,7 @@ var dbUrl = 'mongodb://@127.0.0.1:27017/testbienesraices';
 var mongoose = require('mongoose');
 var expect = require('chai').expect;
 var clienteRepository = require('../../data/cliente.repository');
-var propiedadRepository = require('../../data/cliente.repository');
+var propiedadRepository = require('../../data/propiedades.repository');
 
 
 var newCliente = {
@@ -17,9 +17,28 @@ var newCliente = {
   apellido: 'benitez',
 };
 
-describe('clienteRepository', function() {
-  before(function() {
+var newPropiedad = {
+  direccion: {
+    codigoPostal: '8000',
+    direccion: 'Charlone 650',
+    ciudad: 'bahia blanca',
+    provincia: 'buenos aires',
+    pais: 'argentina'
+  },
+  ambientes: 1,
+  banios: 1,
+  expensas: 1,
+  metrosCuadrados: 1,
+};
+
+describe('propiedadRepository', function() {
+  before(function(done) {
     mongoose.connect(dbUrl);
+    clienteRepository.create(newCliente, function(e, obj) {
+      newCliente._id = obj._id;
+      newPropiedad.propietario = obj._id;
+      done();
+    });
   });
   after(function() {
     mongoose.connection.db.dropDatabase();
@@ -28,35 +47,35 @@ describe('clienteRepository', function() {
 
   describe('function declaratios', function() {
     it('should have create defined', function() {
-      expect(clienteRepository.create).to.exist;
+      expect(propiedadRepository.create).to.exist;
     });
     it('should have getAll defined', function() {
-      expect(clienteRepository.getAll).to.exist;
+      expect(propiedadRepository.getAll).to.exist;
     });
     it('should have get defined', function() {
-      expect(clienteRepository.get).to.exist;
+      expect(propiedadRepository.get).to.exist;
     });
     it('should have remove defined', function() {
-      expect(clienteRepository.remove).to.exist;
+      expect(propiedadRepository.remove).to.exist;
     });
     it('should have update defined', function() {
-      expect(clienteRepository.update).to.exist;
+      expect(propiedadRepository.update).to.exist;
     });
   });
 
   describe('create', function() {
-    it('should create a new cliente when it is a valid cliente', function(done) {
+    it('should create a new propiedad when it is a valid cliente', function(done) {
 
-      clienteRepository.create(newCliente, function(e, obj) {
+      propiedadRepository.create(newPropiedad, function(e, obj) {
         expect(e).to.be.null;
         expect(obj).to.exist;
-        newCliente._id = obj._id;
+        newPropiedad._id = obj._id;
         done();
       })
     });
 
-    it('should return an error object when the appellido property is not specified', function(done) {
-      var newCliente = {
+    it('should return an error object when the propietario property is not specified', function(done) {
+      var propiedad = {
         direccion: {
           codigoPostal: '8000',
           direccion: 'Charlone 650',
@@ -64,43 +83,46 @@ describe('clienteRepository', function() {
           provincia: 'buenos aires',
           pais: 'argentina'
         },
-        nombre: 'santiago',
+        ambientes: 1,
+        banios: 1,
+        expensas: 1,
+        metrosCuadrados: 1,
       };
 
-      clienteRepository.create(newCliente, function(e, obj) {
+      propiedadRepository.create(propiedad, function(e, obj) {
         expect(e).not.to.be.null;
-        expect(e.apellido.message).to.exist;
+        expect(e.propietario.message).to.exist;
         done();
       });
     });
   });
 
   describe('getAll', function() {
-    it('should return the recently created cliente as part of the result', function(done) {
+    it('should return the recently created propiedad as part of the result', function(done) {
 
-      clienteRepository.getAll(function(e, objs) {
+      propiedadRepository.getAll(function(e, objs) {
         expect(e).to.be.null;
         expect(objs).to.have.length.above(0);
         expect(objs.map(function(item) {
           return item._id
-        })).to.contain(newCliente._id);
+        })).to.contain(newPropiedad._id);
         done();
       });
     });
   });
 
   describe('get', function() {
-    it('should return the recently created cliente as part of the result', function(done) {
+    it('should return the recently created propiedad as part of the result', function(done) {
 
-      clienteRepository.get(newCliente._id, function(e, obj) {
+      propiedadRepository.get(newPropiedad._id, function(e, obj) {
         expect(e).to.be.null;
-        expect(obj._id).to.eql(newCliente._id);
+        expect(obj._id).to.eql(newPropiedad._id);
         done();
       });
     });
 
     it('should return an error when the id is invalid', function(done) {
-      clienteRepository.get(newCliente._id + "a", function(e, obj) {
+      propiedadRepository.get(newPropiedad._id + "a", function(e, obj) {
         expect(e).to.exist;
         done();
       });
@@ -108,7 +130,7 @@ describe('clienteRepository', function() {
 
     it('should return null when the id is valid but the object was not found', function() {
       // 556c217f3bb8bc6017a8f2e8
-      clienteRepository.get('556c217f3bb8bc6017a8f2e5', function(e, obj) {
+      propiedadRepository.get('556c217f3bb8bc6017a8f2e5', function(e, obj) {
 
         expect(e).to.be.null;
         expect(obj).to.be.null;
@@ -119,29 +141,29 @@ describe('clienteRepository', function() {
   });
 
   describe('update', function() {
-    it('should update the cliente when the codigoPostal, direccion and apellido are modified', function(done) {
-      newCliente.direccion = {
+    it('should update the propiedad when the codigoPostal, direccion and apellido are modified', function(done) {
+      newPropiedad.direccion = {
         codigoPostal: '9000',
         direccion: 'Balbin 2325',
         ciudad: 'bahia blanca',
         provincia: 'buenos aires',
         pais: 'argentina'
       };
-      newCliente.apellido = 'ostojic';
+      newPropiedad.ambientes = 4;
 
 
-      clienteRepository.update(newCliente._id, newCliente, function(e, obj) {
+      propiedadRepository.update(newPropiedad._id, newPropiedad, function(e, obj) {
         expect(e).to.be.null;
-        newCliente = obj;
-        expect(newCliente.direccion.direccion).to.eql('Balbin 2325');
-        expect(newCliente.direccion.codigoPostal).to.eql('9000');
-        expect(newCliente.apellido).to.eql('ostojic');
+        newPropiedad = obj;
+        expect(newPropiedad.direccion.direccion).to.eql('Balbin 2325');
+        expect(newPropiedad.direccion.codigoPostal).to.eql('9000');
+        expect(newPropiedad.ambientes).to.eql(4);
         done();
       });
     });
 
     it('should return an error when the id doest exist', function(done) {
-      newCliente.direccion = {
+      newPropiedad.direccion = {
         codigoPostal: '8000',
         direccion: 'Balbin 2325',
         ciudad: 'bahia blanca',
@@ -149,7 +171,7 @@ describe('clienteRepository', function() {
         pais: 'argentina'
       };
 
-      clienteRepository.update(newCliente._id + 'a', newCliente, function(e, obj) {
+      propiedadRepository.update(newPropiedad._id + 'a', newPropiedad, function(e, obj) {
         expect(e).to.exist;
         done();
       });
@@ -158,14 +180,14 @@ describe('clienteRepository', function() {
 
   describe('remove', function() {
     it('should return an error when the object was not removed', function(done) {
-      clienteRepository.remove(newCliente._id + "a", function(e) {
+      propiedadRepository.remove(newPropiedad._id + "a", function(e) {
         expect(e).to.exist;
         done();
       });
     })
 
-    it('should return a null error when the recently created cliente was removed successfuly', function(done) {
-      clienteRepository.remove(newCliente._id, function(e) {
+    it('should return a null error when the recently created propiedad was removed successfuly', function(done) {
+      propiedadRepository.remove(newPropiedad._id, function(e) {
         expect(e).to.be.null;
         done();
       });

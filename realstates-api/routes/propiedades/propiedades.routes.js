@@ -52,9 +52,22 @@ function remove(req, res, next) {
   });
 }
 
+function update(req, res, next) {
+  delete req.body._id;
+
+  propiedadesService.update(req.params.id, req.body, function(e, obj) {
+    if (e) {
+      return next(e);
+    }
+
+    res.status(200).json(obj);
+  });
+}
+
 module.exports = {
   post: post,
   getAll: getAll,
   get: get,
-  remove: remove
+  remove: remove,
+  update: update
 };

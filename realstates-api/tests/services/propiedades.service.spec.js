@@ -117,6 +117,60 @@ describe('propiedadesService', function() {
     });
   });
 
+  describe('update', function() {
+    afterEach(function() {
+      if (propiedadesRepository.update.restore) propiedadesRepository.update.restore();
+    });
+
+    it('should call update of the propiedadesRepository', function() {
+      var id = 1;
+      var updatePropiedad = {
+        ambientes: 1
+      };
+      var mock = sinon.mock(propiedadesRepository);
+      mock.expects('update').exactly(1).withArgs(id, updatePropiedad);
+
+      propiedadesService.update(id, updatePropiedad, function(e, obj) {});
+
+      mock.verify();
+    });
+
+    it('should call the cb function with an error when update returns an error', function() {
+      var id = 1;
+      var updatePropiedad = {
+        ambientes: 1
+      };
+
+      var stub = sinon.stub(propiedadesRepository, 'update');
+      var error = new Error('unexpected error');
+      var inputCallbackSpy = sinon.spy();
+
+      propiedadesService.update(id, updatePropiedad, inputCallbackSpy);
+      //call the function gave to our repository stub
+      stub.getCall(0).args[2](error, null);
+      expect(inputCallbackSpy.getCall(0).args[0]).to.eql(error);
+    });
+
+    it('should call the cb function with the results returned by the repository when there are no errors', function() {
+      var id = 1;
+      var updatePropiedad = {
+        ambientes: 1
+      };
+
+      var stub = sinon.stub(propiedadesRepository, 'update');
+      var updatedPropiedad = {
+        ambientes: 1,
+        _id: 1
+      };
+      var inputCallbackSpy = sinon.spy();
+
+      propiedadesService.update(id, updatePropiedad, inputCallbackSpy);
+      //call the function gave to our repository stub
+      stub.getCall(0).args[2](null, updatedPropiedad);
+      expect(inputCallbackSpy.getCall(0).args[1]).to.eql(updatedPropiedad);
+    });
+  });
+
   describe('remove', function() {
     afterEach(function() {
       if (propiedadesRepository.remove.restore) propiedadesRepository.remove.restore();

@@ -1,10 +1,11 @@
 var dbUrl = 'mongodb://@127.0.0.1:27017/testbienesraices';
 var mongoose = require('mongoose');
 var expect = require('chai').expect;
-var propiedadesRepository = require('../../data/propiedades.repository');
+var GenericRepository = require('../../data/generic.repository');
+var clienteModel = require('../../data/schemas/cliente.model');
+var repository = new GenericRepository(clienteModel);
 
-
-var newPropiedad = {
+var newCliente = {
   direccion: {
     codigoPostal: '8000',
     direccion: 'Charlone 650',
@@ -12,13 +13,11 @@ var newPropiedad = {
     provincia: 'buenos aires',
     pais: 'argentina'
   },
-  ambientes: 1,
-  banios: 1,
-  expensas: 1,
-  metrosCuadrados: 1,
+  nombre: 'santiago',
+  apellido: 'benitez',
 };
 
-describe('generic repository functionality using Propiedad model', function() {
+describe('generic repository functionality using cliente model', function() {
   before(function() {
     mongoose.connect(dbUrl);
   });
@@ -29,26 +28,35 @@ describe('generic repository functionality using Propiedad model', function() {
 
   describe('function declaratios', function() {
     it('should have create defined', function() {
-      expect(propiedadesRepository.create).to.exist;
+      expect(repository.create).to.exist;
     });
     it('should have getAll defined', function() {
-      expect(propiedadesRepository.getAll).to.exist;
+      expect(repository.getAll).to.exist;
+    });
+    it('should have remove defined', function() {
+      expect(repository.remove).to.exist;
+    });
+    it('should have update defined', function() {
+      expect(repository.update).to.exist;
+    });
+    it('should have get defined', function() {
+      expect(repository.get).to.exist;
     });
   });
 
   describe('create', function() {
     it('should create a new propiedad when it is a valid property', function(done) {
 
-      propiedadesRepository.create(newPropiedad, function(e, obj) {
+      repository.create(newCliente, function(e, obj) {
         expect(e).to.be.null;
         expect(obj).to.exist;
-        newPropiedad._id = obj._id;
+        newCliente._id = obj._id;
         done();
       })
     });
 
-    it('should return an error object when the ambientes property is not specified', function(done) {
-      var newPropiedad = {
+    it('should return an error object when the nombre property is not specified', function(done) {
+      var newCliente = {
         direccion: {
           codigoPostal: '8000',
           direccion: 'Charlone 650',
@@ -56,13 +64,12 @@ describe('generic repository functionality using Propiedad model', function() {
           provincia: 'buenos aires',
           pais: 'argentina'
         },
-        expensas: 1,
-        metrosCuadrados: 1,
+        apellido: 'benitez',
       };
 
-      propiedadesRepository.create(newPropiedad, function(e, obj) {
+      repository.create(newCliente, function(e, obj) {
         expect(e).not.to.be.null;
-        expect(e.ambientes.message).to.exist;
+        expect(e.nombre.message).to.exist;
         done();
       });
     });
@@ -71,12 +78,12 @@ describe('generic repository functionality using Propiedad model', function() {
   describe('getAll', function() {
     it('should return the recently created propiedad as part of the result', function(done) {
 
-      propiedadesRepository.getAll(function(e, objs) {
+      repository.getAll(function(e, objs) {
         expect(e).to.be.null;
         expect(objs).to.have.length.above(0);
         expect(objs.map(function(item) {
           return item._id
-        })).to.contain(newPropiedad._id);
+        })).to.contain(newCliente._id);
         done();
       });
     });
@@ -85,24 +92,48 @@ describe('generic repository functionality using Propiedad model', function() {
   describe('get', function() {
     it('should return the recently created propiedad as part of the result', function(done) {
 
-      propiedadesRepository.get(newPropiedad._id, function(e, obj) {
+      repository.get(newCliente._id, function(e, obj) {
         expect(e).to.be.null;
-        expect(obj._id).to.eql(newPropiedad._id);
+        expect(obj._id).to.eql(newCliente._id);
         done();
       });
     });
 
     it('should return an error when the id doesnt exist', function(done) {
-      propiedadesRepository.get(newPropiedad._id + "a", function(e, obj) {
+      repository.get(newCliente._id + "a", function(e, obj) {
         expect(e).to.exist;
         done();
       });
     })
   });
 
+  describe('update', function() {
+    it('should update the cliente when the nombre is modified', function(done) {
+
+      newCliente.nombre = 'florencia';
+
+
+      repository.update(newCliente._id, newCliente, function(e, obj) {
+        expect(e).to.be.null;
+        newCliente = obj;
+        expect(obj.nombre).to.eql('florencia');
+        done();
+      });
+    });
+
+    it('should return an error when the id doest exist', function(done) {
+
+      repository.update(newCliente._id + 'a', newCliente, function(e, obj) {
+        expect(e).to.exist;
+        done();
+      });
+    });
+  });
+
+
   describe('remove', function() {
     it('should return an error when the object was not removed', function(done) {
-      propiedadesRepository.remove(newPropiedad._id + "a", function(e) {
+      repository.remove(newCliente._id + "a", function(e) {
         expect(e).to.exist;
         done();
       });
@@ -110,11 +141,10 @@ describe('generic repository functionality using Propiedad model', function() {
 
     it('should return a null error when the recently created propiedad was removed successfuly', function(done) {
 
-      propiedadesRepository.remove(newPropiedad._id, function(e) {
+      repository.remove(newCliente._id, function(e) {
         expect(e).to.be.null;
         done();
       });
     });
   });
-
 });
