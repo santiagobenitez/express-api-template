@@ -53,7 +53,7 @@ describe('ClienteCrearController', function() {
       expect(clienteService.create.calls.count()).toBe(1);
     });
 
-    it('should go to the state of cliente-details when a cliente was created successfully', function() {
+    it('should go to the state of cliente-edit when a cliente was created successfully', function() {
       var _successFn,
           _state,
           _data;
@@ -71,7 +71,7 @@ describe('ClienteCrearController', function() {
       clienteController.saveCliente();
       _successFn('123');
 
-      expect(_state).toBe('cliente-details');
+      expect(_state).toBe('cliente-edit');
       expect(_data.id).toBe('123');
     });
   });

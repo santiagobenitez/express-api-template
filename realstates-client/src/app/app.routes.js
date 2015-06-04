@@ -43,6 +43,16 @@
           clientes: getAllClientes
         }
       })
+      .state('propiedad-edit', {
+        url: '/propiedades/{id}/editar',
+        templateUrl: 'app/propiedades/propiedad-editar.html',
+        controller: 'PropiedadEditarController',
+        controllerAs: 'vm',
+        resolve: {
+          clientes: getAllClientes,
+          propiedad: getPropiedad
+        }
+      })
       .state('clientes-list', {
         url: '/clientes',
         templateUrl: 'app/clientes/cliente-list.html',
@@ -58,7 +68,7 @@
         controller: 'ClienteCrearController',
         controllerAs: 'vm'
       })
-      .state('cliente-details', {
+      .state('cliente-edit', {
         url: '/clientes/{id}/editar',
         templateUrl: 'app/clientes/cliente-editar.html',
         controller: 'ClienteEditarController',

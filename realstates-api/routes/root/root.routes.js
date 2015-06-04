@@ -11,4 +11,4 @@ function getRootApi(req, res, next) {
 module.exports = {
   getRoot: getRoot,
   getRootApi: getRootApi
-}
+};

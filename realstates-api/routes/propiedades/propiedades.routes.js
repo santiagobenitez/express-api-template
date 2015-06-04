@@ -16,7 +16,9 @@ function getAll(req, res, next) {
 }
 
 function post(req, res, next) {
+  debugger;
   propiedadesService.create(req.body, function(e, obj) {
+    debugger;
     if (e) {
       return next(e);
     }

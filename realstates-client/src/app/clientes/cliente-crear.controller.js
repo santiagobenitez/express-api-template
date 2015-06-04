@@ -10,7 +10,7 @@
 
       clienteService.create(vm.cliente).then(function(id) {
         messageService.success('El cliente ha sido creado exitosamente');
-        $state.go('cliente-details', {
+        $state.go('cliente-edit', {
           id: id
         });
       }, function(err) {

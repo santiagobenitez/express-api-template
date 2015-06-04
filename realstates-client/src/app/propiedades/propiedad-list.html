@@ -2,26 +2,29 @@
     <h1>Propiedades</h1>
     <a href='#/propiedades/new' class="btn btn-primary md-shadow-bottom-z-2 md-fab jumbotron-main-action"><span class="glyphicon glyphicon-plus"></span></a>
 </div>
-
-<table class="table table-striped">
+<table class="table bs-table">
     <thead>
         <tr>
-            <th>Direccion</th>
-            <th>Codigo Postal</th>
-            <th>Ambientes</th>
-            <th>Banios</th>
-            <th>Expensas</th>
-            <th>M2</th>
+            <th class="text">Direccion</th>
+            <th class="text">Codigo Postal</th>
+            <th class="number">Ambientes</th>
+            <th class="number">Banios</th>
+            <th class="number">Expensas</th>
+            <th class="number">Metros Cuadrados</th>
+            <th class="actions">Actions</th>
         </tr>
     </thead>
     <tbody>
         <tr ng-repeat="prop in vm.propiedades">
-            <tr>{{prop.direccion.direccion}} {{prop.direccion.ciudad}} {{prop.direccion.provincia}}</tr>
-            <tr>{{prop.direccion.codigoPostal}}</tr>
-            <tr>{{prop.ambientes}}</tr>
-            <tr>{{prop.banios}}</tr>
-            <tr>{{prop.expensas}}</tr>
-            <tr>{{prop.metrosCuadrados}}</tr>
+            <td class="text">{{prop.direccion.direccion}} {{prop.direccion.ciudad}} {{prop.direccion.provincia}}</td>
+            <td class="text">{{prop.direccion.codigoPostal}}</td>
+            <td class="number">{{prop.ambientes}}</td>
+            <td class="number">{{prop.banios}}</td>
+            <td class="number">{{prop.expensas}}</td>
+            <td class="number">{{prop.metrosCuadrados}}</td>
+            <td class="actions">
+                <a ng-href="#/propiedades/{{prop._id}}/editar" tooltip="editar"><span class="glyphicon glyphicon-pencil"></span></a>
+            </td>
         </tr>
     </tbody>
 </table>

@@ -21,7 +21,7 @@
           'has-error': (form.$submitted || form.ciudad.$touched) && (form.ciudad.$error.required),
           'has-feedback': (form.$submitted || form.ciudad.$touched)}">
                     <label class="control-label" for="ciudad">Ciudad</label>
-                    <input type="number" class="form-control" ng-model="vm.propiedad.direccion.ciudad" name="ciudad" id="ciudad" required="required" placeholder="ciudad">
+                    <input type="text" class="form-control" ng-model="vm.propiedad.direccion.ciudad" name="ciudad" id="ciudad" required="required" placeholder="ciudad">
                     <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-show="form.$submitted || form.ciudad.$touched" ng-class="{'glyphicon-ok': !form.ciudad.$error.required, 'glyphicon-remove': form.ciudad.$error.required }">
             </span>
                     <div ng-show="form.$submitted || form.ciudad.$touched">
@@ -32,7 +32,7 @@
           'has-error': (form.$submitted || form.provincia.$touched) && (form.provincia.$error.required),
           'has-feedback': (form.$submitted || form.provincia.$touched)}">
                     <label class="control-label" for="provincia">Provincia</label>
-                    <input type="number" class="form-control" ng-model="vm.propiedad.direccion.provincia" name="provincia" id="provincia" required="required" placeholder="provincia">
+                    <input type="text" class="form-control" ng-model="vm.propiedad.direccion.provincia" name="provincia" id="provincia" required="required" placeholder="provincia">
                     <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-show="form.$submitted || form.provincia.$touched" ng-class="{'glyphicon-ok': !form.provincia.$error.required, 'glyphicon-remove': form.provincia.$error.required }">
             </span>
                     <div ng-show="form.$submitted || form.provincia.$touched">
@@ -45,7 +45,7 @@
           'has-error': (form.$submitted || form.codigoPostal.$touched) && (form.codigoPostal.$error.required),
           'has-feedback': (form.$submitted || form.codigoPostal.$touched)}">
                     <label class="control-label" for="codigoPostal">Codigo Postal</label>
-                    <input type="number" class="form-control" ng-model="vm.propiedad.direccion.codigoPostal" name="codigoPostal" id="codigoPostal" required="required" placeholder="codigo postal">
+                    <input type="text" class="form-control" ng-model="vm.propiedad.direccion.codigoPostal" name="codigoPostal" id="codigoPostal" required="required" placeholder="codigo postal">
                     <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-show="form.$submitted || form.codigoPostal.$touched" ng-class="{'glyphicon-ok': !form.codigoPostal.$error.required, 'glyphicon-remove': form.codigoPostal.$error.required }">
             </span>
                     <div ng-show="form.$submitted || form.codigoPostal.$touched">
@@ -56,7 +56,7 @@
           'has-error': (form.$submitted || form.pais.$touched) && (form.pais.$error.required),
           'has-feedback': (form.$submitted || form.pais.$touched)}">
                     <label class="control-label" for="pais">Pais</label>
-                    <input type="number" class="form-control" ng-model="vm.propiedad.direccion.pais" name="pais" id="pais" required="required" placeholder="pais">
+                    <input type="text" class="form-control" ng-model="vm.propiedad.direccion.pais" name="pais" id="pais" required="required" placeholder="pais">
                     <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-show="form.$submitted || form.pais.$touched" ng-class="{'glyphicon-ok': !form.pais.$error.required, 'glyphicon-remove': form.pais.$error.required }">
             </span>
                     <div ng-show="form.$submitted || form.pais.$touched">
@@ -99,8 +99,50 @@
                         <span class='control-error' ng-show="form.ambientes.$error.number">Por favor ingrese un numero valido</span>
                     </div>
                 </div>
+                <div class="form-group" ng-class="{'has-success': (form.$submitted || form.banios.$touched) && !form.banios.$error.required && !form.banios.$error.number,
+          'has-error': (form.$submitted || form.banios.$touched) && (form.banios.$error.required || form.banios.$error.number),
+          'has-feedback': (form.$submitted || form.banios.$touched)}">
+                    <label class="control-label" for="banios">Nro. Banios</label>
+                    <input type="number" class="form-control" ng-model="vm.propiedad.banios" name="banios" id="banios" required="required" placeholder="nro banios">
+                    <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-show="form.$submitted || form.banios.$touched" ng-class="{'glyphicon-ok': !form.banios.$error.required && !form.banios.$error.number, 'glyphicon-remove': form.banios.$error.required || form.banios.$error.number} ">
+            </span>
+                    <div ng-show="form.$submitted || form.banios.$touched">
+                        <span class='control-error' ng-show="form.banios.$error.required">El numero de banios es requerido</span>
+                        <span class='control-error' ng-show="form.banios.$error.number">Por favor ingrese un numero valido</span>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-6"></div>
+            <div class="col-md-6">
+                <div class="form-group" ng-class="{'has-success': (form.$submitted || form.expensas.$touched) && !form.expensas.$error.required && !form.expensas.$error.number,
+          'has-error': (form.$submitted || form.expensas.$touched) && (form.expensas.$error.required || form.expensas.$error.number),
+          'has-feedback': (form.$submitted || form.expensas.$touched)}">
+                    <label class="control-label" for="expensas">Expensas</label>
+                    <input type="number" class="form-control" ng-model="vm.propiedad.expensas" name="expensas" id="expensas" required="required" placeholder="expensas">
+                    <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-show="form.$submitted || form.expensas.$touched" ng-class="{'glyphicon-ok': !form.expensas.$error.required && !form.expensas.$error.number, 'glyphicon-remove': form.expensas.$error.required || form.expensas.$error.number} ">
+            </span>
+                    <div ng-show="form.$submitted || form.expensas.$touched">
+                        <span class='control-error' ng-show="form.expensas.$error.required">El numero de expensas es requerido</span>
+                        <span class='control-error' ng-show="form.expensas.$error.number">Por favor ingrese un numero valido</span>
+                    </div>
+                </div>
+                <div class="form-group" ng-class="{'has-success': (form.$submitted || form.metrosCuadrados.$touched) && !form.metrosCuadrados.$error.required && !form.metrosCuadrados.$error.number,
+          'has-error': (form.$submitted || form.metrosCuadrados.$touched) && (form.metrosCuadrados.$error.required || form.metrosCuadrados.$error.number),
+          'has-feedback': (form.$submitted || form.metrosCuadrados.$touched)}">
+                    <label class="control-label" for="metrosCuadrados">Metros Cuadrados</label>
+                    <input type="number" class="form-control" ng-model="vm.propiedad.metrosCuadrados" name="metrosCuadrados" id="metrosCuadrados" required="required" placeholder="nro metros cuadrados">
+                    <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-show="form.$submitted || form.metrosCuadrados.$touched" ng-class="{'glyphicon-ok': !form.metrosCuadrados.$error.required && !form.metrosCuadrados.$error.number, 'glyphicon-remove': form.metrosCuadrados.$error.required || form.metrosCuadrados.$error.number} ">
+            </span>
+                    <div ng-show="form.$submitted || form.metrosCuadrados.$touched">
+                        <span class='control-error' ng-show="form.metrosCuadrados.$error.required">El numero de metros cuadrados es requerido</span>
+                        <span class='control-error' ng-show="form.metrosCuadrados.$error.number">Por favor ingrese un numero valido</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </fieldset>
+    <div class="pull-right" style="margin-top: 5px">
+        <a class="btn btn-default md-shadow-bottom-z-1" href="#/propiedades">Cancelar</a>
+        <button type="submit" class="btn btn-primary md-shadow-bottom-z-1" ng-click="vm.save()" ng-disabled="!form.$valid">Guardar</button>
+    </div>
+
 </form>
