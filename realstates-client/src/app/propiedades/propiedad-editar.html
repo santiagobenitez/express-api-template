@@ -1,5 +1,6 @@
 <div class="jumbotron md-whiteframe-z1" style="position: relative">
-    <h1>Crear Propiedad</h1>
+    <h1 ng-if='!vm.propiedad._id'>Crear Propiedad</h1>
+    <h1 ng-if='vm.propiedad._id'>Editar Propiedad</h1>
 </div>
 <form name="form" novalidate>
     <fieldset>

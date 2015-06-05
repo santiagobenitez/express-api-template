@@ -1,0 +1,72 @@
+<div class="jumbotron md-whiteframe-z1" style="position: relative">
+    <h1 ng-if='!vm.propiedad._id'>Crear Contrato</h1>
+    <h1 ng-if='vm.propiedad._id'>Editar Contrato</h1>
+</div>
+<form name="form" novalidate>
+    <fieldset>
+        <legend>Propiedad e Involucrados</legend>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group" ng-class="{'has-success': (form.$submitted || form.propiedad.$touched) && !form.propiedad.$error.required,
+          'has-error': (form.$submitted || form.propiedad.$touched) && (form.propiedad.$error.required),
+          'has-feedback': (form.$submitted || form.propiedad.$touched)}">
+                    <label class="control-label" for="propiedad">Propiedad</label>
+                    <ui-select ng-model="vm.contrato.propiedad" theme="bootstrap" id="propiedad" name="propiedad" reset-search-input="false" required="required">
+                        <ui-select-match placeholder="Direccion propiedad">{{$select.selected.direccion.direccion}}</ui-select-match>
+                        <ui-select-choices repeat="propiedad._id as propiedad in vm.propiedades">
+                            <div ng-bind-html="propiedad.direccion.direccion | highlight: $select.search"></div>
+                            <small>
+                              <span ng-bind-html="propiedad.propietario.nombre | highlight: $select.search" style="margin-right: 2px"></span>
+                              <span ng-bind-html="propiedad.propietario.apellido | highlight: $select.search"></span>
+                            </small>
+                        </ui-select-choices>
+                    </ui-select>
+                    <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-show="form.$submitted || form.propiedad.$touched" ng-class="{'glyphicon-ok': !form.propiedad.$error.required, 'glyphicon-remove': form.propiedad.$error.required } ">
+                    </span>
+                    <div ng-show="form.$submitted || form.propiedad.$touched">
+                        <span class='control-error' ng-show="form.propiedad.$error.required">La propiedad es requerida</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group" ng-class="{'has-success': (form.$submitted || form.inquilino.$touched) && !form.inquilino.$error.required,
+          'has-error': (form.$submitted || form.inquilino.$touched) && (form.inquilino.$error.required),
+          'has-feedback': (form.$submitted || form.inquilino.$touched)}">
+                    <label class="control-label" for="inquilino">Inquilino</label>
+                    <ui-select ng-model="vm.contrato.inquilino" theme="bootstrap" id="inquilino" name="inquilino" reset-search-input="false" required="required">
+                        <ui-select-match placeholder="Nombre inquilino">{{$select.selected.nombre}}, {{$select.selected.apellido}} </ui-select-match>
+                        <ui-select-choices repeat="cliente._id as cliente in vm.clientes">
+                            <span ng-bind-html="cliente.nombre | highlight: $select.search"></span>
+                            <span ng-bind-html="cliente.apellido | highlight: $select.search"></span>
+                        </ui-select-choices>
+                    </ui-select>
+                    <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-show="form.$submitted || form.inquilino.$touched" ng-class="{'glyphicon-ok': !form.inquilino.$error.required, 'glyphicon-remove': form.inquilino.$error.required } ">
+            </span>
+                    <div ng-show="form.$submitted || form.inquilino.$touched">
+                        <span class='control-error' ng-show="form.inquilino.$error.required">El inquilino es requerido</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group" ng-class="{'has-success': (form.$submitted || form.garante.$touched) && !form.garante.$error.required,
+          'has-error': (form.$submitted || form.garante.$touched) && (form.garante.$error.required),
+          'has-feedback': (form.$submitted || form.garante.$touched)}">
+                    <label class="control-label" for="garante">garante</label>
+                    <ui-select ng-model="vm.contrato.garante" theme="bootstrap" id="garante" name="garante" reset-search-input="false" required="required">
+                        <ui-select-match placeholder="Nombre garante">{{$select.selected.nombre}}, {{$select.selected.apellido}} </ui-select-match>
+                        <ui-select-choices repeat="cliente._id as cliente in vm.clientes">
+                            <span ng-bind-html="cliente.nombre | highlight: $select.search"></span>
+                            <span ng-bind-html="cliente.apellido | highlight: $select.search"></span>
+                        </ui-select-choices>
+                    </ui-select>
+                    <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-show="form.$submitted || form.garante.$touched" ng-class="{'glyphicon-ok': !form.garante.$error.required, 'glyphicon-remove': form.garante.$error.required } ">
+            </span>
+                    <div ng-show="form.$submitted || form.garante.$touched">
+                        <span class='control-error' ng-show="form.garante.$error.required">El garante es requerido</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </fieldset>
+</form>
