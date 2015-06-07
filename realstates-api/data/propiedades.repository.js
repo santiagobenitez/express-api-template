@@ -32,7 +32,7 @@ PropiedadRepository.prototype.get = function(id, cb) {
 };
 
 PropiedadRepository.prototype.getAll = function(cb) {
-  this.model.find().lean().exec(function(e, objs) {
+  this.model.find().populate('propietario').lean().exec(function(e, objs) {
     if (e) {
       return cb(e, null);
     }

@@ -5,7 +5,7 @@ var mongoose = require('mongoose');
 var intereses = ['Semestral', 'Anual'];
 
 var ContratoSchema = new mongoose.Schema({
-  propiedad:{
+  propiedad: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'propiedades',
     required: true
@@ -48,7 +48,10 @@ var ContratoSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'clientes',
     required: true
-  }
+  },
+  propiedadDireccion: String,
+  garanteNombreCompleto: String,
+  inquilinoNombreCompleto: String
 });
 
 module.exports = mongoose.model('contratos', ContratoSchema);

@@ -7,7 +7,8 @@
     'app.navbar',
     'app.propiedades',
     'app.common',
-    'app.clientes'
+    'app.clientes',
+    'app.contratos'
   ]);
 
 }());
