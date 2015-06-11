@@ -8,10 +8,14 @@
     var vm = this;
     vm.clientes = clientes;
     vm.propiedades = propiedades;
+    vm.open = open;
+    vm.tipoIntereses = [{value:'Semestral', label: 'Semestral'}, {value:'Anual', label:'Anual'}, {value: undefined, label: 'Ninguno'}];
 
     $scope.$watch('vm.contrato.propiedad', watchPropiedad);
     $scope.$watch('vm.contrato.garante', watchGarante);
     $scope.$watch('vm.contrato.inquilino', watchInquilino);
+    $scope.$watch('vm.contrato.tipoInteres', watchTipoInteres);
+
 
     /* ----------------------
     Function declarations
@@ -43,6 +47,20 @@
         });
         vm.contrato.inquilinoNombreCompleto = cliente.length ? cliente[0].nombre + ' ' + cliente[0].apellido : '';
       }
+    }
+
+    function watchTipoInteres(newValue, oldValue) {
+      if(newValue !== oldValue && !newValue){
+        $scope.form.interes.$setPristine();
+        $scope.form.interes.$setUntouched();
+      }
+    }
+
+    function open($event, fecha) {
+      $event.preventDefault();
+      $event.stopPropagation();
+
+      vm[fecha] = true;
     }
   }
 }());

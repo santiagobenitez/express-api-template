@@ -10,20 +10,19 @@ var ContratoSchema = new mongoose.Schema({
     ref: 'propiedades',
     required: true
   },
-  fechaInicio: {
+  fechaDesde: {
     type: Date,
     required: true
   },
-  fechaFin: {
+  fechaHasta: {
     type: Date,
     required: true
   },
   tipoInteres: {
     type: String,
-    enum: intereses,
-    required: true
+    enum: intereses
   },
-  porcentajeInteres: {
+  interes: {
     type: Number,
     required: true
   },
