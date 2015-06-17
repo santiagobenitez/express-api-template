@@ -2,9 +2,9 @@
   'use strict';
   angular.module('app.contratos').controller('ContratoCrearController', ContratoCrearController);
 
-  ContratoCrearController.$inject = ['propiedades', 'clientes', '$scope', '$state', 'alquilerHelper'];
+  ContratoCrearController.$inject = ['propiedades', 'clientes', '$scope', '$state', 'alquilerHelper', 'contratoService', 'messageService'];
 
-  function ContratoCrearController(propiedades, clientes, $scope, $state, alquilerHelper) {
+  function ContratoCrearController(propiedades, clientes, $scope, $state, alquilerHelper, contratoService, messageService) {
     var vm = this;
     vm.clientes = clientes;
     vm.propiedades = propiedades;
@@ -19,8 +19,7 @@
       value: undefined,
       label: 'Ninguno'
     }];
-
-    vm.calcularAlquileres = calcularAlquileres;
+    vm.save = save;
 
     $scope.$watch('vm.contrato.propiedad', watchPropiedad);
     $scope.$watch('vm.contrato.garante', watchGarante);
@@ -30,8 +29,6 @@
     $scope.$watch('vm.contrato.fechaDesde', calcularAlquileres);
     $scope.$watch('vm.contrato.fechaHasta', calcularAlquileres);
     $scope.$watch('vm.contrato.alquiler', calcularAlquileres);
-
-
 
 
     /* ----------------------
@@ -71,6 +68,8 @@
         $scope.form.interes.$setPristine();
         $scope.form.interes.$setUntouched();
       }
+
+      calcularAlquileres();
     }
 
     function calcularAlquileres() {
@@ -84,6 +83,17 @@
       $event.stopPropagation();
 
       vm[fecha] = true;
+    }
+
+    function save() {
+       contratoService.create(vm.contrato).then(function(id) {
+        messageService.success('El contrato ha sido creado exitosamente');
+        $state.go('contrato-edit', {
+          id: id
+        });
+      }, function(err) {
+        messageService.error(err);
+      });
     }
   }
 }());

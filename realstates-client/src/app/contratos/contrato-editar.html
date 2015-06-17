@@ -74,13 +74,13 @@
         <legend>Vigencia del contrato</legend>
         <div class="row">
             <div class="col-md-6">
-                <div class="form-group" ng-class="{'has-success': (form.$submitted || form.fechaDesde.$touched) && !form.fechaDesde.$error.required,
-          'has-error': (form.$submitted || form.fechaDesde.$touched) && (form.fechaDesde.$error.required),
+                <div class="form-group" ng-class="{'has-success': (form.$submitted || form.fechaDesde.$touched) && !form.fechaDesde.$error.required && !form.fechaDesde.$error.date,
+          'has-error': (form.$submitted || form.fechaDesde.$touched) && (form.fechaDesde.$error.required || form.fechaDesde.$error.date),
           'has-feedback': (form.$submitted || form.fechaDesde.$touched)}">
                     <label class="control-label" for="fechaDesde">Fecha Desde</label>
                     <div class="input-group">
-                        <input type="date" datepicker-popup current-text="Hoy" is-open="vm.fechaDesdeOpened" clear-text="Borrar" close-text="Cerrar" class="form-control" ng-model="vm.contrato.fechaDesde" name="fechaDesde" id="fechaDesde" required="required" placeholder="fechaDesde">
-                        <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-show="form.$submitted || form.fechaDesde.$touched" ng-class="{'glyphicon-ok': !form.fechaDesde.$error.required, 'glyphicon-remove': form.fechaDesde.$error.required}">
+                        <input type="text" datepicker-popup="dd/MM/yyyy" current-text="Hoy" is-open="vm.fechaDesdeOpened" clear-text="Borrar" close-text="Cerrar" class="form-control" ng-model="vm.contrato.fechaDesde" name="fechaDesde" id="fechaDesde" required="required" placeholder="dd/MM/yyyy" />
+                        <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-show="form.$submitted || form.fechaDesde.$touched" ng-class="{'glyphicon-ok': !form.fechaDesde.$error.required && !form.fechaDesde.$error.date, 'glyphicon-remove': form.fechaDesde.$error.required || form.fechaDesde.$error.date}">
                     </span>
                         <span class="input-group-btn">
                       <button type="button" class="btn btn-default" ng-click="vm.open($event, 'fechaDesdeOpened')"><i class="glyphicon glyphicon-calendar"></i></button>
@@ -88,17 +88,18 @@
                     </div>
                     <div ng-show="form.$submitted || form.fechaDesde.$touched">
                         <span class='control-error' ng-show="form.fechaDesde.$error.required">La fecha es requerida</span>
+                        <span class='control-error' ng-show="form.fechaDesde.$error.date">La fecha es invalida</span>
                     </div>
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="form-group" ng-class="{'has-success': (form.$submitted || form.fechaHasta.$touched) && !form.fechaHasta.$error.required,
-          'has-error': (form.$submitted || form.fechaHasta.$touched) && (form.fechaHasta.$error.required),
+                <div class="form-group" ng-class="{'has-success': (form.$submitted || form.fechaHasta.$touched) && !form.fechaHasta.$error.required && !form.fechaHasta.$error.date,
+          'has-error': (form.$submitted || form.fechaHasta.$touched) && (form.fechaHasta.$error.required || form.fechaHasta.$error.date),
           'has-feedback': (form.$submitted || form.fechaHasta.$touched)}">
                     <label class="control-label" for="fechaHasta">Fecha Hasta</label>
                     <div class="input-group">
-                        <input type="date" datepicker-popup current-text="Hoy" is-open="vm.fechaHastaOpened" clear-text="Borrar" close-text="Cerrar" class="form-control" ng-model="vm.contrato.fechaHasta" name="fechaHasta" id="fechaHasta" required="required" placeholder="fechaHasta">
-                        <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-show="form.$submitted || form.fechaHasta.$touched" ng-class="{'glyphicon-ok': !form.fechaHasta.$error.required, 'glyphicon-remove': form.fechaHasta.$error.required}">
+                        <input type="text" datepicker-popup="dd/MM/yyyy" current-text="Hoy" is-open="vm.fechaHastaOpened" clear-text="Borrar" close-text="Cerrar" class="form-control" ng-model="vm.contrato.fechaHasta" name="fechaHasta" id="fechaHasta" required="required" placeholder="dd/MM/yyyy" />
+                        <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-show="form.$submitted || form.fechaHasta.$touched" ng-class="{'glyphicon-ok': !form.fechaHasta.$error.required && !form.fechaHasta.$error.date , 'glyphicon-remove': form.fechaHasta.$error.required || form.fechaHasta.$error.date}">
                     </span>
                         <span class="input-group-btn">
                       <button type="button" class="btn btn-default" ng-click="vm.open($event, 'fechaHastaOpened')"><i class="glyphicon glyphicon-calendar"></i></button>
@@ -106,6 +107,7 @@
                     </div>
                     <div ng-show="form.$submitted || form.fechaHasta.$touched">
                         <span class='control-error' ng-show="form.fechaHasta.$error.required">La fecha es requerida</span>
+                        <span class='control-error' ng-show="form.fechaHasta.$error.date">La fecha es invalida</span>
                     </div>
                 </div>
             </div>
@@ -119,7 +121,7 @@
           'has-error': (form.$submitted || form.alquiler.$touched) && (form.alquiler.$error.required || form.alquiler.$error.number),
           'has-feedback': (form.$submitted || form.alquiler.$touched)}">
                     <label class="control-label" for="alquiler">Alquiler</label>
-                    <input type="number" class="form-control" ng-model="vm.contrato.alquiler" name="alquiler" id="alquiler" required="required" placeholder="Alquiler">
+                    <input type="number" class="form-control" ng-model="vm.contrato.alquiler" name="alquiler" id="alquiler" required="required" placeholder="Alquiler" />
                     <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-show="form.$submitted || form.alquiler.$touched" ng-class="{'glyphicon-ok': !form.alquiler.$error.required && !form.alquiler.$error.number, 'glyphicon-remove': form.alquiler.$error.required || form.alquiler.$error.number} ">
             </span>
                     <div ng-show="form.$submitted || form.alquiler.$touched">
@@ -188,11 +190,15 @@
             </thead>
             <tbdoy>
                 <tr ng-repeat="alquiler in vm.alquileresCalculados">
-                    <td>{{alquiler.fechaDesde | date: 'medium'}}</td>
-                    <td>{{alquiler.fechaHasta | date: 'medium'}}</td>
-                    <td>{{alquiler.Valor}}</td>
+                    <td>{{alquiler.fechaDesde | date: 'dd/MM/yyyy'}}</td>
+                    <td>{{alquiler.fechaHasta | date: 'dd/MM/yyyy'}}</td>
+                    <td>{{alquiler.valor}}</td>
                 </tr>
             </tbdoy>
         </table>
     </fieldset>
+    <div class="pull-right" style="margin-top: 5px">
+        <a class="btn btn-default md-shadow-bottom-z-1" href="#/propiedades">Cancelar</a>
+        <button type="submit" class="btn btn-primary md-shadow-bottom-z-1" ng-click="vm.save()" ng-disabled="!form.$valid">Guardar</button>
+    </div>
 </form>

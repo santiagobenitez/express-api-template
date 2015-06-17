@@ -4,18 +4,24 @@ describe('ContratoCrearController', function() {
   var contratoController,
     $controller,
     $state,
-    $rootScope;
+    $rootScope,
+    contratoService,
+    messageService,
+    alquilerHelper;
 
   beforeEach(module('app'));
 
-  beforeEach(inject(function(_$controller_, _$state_, _$rootScope_) {
+  beforeEach(inject(function(_$controller_, _$state_, _$rootScope_, _contratoService_, _messageService_, _alquilerHelper_) {
     $controller = _$controller_;
     $rootScope = _$rootScope_;
     $state = _$state_;
+    contratoService = _contratoService_;
+    messageService = _messageService_;
+    alquilerHelper = _alquilerHelper_;
   }));
 
   afterEach(function() {
-    $controller = $rootScope = $state = null;
+    $controller = $rootScope = $state = contratoService = messageService = alquilerHelper = null;
   });
 
   afterEach(function() {
@@ -37,6 +43,10 @@ describe('ContratoCrearController', function() {
 
     it('should have propiedades defined', function() {
       expect(contratoController.propiedades).toBeDefined();
+    });
+
+    it('should have save defined', function() {
+      expect(contratoController.save).toBeDefined();
     });
   });
 
@@ -110,11 +120,90 @@ describe('ContratoCrearController', function() {
     });
   });
 
+  describe('save', function() {
+    var $scope;
+    var cliente, propiedad;
+    beforeEach(function() {
+      $scope = $rootScope.$new();
+      cliente = {
+        _id: '1',
+        nombre: 'juan',
+        apellido: 'vittori'
+      };
+      propiedad = {
+        propietario: {
+          _id: '1',
+          nombre: 'Test',
+          apellido: 'Propietario'
+        }
+      };
+      contratoController = createController([propiedad], [cliente], $scope);
+    });
+
+    afterEach(function() {
+      $scope = cliente = contratoController = null;
+    });
+
+    it('should call create create of the contrato service', function() {
+      spyOn(contratoService, 'create').and.returnValue({
+        then: function() {}
+      });
+
+      contratoController.save();
+      expect(contratoService.create.calls.count()).toBe(1);
+    });
+
+    it('should go to the state of contrato-edit when a contrato was created successfully', function() {
+      var _successFn,
+        _state,
+        _data;
+
+      spyOn(contratoService, 'create').and.returnValue({
+        then: function(successFn) {
+          _successFn = successFn;
+        }
+      });
+      spyOn($state, 'go').and.callFake(function(state, data) {
+        _state = state;
+        _data = data;
+      });
+
+      contratoController.save();
+      _successFn('123');
+
+      expect(_state).toBe('contrato-edit');
+      expect(_data.id).toBe('123');
+    });
+
+    it('should show an error message when there was an error while creating the propiedad', function() {
+      var _errorFn,
+        _state,
+        _data;
+
+      spyOn(contratoService, 'create').and.returnValue({
+        then: function(successFn, errorFn) {
+          _errorFn = errorFn;
+        }
+      });
+
+      spyOn(messageService, 'error').and.callFake(function() {});
+
+      contratoController.save();
+      _errorFn('error');
+
+      expect(messageService.error.calls.count()).toBe(1);
+    });
+  });
+
   function createController(propiedades, clientes, $scope) {
     return $controller('ContratoCrearController', {
       propiedades: propiedades || [],
       clientes: clientes || [],
-      $scope: $scope || $rootScope.$new()
+      $scope: $scope || $rootScope.$new(),
+      $state: $state,
+      alquilerHelper: alquilerHelper,
+      contratoService: contratoService,
+      messageService: messageService
     });
   }
 
