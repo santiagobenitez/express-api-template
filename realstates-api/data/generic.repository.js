@@ -5,22 +5,22 @@ function GenericRepository(model) {
 }
 
 GenericRepository.prototype.create = function(newObj, cb) {
-  this.model.create(newObj, function(e, obj) {
+  this.model.create(newObj, function(e, doc) {
     if (e) {
       return cb(e.errors, null);
     }
 
     //return a plain js object
-    cb(null, obj.toObject());
+    cb(null, doc.toObject());
   });
 };
 
 GenericRepository.prototype.get = function(id, cb) {
-  this.model.findById(id, function(e, obj) {
+  this.model.findById(id, function(e, doc) {
     if (e) {
       return cb(e, null);
     }
-    cb(null, obj);
+    cb(null, doc ? doc.toObject() : null);
   });
 };
 
@@ -35,7 +35,7 @@ GenericRepository.prototype.getAll = function(cb) {
 };
 
 GenericRepository.prototype.remove = function remove(id, cb) {
-  this.model.findByIdAndRemove(id, function(e, result) {
+  this.model.findByIdAndRemove(id, function(e) {
     if (e) {
       return cb(e);
     }

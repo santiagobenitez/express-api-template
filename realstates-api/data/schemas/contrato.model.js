@@ -5,11 +5,6 @@ var mongoose = require('mongoose');
 var intereses = ['Semestral', 'Anual'];
 
 var ContratoSchema = new mongoose.Schema({
-  propiedad: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'propiedades',
-    required: true
-  },
   fechaDesde: {
     type: Date,
     required: true
@@ -38,6 +33,11 @@ var ContratoSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
+  propiedad: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'propiedades',
+    required: true
+  },
   inquilino: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'clientes',
@@ -47,6 +47,10 @@ var ContratoSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'clientes',
     required: true
+  },
+  garanteOpcional: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'clientes'
   },
   propiedadDireccion: String,
   garanteNombreCompleto: String,
