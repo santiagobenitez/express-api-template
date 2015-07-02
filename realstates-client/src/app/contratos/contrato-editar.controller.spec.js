@@ -1,6 +1,6 @@
 'use strict';
 
-describe('ContratoCrearController', function() {
+describe('ContratoEditarController', function() {
   var contratoController,
     $controller,
     $state,
@@ -124,7 +124,11 @@ describe('ContratoCrearController', function() {
     var $scope;
     var cliente, propiedad;
     beforeEach(function() {
-      $scope = $rootScope.$new();
+      var $scope = $rootScope.$new();
+      $scope.form = {
+        $setUntouched: function() {},
+        $setPristine: function() {}
+      };
       cliente = {
         _id: '1',
         nombre: 'juan',
@@ -144,35 +148,31 @@ describe('ContratoCrearController', function() {
       $scope = cliente = contratoController = null;
     });
 
-    it('should call create create of the contrato service', function() {
-      spyOn(contratoService, 'create').and.returnValue({
+    it('should call update of the contrato service', function() {
+      spyOn(contratoService, 'update').and.returnValue({
         then: function() {}
       });
 
       contratoController.save();
-      expect(contratoService.create.calls.count()).toBe(1);
+      expect(contratoService.update.calls.count()).toBe(1);
     });
 
-    it('should go to the state of contrato-edit when a contrato was created successfully', function() {
+    it('should show a success message when a contrato was updated successfully', function() {
       var _successFn,
         _state,
         _data;
 
-      spyOn(contratoService, 'create').and.returnValue({
+      spyOn(contratoService, 'update').and.returnValue({
         then: function(successFn) {
           _successFn = successFn;
         }
       });
-      spyOn($state, 'go').and.callFake(function(state, data) {
-        _state = state;
-        _data = data;
-      });
+      spyOn(messageService, 'success').and.callFake(function() {});
 
       contratoController.save();
-      _successFn('123');
+      _successFn();
 
-      expect(_state).toBe('contrato-edit');
-      expect(_data.id).toBe('123');
+      expect(messageService.success.calls.count()).toBe(1);
     });
 
     it('should show an error message when there was an error while creating the propiedad', function() {
@@ -180,7 +180,7 @@ describe('ContratoCrearController', function() {
         _state,
         _data;
 
-      spyOn(contratoService, 'create').and.returnValue({
+      spyOn(contratoService, 'update').and.returnValue({
         then: function(successFn, errorFn) {
           _errorFn = errorFn;
         }
@@ -195,10 +195,11 @@ describe('ContratoCrearController', function() {
     });
   });
 
-  function createController(propiedades, clientes, $scope) {
-    return $controller('ContratoCrearController', {
+  function createController(propiedades, clientes, $scope, contrato) {
+    return $controller('ContratoEditarController', {
       propiedades: propiedades || [],
       clientes: clientes || [],
+      contrato: contrato || {},
       $scope: $scope || $rootScope.$new(),
       $state: $state,
       alquilerHelper: alquilerHelper,

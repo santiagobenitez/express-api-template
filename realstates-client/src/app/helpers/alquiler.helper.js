@@ -20,15 +20,16 @@
       }
 
       var fechaInicioAlquiler = new Date(fechaDesde);
+      var fechaFinAlquiler = new Date(fechaHasta);
       var diferenciaMes = tipoInteres === 'Semestral' ? 6 : 12;
       var fechaInteres = new Date(fechaInicioAlquiler);
       fechaInteres.setMonth(fechaInicioAlquiler.getMonth() + diferenciaMes);
 
-      if(!tipoInteres || fechaHasta <= fechaInteres){
-        return [new Alquiler(fechaInicioAlquiler, fechaHasta, alquilerCalculado)];
+      if(!tipoInteres || fechaFinAlquiler <= fechaInteres){
+        return [new Alquiler(fechaInicioAlquiler, fechaFinAlquiler, alquilerCalculado)];
       }
 
-      while(fechaInteres <= fechaHasta){
+      while(fechaInteres <= fechaFinAlquiler){
         nuevoAlquiler = new Alquiler(new Date(fechaInicioAlquiler), new Date(fechaInteres), alquilerCalculado);
         alquileres.push(nuevoAlquiler);
         fechaInteres.setMonth(fechaInteres.getMonth() + diferenciaMes);
@@ -36,8 +37,8 @@
         alquilerCalculado = interesCalculado ? alquilerCalculado + (alquilerCalculado * interesCalculado)/100 : alquilerCalculado;
       }
 
-      if(alquileres[alquileres.length - 1].fechaHasta.toDateString() !== fechaHasta.toDateString()){
-        alquileres.push(new Alquiler(fechaInicioAlquiler, fechaHasta, alquilerCalculado));
+      if(alquileres[alquileres.length - 1].fechaHasta.toDateString() !== fechaFinAlquiler.toDateString()){
+        alquileres.push(new Alquiler(fechaInicioAlquiler, fechaFinAlquiler, alquilerCalculado));
       }
 
       return alquileres;

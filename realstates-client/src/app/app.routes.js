@@ -77,6 +77,15 @@
           cliente: getCliente
         }
       })
+      .state('contrato-list', {
+        url: '/contratos',
+        templateUrl: 'app/contratos/contrato-list.html',
+        controller: 'ContratoListController',
+        controllerAs: 'vm',
+        resolve: {
+          contratos: getAllContratos
+        }
+      })
       .state('contrato-new', {
         url: '/contratos/crear',
         templateUrl: 'app/contratos/contrato-editar.html',
@@ -85,6 +94,17 @@
         resolve: {
           clientes: getAllClientes,
           propiedades: getAllPropiedades
+        }
+      })
+      .state('contrato-edit', {
+        url: '/contratos/{id}/editar',
+        templateUrl: 'app/contratos/contrato-editar.html',
+        controller: 'ContratoEditarController',
+        controllerAs: 'vm',
+        resolve: {
+          clientes: getAllClientes,
+          propiedades: getAllPropiedades,
+          contrato: getContrato
         }
       });
 
@@ -106,9 +126,21 @@
     }
 
     getCliente.$inject = ['clienteService', '$stateParams'];
+
     function getCliente(clienteService, $stateParams) {
       return clienteService.get($stateParams.id);
     }
+
+    getContrato.$inject = ['contratoService', '$stateParams'];
+    function getContrato(contratoService, $stateParams) {
+      return contratoService.get($stateParams.id);
+    }
+
+    getAllContratos.$inject = ['contratoService'];
+    function getAllContratos(contratoService) {
+      return contratoService.getAll();
+    }
+
   }
 
 }());

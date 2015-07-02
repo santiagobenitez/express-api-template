@@ -140,10 +140,13 @@
                 </div>
             </div>
         </div>
+        <div class="form-group">
+            <label class="control-label" for="informacionExtra">Informacion Extra</label>
+            <textarea class="form-control" rows="3" ng-model="vm.propiedad.informacionExtra" name="informacionExtra" id="informacionExtra" placeholder="Informacion Extra"></textarea>
+        </div>
     </fieldset>
     <div class="pull-right" style="margin-top: 5px">
         <a class="btn btn-default md-shadow-bottom-z-1" href="#/propiedades">Cancelar</a>
         <button type="submit" class="btn btn-primary md-shadow-bottom-z-1" ng-click="vm.save()" ng-disabled="!form.$valid">Guardar</button>
     </div>
-
 </form>

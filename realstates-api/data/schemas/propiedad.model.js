@@ -25,7 +25,8 @@ var PropiedadSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'clientes',
     required: true
-  }
+  },
+  informacionExtra: String
 });
 
 module.exports = mongoose.model('propiedades', PropiedadSchema);
