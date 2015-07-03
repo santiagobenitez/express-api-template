@@ -1,19 +1,44 @@
-<nav class="navbar navbar-static-top navbar-inverse md-whiteframe-glow-z1" ng-controller="NavbarController as vm">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <a class="navbar-brand" href="#/">
-        <span class="glyphicon glyphicon-home"></span> Bienes Raices
-      </a>
+<header class="navbar navbar-static-top navbar-inverse md-whiteframe-glow-z2" ng-controller="NavbarController as vm">
+    <div class="navbar-inner">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-3" ng-click="vm.isCollapsed = !vm.isCollapsed">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand visible-xs" href="#">
+                  <span class="glyphicon glyphicon-home"></span> Bienes Raices
+                </a>
+            </div>
+            <nav class="hidden-xs">
+                <ul class="nav navbar-nav">
+                    <a href="#/" role="button" class="navbar-brand">
+                        <span class="glyphicon glyphicon-home"></span> Bienes Raices
+                    </a>
+                    <li><a ng-href="#/clientes">Clientes</a></li>
+                    <li><a ng-href="#/propiedades">Propiedades</a></li>
+                    <li><a ng-href="#/contratos">Contratos</a></li>
+                </ul>
+                <!--<ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown" dropdown>
+                        <a role="button" class="dropdown-toggle" dropdown-toggle="" aria-haspopup="true" aria-expanded="false">
+                            {{vm.authentication.userName}} <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" ng-click='vm.logOut()'>Log out</a></li>
+                        </ul>
+                    </li>
+                </ul>-->
+            </nav>
+            <nav class="visible-xs" collapse="!vm.isCollapsed" style="height: 0px;">
+                <ul class="nav navbar-nav">
+                    <li><a ng-href="#/clientes" ng-click="vm.isCollapsed = !vm.isCollapsed">Clientes</a></li>
+                    <li><a ng-href="#/propiedades" ng-click="vm.isCollapsed = !vm.isCollapsed">Propiedades</a></li>
+                    <li><a ng-href="#/contratos" ng-click="vm.isCollapsed = !vm.isCollapsed">Contratos</a></li>
+                </ul>
+            </nav>
+        </div>
     </div>
-
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-6">
-      <ul class="nav navbar-nav">
-        <!--<li class="active"><a ng-href="#/">Inicio</a></li>-->
-      </ul>
-
-      <ul class="nav navbar-nav navbar-right">
-        <li class="navbar-text">Current date: {{ vm.date | date:'yyyy-MM-dd' }}</li>
-      </ul>
-    </div>
-  </div>
-</nav>
+</header>
