@@ -4,6 +4,8 @@ var propiedadesRouter = require('./propiedades/propiedades.router');
 var clientesRouter = require('./clientes/cliente.router');
 var rootRouter = require('./root/root.router');
 var contratoRouter = require('./contratos/contrato.router');
+var pagoRouter = require('./pagos/pago.router');
+
 
 
 module.exports = function(app) {
@@ -11,4 +13,5 @@ module.exports = function(app) {
   app.use('/api/propiedades', propiedadesRouter);
   app.use('/api/clientes', clientesRouter);
   app.use('/api/contratos', contratoRouter);
+  app.use('/api/contratos', pagoRouter);
 };

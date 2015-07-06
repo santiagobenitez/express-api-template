@@ -1,9 +1,11 @@
 var dbUrl = 'mongodb://@127.0.0.1:27017/testbienesraices';
 var mongoose = require('mongoose');
 var expect = require('chai').expect;
-var repository = require('../../data/contrato.repository');
+var repository = require('../../data/pago.repository');
 var propiedadRepository = require('../../data/propiedades.repository');
-var clienteRepository = require('../../data/cliente.repository')
+var clienteRepository = require('../../data/cliente.repository');
+var contratoRepository = require('../../data/contrato.repository');
+
 
 var newCliente = {
   direccion: {
@@ -41,7 +43,13 @@ var newContrato = {
   multaDiaria: 100
 };
 
-describe('contratoRepository', function() {
+var pago = {
+  fecha: new Date(2015, 6, 18),
+  realizadoPor: 'Santiago',
+  importe: 1000
+}
+
+describe('pagoRepository', function() {
   before(function(done) {
     mongoose.connect(dbUrl);
     initData(done);
@@ -56,7 +64,11 @@ describe('contratoRepository', function() {
       propiedadRepository.create(newPropiedad, function(e, prop) {
         newPropiedad._id = prop._id;
         newContrato.propiedad = prop._id;
-        done();
+        contratoRepository.create(newContrato, function(e, cont) {
+          newContrato._id = cont._id;
+          pago.contrato = cont._id;
+          done();
+        });
       });
     });
   }
@@ -85,61 +97,57 @@ describe('contratoRepository', function() {
   });
 
   describe('create', function() {
-    it('should create a new contrato when it is a valid property', function(done) {
+    it('should create a new pago when it is a valid property', function(done) {
 
-      repository.create(newContrato, function(e, obj) {
+      repository.create(pago, function(e, obj) {
         expect(e).to.be.null;
         expect(obj).to.exist;
-        newContrato._id = obj._id;
+        pago._id = obj._id;
         done();
       })
     });
 
-    it('should return an error object when the inquilino property is not specified', function(done) {
-      var newContrato2 = {
-        fechaHasta: new Date(2015, 6, 18),
-        fechaDesde: new Date(2013, 8, 18),
-        tipoInteres: 'Semestral',
-        interes: 10,
-        alquiler: 1000,
-        deposito: 100,
-        multaDiaria: 100
-      };
+    it('should return an error object when the contato property is not specified', function(done) {
+      var pago2 = {
+        fecha: new Date(2015, 6, 18),
+        realizadoPor: 'Santiago',
+        importe: 1000
+      }
 
-      repository.create(newContrato2, function(e, obj) {
+      repository.create(pago2, function(e, obj) {
         expect(e).not.to.be.null;
-        expect(e.inquilino.message).to.exist;
+        expect(e.contrato.message).to.exist;
         done();
       });
     });
   });
 
   describe('getAll', function() {
-    it('should return the recently created contrato as part of the result', function(done) {
+    it('should return the recently created pago as part of the result', function(done) {
 
       repository.getAll(function(e, objs) {
         expect(e).to.be.null;
         expect(objs).to.have.length.above(0);
         expect(objs.map(function(item) {
           return item._id
-        })).to.contain(newContrato._id);
+        })).to.contain(pago._id);
         done();
       });
     });
   });
 
   describe('get', function() {
-    it('should return the recently created contrato as part of the result', function(done) {
+    it('should return the recently created pago as part of the result', function(done) {
 
-      repository.get(newContrato._id, function(e, obj) {
+      repository.get(pago._id, function(e, obj) {
         expect(e).to.be.null;
-        expect(obj._id).to.eql(newContrato._id);
+        expect(obj._id).to.eql(pago._id);
         done();
       });
     });
 
     it('should return an error when the id doesnt exist', function(done) {
-      repository.get(newContrato._id + "a", function(e, obj) {
+      repository.get(pago._id + "a", function(e, obj) {
         expect(e).to.exist;
         done();
       });
@@ -147,22 +155,22 @@ describe('contratoRepository', function() {
   });
 
   describe('update', function() {
-    it('should update the contrato when the alquiler is modified', function(done) {
+    it('should update the pago when the importe is modified', function(done) {
 
-      newContrato.alquiler = 2000;
+      pago.importe = 2000;
 
 
-      repository.update(newContrato._id, newContrato, function(e, obj) {
+      repository.update(pago._id, pago, function(e, obj) {
         expect(e).to.be.null;
-        newContrato = obj;
-        expect(obj.alquiler).to.eql(2000);
+        pago = obj;
+        expect(obj.importe).to.eql(2000);
         done();
       });
     });
 
     it('should return an error when the id doest exist', function(done) {
 
-      repository.update(newContrato._id + 'a', newContrato, function(e, obj) {
+      repository.update(pago._id + 'a', pago, function(e, obj) {
         expect(e).to.exist;
         done();
       });
@@ -172,15 +180,15 @@ describe('contratoRepository', function() {
 
   describe('remove', function() {
     it('should return an error when the object was not removed', function(done) {
-      repository.remove(newContrato._id + "a", function(e) {
+      repository.remove(pago._id + "a", function(e) {
         expect(e).to.exist;
         done();
       });
     })
 
-    it('should return a null error when the recently created contrato was removed successfuly', function(done) {
+    it('should return a null error when the recently created pago was removed successfuly', function(done) {
 
-      repository.remove(newContrato._id, function(e) {
+      repository.remove(pago._id, function(e) {
         expect(e).to.be.null;
         done();
       });
