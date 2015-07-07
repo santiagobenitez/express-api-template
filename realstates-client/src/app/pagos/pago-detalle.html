@@ -1,0 +1,41 @@
+<div class="jumbotron md-whiteframe-z1" style="position: relative">
+    <h1>Pagos</h1>
+    <a href='#/contratos/{{vm.contrato._id}}/pagos/crear' class="btn btn-primary md-shadow-bottom-z-2 md-fab jumbotron-main-action"><span class="glyphicon glyphicon-plus"></span></a>
+</div>
+<div class="panel" ng-class="{'panel-danger': vm.userIsDelayed, 'panel-warning': vm.userIsAlmostDelay, 'panel-success': vm.userIsUpToDate}">
+    <div class="panel-heading">Informacion del Contrato</div>
+    <div class="panel-body">
+        <ul class="list-group">
+            <li class="list-group-item">Propiedad: <strong>{{vm.contrato.propiedadDireccion}}</strong></li>
+            <li class="list-group-item">Inquilino:<strong> {{vm.contrato.inquilinoNombreCompleto}}</strong></li>
+            <li class="list-group-item">Fecha Desde: <strong>{{vm.fechaDesde | date: 'dd/MM/yyyy'}}</strong></li>
+            <li class="list-group-item">Fecha Hasta: <strong>{{vm.fechaHasta | date: 'dd/MM/yyyy'}}</strong></li>
+            <li class="list-group-item">Alquiler: <strong>{{vm.alquiler}}</strong></li>
+        </ul>
+    </div>
+</div>
+
+<div class="page-header">
+  <h3>Pagos realizados</h3>
+</div>
+
+<table class="table bs-table">
+    <thead>
+        <tr>
+            <th class="text">Fecha</th>
+            <th class="text">Realizado Por</th>
+            <th class="number">Importe</th>
+            <th class="actions">Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="pago in vm.pagos">
+            <td class="text">{{pago.fecha | date: 'dd/MM/yyyy' }}</td>
+            <td class="text">{{pago.realizadoPor}}</td>
+            <td class="number">{{pago.importe}}</td>
+            <td class="actions">
+                <a ng-href="#/contratos/{{vm.contrato._id}}/pagos/{{pago._id}}/editar" tooltip="editar"><span class="glyphicon glyphicon-pencil"></span></a>
+            </td>
+        </tr>
+    </tbody>
+</table>

@@ -106,7 +106,18 @@
           propiedades: getAllPropiedades,
           contrato: getContrato
         }
+      })
+      .state('pagos-detalle', {
+        url: '/contratos/{id}/pagos',
+        templateUrl: 'app/pagos/pago-detalle.html',
+        controller: 'PagoDetalleController',
+        controllerAs: 'vm',
+        resolve: {
+          contrato: getContrato,
+          pagos: getAllPagosByContrato
+        }
       });
+
 
     $urlRouterProvider.otherwise('/');
 
@@ -126,7 +137,6 @@
     }
 
     getCliente.$inject = ['clienteService', '$stateParams'];
-
     function getCliente(clienteService, $stateParams) {
       return clienteService.get($stateParams.id);
     }
@@ -139,6 +149,11 @@
     getAllContratos.$inject = ['contratoService'];
     function getAllContratos(contratoService) {
       return contratoService.getAll();
+    }
+
+    getAllPagosByContrato.$inject = ['pagoService', '$stateParams'];
+    function getAllPagosByContrato(pagoService, $stateParams) {
+      return pagoService.getAll($stateParams.id);
     }
 
   }

@@ -21,6 +21,7 @@
             <td class="text">{{contrato.inquilinoNombreCompleto}}</td>
             <td class="number">{{contrato.alquiler}}</td>
             <td class="actions">
+                <a ng-href="#/contratos/{{contrato._id}}/pagos" tooltip="pagos"><span class="glyphicon glyphicon-folder-open"></span></a>
                 <a ng-href="#/contratos/{{contrato._id}}/editar" tooltip="editar"><span class="glyphicon glyphicon-pencil"></span></a>
             </td>
         </tr>
