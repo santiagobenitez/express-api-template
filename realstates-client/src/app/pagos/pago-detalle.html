@@ -2,23 +2,59 @@
     <h1>Pagos</h1>
     <a href='#/contratos/{{vm.contrato._id}}/pagos/crear' class="btn btn-primary md-shadow-bottom-z-2 md-fab jumbotron-main-action"><span class="glyphicon glyphicon-plus"></span></a>
 </div>
-<div class="panel" ng-class="{'panel-danger': vm.userIsDelayed, 'panel-warning': vm.userIsAlmostDelay, 'panel-success': vm.userIsUpToDate}">
-    <div class="panel-heading">Informacion del Contrato</div>
-    <div class="panel-body">
-        <ul class="list-group">
-            <li class="list-group-item">Propiedad: <strong>{{vm.contrato.propiedadDireccion}}</strong></li>
-            <li class="list-group-item">Inquilino:<strong> {{vm.contrato.inquilinoNombreCompleto}}</strong></li>
-            <li class="list-group-item">Fecha Desde: <strong>{{vm.fechaDesde | date: 'dd/MM/yyyy'}}</strong></li>
-            <li class="list-group-item">Fecha Hasta: <strong>{{vm.fechaHasta | date: 'dd/MM/yyyy'}}</strong></li>
-            <li class="list-group-item">Alquiler: <strong>{{vm.alquiler}}</strong></li>
-        </ul>
-    </div>
+<div class="alert alert-success" role="alert" ng-if="vm.userIsUpToDate">
+  El Inquilino se encuentra al dia con los pagos
 </div>
-
+<div class="alert alert-warning" role="alert" ng-if="vm.userIsAlmostDelay">
+  El Inquilino esta cerca de la fecha de vencimiento del pago del alquiler del mes actual
+</div>
+<div class="alert alert-danger" role="alert" ng-if="vm.userIsDelayed">
+  El inquilino no ha pagado aun el mes actual
+</div>
 <div class="page-header">
-  <h3>Pagos realizados</h3>
+    <h3>Detalle del Contrato</h3>
 </div>
-
+<form class="form-horizontal" style="margin-bottom:5px;">
+    <div class="row">
+        <div class="col-md-5">
+            <div class="form-group">
+                <label for="propiedad" class="col-md-3 control-label text-left">Propiedad</label>
+                <div class="col-md-9">
+                    <p class="form-control-static">{{vm.contrato.propiedadDireccion}}</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="inquilino" class="col-md-3 control-label text-left">Inquilino</label>
+                <div class="col-md-9">
+                    <p class="form-control-static">{{vm.contrato.inquilinoNombreCompleto}}</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="alquiler" class="col-md-3 control-label text-left">Alquiler</label>
+                <div class="col-md-9">
+                    <p class="form-control-static">{{vm.contrato.alquiler}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5">
+           <div class="form-group">
+                <label for="fechaDesde" class="col-md-3 control-label text-left">Fecha Desde</label>
+                <div class="col-md-9">
+                    <p class="form-control-static">{{vm.contrato.fechaDesde | date: 'dd/MM/yyyy'}}</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="fechaHasta" class="col-md-3 control-label text-left">Fecha Hasta</label>
+                <div class="col-md-9">
+                    <p class="form-control-static">{{vm.contrato.fechaHasta | date: 'dd/MM/yyyy'}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<div class="page-header">
+    <h3>Pagos realizados</h3>
+</div>
 <table class="table bs-table">
     <thead>
         <tr>
