@@ -13,6 +13,7 @@
     function alquilerVencido(diaDeVencimiento, fechaUltimoPago, fechaActual) {
      var fechaVencimiento = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), diaDeVencimiento);
      var fechaActualSinTiempo = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), fechaActual.getDate());
+
      return fechaVencimiento < fechaActualSinTiempo && fechaActual.getMonth() !== fechaUltimoPago.getMonth();
     }
 
@@ -22,7 +23,7 @@
      fechaVencimientoPiso.setDate(fechaVencimientoPiso.getDate() - 3);
      var fechaActualSinTiempo = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), fechaActual.getDate());
 
-     return (fechaVencimientoTecho >= fechaActualSinTiempo || fechaVencimientoPiso <= fechaActualSinTiempo)  && fechaActual.getMonth() !== fechaUltimoPago.getMonth();
+     return fechaVencimientoTecho >= fechaActualSinTiempo && fechaVencimientoPiso <= fechaActualSinTiempo && fechaActual.getMonth() !== fechaUltimoPago.getMonth();
     }
 
     function alquilerAlDia(diaDeVencimiento, fechaUltimoPago, fechaActual) {
