@@ -116,6 +116,15 @@
           contrato: getContrato,
           pagos: getAllPagosByContrato
         }
+      })
+      .state('pago-new', {
+        url: '/contratos/{id}/pagos/crear',
+        templateUrl: 'app/pagos/pago-editar.html',
+        controller: 'PagoCrearController',
+        controllerAs: 'vm',
+        resolve: {
+          contrato: getContrato,
+        }
       });
 
 

@@ -1,0 +1,57 @@
+<div class="jumbotron md-whiteframe-z1" style="position: relative">
+    <h1 ng-if='!vm.pago._id'>Crear Pago</h1>
+    <h1 ng-if='vm.pago._id'>Editar Pago</h1>
+</div>
+<form name="form" novalidate>
+    <fieldset>
+        <legend>Datos del Pago</legend>
+    </fieldset>
+    <div class="form-group" ng-class="{'has-success': (form.$submitted || form.fecha.$touched) && !form.fecha.$error.required && !form.fecha.$error.date,
+          'has-error': (form.$submitted || form.fecha.$touched) && (form.fecha.$error.required || form.fecha.$error.date),
+          'has-feedback': (form.$submitted || form.fecha.$touched)}">
+        <label class="control-label" for="fecha">Fecha</label>
+        <div class="input-group">
+            <input type="text" datepicker-popup="dd/MM/yyyy" current-text="Hoy" is-open="vm.fechaOpened" clear-text="Borrar" close-text="Cerrar" class="form-control" ng-model="vm.pago.fecha" name="fecha" id="fecha" required="required" placeholder="dd/MM/yyyy" />
+            <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-show="form.$submitted || form.fecha.$touched" ng-class="{'glyphicon-ok': !form.fecha.$error.required && !form.fecha.$error.date, 'glyphicon-remove': form.fecha.$error.required || form.fecha.$error.date}">
+                    </span>
+            <span class="input-group-btn">
+                      <button type="button" class="btn btn-default" ng-click="vm.open($event, 'fechaOpened')"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+        </div>
+        <div ng-show="form.$submitted || form.fecha.$touched">
+            <span class='control-error' ng-show="form.fecha.$error.required">La fecha es requerida</span>
+            <span class='control-error' ng-show="form.fecha.$error.date">La fecha es invalida</span>
+        </div>
+    </div>
+    <div class="form-group" ng-class="{'has-success': (form.$submitted || form.realizadoPor.$touched) && !form.realizadoPor.$error.required,
+          'has-error': (form.$submitted || form.realizadoPor.$touched) && (form.realizadoPor.$error.required),
+          'has-feedback': (form.$submitted || form.realizadoPor.$touched)}">
+        <label class="control-label" for="realizadoPor">Realizado Por</label>
+        <input type="text" class="form-control" ng-model="vm.pago.realizadoPor" name="realizadoPor" id="realizadoPor" required="required" placeholder="Realizado Por">
+        <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-show="form.$submitted || form.realizadoPor.$touched" ng-class="{'glyphicon-ok': !form.realizadoPor.$error.required, 'glyphicon-remove': form.realizadoPor.$error.required} ">
+            </span>
+        <div ng-show="form.$submitted || form.realizadoPor.$touched">
+            <span class='control-error' ng-show="form.realizadoPor.$error.required">El campo es requerido</span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="alquiler" class="control-label">Importe Sugerido</label>
+        <p class="form-control-static">{{vm.importeSugerido}}</p>
+    </div>
+    <div class="form-group" ng-class="{'has-success': (form.$submitted || form.importe.$touched) && !form.importe.$error.required && !form.importe.$error.number,
+          'has-error': (form.$submitted || form.importe.$touched) && (form.importe.$error.required || form.importe.$error.number),
+          'has-feedback': (form.$submitted || form.importe.$touched)}">
+        <label class="control-label" for="importe">Importe</label>
+        <input type="number" class="form-control" ng-model="vm.pago.importe" name="importe" id="importe" required="required" placeholder="Importe">
+        <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-show="form.$submitted || form.importe.$touched" ng-class="{'glyphicon-ok': !form.importe.$error.required && !form.importe.$error.number, 'glyphicon-remove': form.importe.$error.required || form.importe.$error.number} ">
+            </span>
+        <div ng-show="form.$submitted || form.importe.$touched">
+            <span class='control-error' ng-show="form.importe.$error.required">El importe es requerido</span>
+            <span class='control-error' ng-show="form.importe.$error.number">Por favor ingrese un numero valido</span>
+        </div>
+    </div>
+    <div class="pull-right" style="margin-top: 5px; margin-bottom: 5px;">
+        <a class="btn btn-default md-shadow-bottom-z-1" href="#/contratos/{{vm.contratoId}}/pagos">Cancelar</a>
+        <button type="submit" class="btn btn-primary md-shadow-bottom-z-1" ng-click="vm.save()" ng-disabled="!form.$valid">Guardar</button>
+    </div>
+</form>

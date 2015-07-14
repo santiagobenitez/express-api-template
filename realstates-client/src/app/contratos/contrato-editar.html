@@ -141,6 +141,17 @@
                         <span class='control-error' ng-show="form.deposito.$error.number">Por favor ingrese un numero valido</span>
                     </div>
                 </div>
+<div class="form-group" ng-class="{'has-success': (form.$submitted || form.diaDeVencimiento.$touched) && !form.diaDeVencimiento.$error.required && !form.diaDeVencimiento.$error.date,
+          'has-error': (form.$submitted || form.diaDeVencimiento.$touched) && (form.diaDeVencimiento.$error.required || form.diaDeVencimiento.$error.date),
+          'has-feedback': (form.$submitted || form.diaDeVencimiento.$touched)}">                    <label class="control-label" for="tipoInteres">Dia de vencimiento</label>
+                    <select required="required" class="form-control" ng-options="item.value as item.label for item in vm.diasDeVencimiento" id="diaDeVencimiento" name="diaDeVencimiento" ng-model="vm.contrato.diaDeVencimiento">
+                    </select>
+                     <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-show="form.$submitted || form.diaDeVencimiento.$touched" ng-class="{'glyphicon-ok': !form.diaDeVencimiento.$error.required, 'glyphicon-remove': form.diaDeVencimiento.$error.required} ">
+            </span>
+                    <div ng-show="form.$submitted || form.diaDeVencimiento.$touched">
+                        <span class='control-error' ng-show="form.diaDeVencimiento.$error.required">El dia de vencimiento es requerido </span>
+                    </div>
+                </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">

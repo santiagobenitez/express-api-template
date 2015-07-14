@@ -16,6 +16,11 @@ var PagoSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'contratos',
     required: true
+  },
+  fechaCreacion: {
+    type: Date,
+    required: true,
+    default: Date.now
   }
 });
 

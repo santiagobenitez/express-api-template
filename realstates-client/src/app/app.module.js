@@ -9,7 +9,8 @@
     'app.common',
     'app.clientes',
     'app.contratos',
-    'app.helpers'
+    'app.helpers',
+    'app.pagos'
   ]);
 
 }());

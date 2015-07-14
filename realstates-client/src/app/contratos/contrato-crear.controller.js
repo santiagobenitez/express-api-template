@@ -19,6 +19,7 @@
       value: undefined,
       label: 'Ninguno'
     }];
+    vm.diasDeVencimiento = getDiasDeVencimiento();
     vm.save = save;
 
     $scope.$watch('vm.contrato.propiedad', watchPropiedad);
@@ -86,7 +87,7 @@
     }
 
     function save() {
-       contratoService.create(vm.contrato).then(function(id) {
+      contratoService.create(vm.contrato).then(function(id) {
         messageService.success('El contrato ha sido creado exitosamente');
         $state.go('contrato-edit', {
           id: id
@@ -94,6 +95,20 @@
       }, function(err) {
         messageService.error(err);
       });
+    }
+
+    function getDiasDeVencimiento() {
+      var dias = [];
+
+      for (var i = 2; i <= 20; i++) {
+        dias.push({
+          value: i,
+          label: i
+        });
+      }
+
+      dias.push({value: undefined, label: 'Seleccionar'});
+      return dias;
     }
   }
 }());

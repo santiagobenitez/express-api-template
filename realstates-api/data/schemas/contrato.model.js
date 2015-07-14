@@ -29,6 +29,10 @@ var ContratoSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
+  diaDeVencimiento: {
+    type: Number,
+    required: true
+  },
   multaDiaria: {
     type: Number,
     required: true

@@ -118,4 +118,6 @@ describe('AlquilerHelper', function() {
       expect(result[1].fechaHasta.toDateString()).toBe(fechaHasta.toDateString());
     });
   });
+
+
 });

@@ -21,6 +21,7 @@
       label: 'Ninguno'
     }];
     vm.save = save;
+    vm.diasDeVencimiento = getDiasDeVencimiento();
 
     $scope.$watch('vm.contrato.propiedad', watchPropiedad);
     $scope.$watch('vm.contrato.garante', watchGarante);
@@ -37,11 +38,11 @@
     -------------------------*/
     function watchPropiedad(newValue) {
       var prop = vm.propiedades.filter(function(item) {
-          return item._id === newValue;
-        });
+        return item._id === newValue;
+      });
 
-        vm.propietarioSeleccionado = prop.length ? prop[0].propietario.nombre + ' ' + prop[0].propietario.apellido : '';
-        vm.contrato.propiedadDireccion = prop.length ? prop[0].direccion.direccion : '';
+      vm.propietarioSeleccionado = prop.length ? prop[0].propietario.nombre + ' ' + prop[0].propietario.apellido : '';
+      vm.contrato.propiedadDireccion = prop.length ? prop[0].direccion.direccion : '';
     }
 
     function watchGarante(newValue, oldValue) {
@@ -92,6 +93,20 @@
       }, function(err) {
         messageService.error(err);
       });
+    }
+
+    function getDiasDeVencimiento() {
+      var dias = [];
+
+      for (var i = 2; i <= 20; i++) {
+        dias.push({
+          value: i,
+          label: i
+        });
+      }
+
+      dias.push({value: undefined, label: 'Seleccionar'});
+      return dias;
     }
   }
 }());
