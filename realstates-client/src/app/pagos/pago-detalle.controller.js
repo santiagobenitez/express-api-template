@@ -9,6 +9,9 @@
     vm.contrato = contrato;
     vm.pagos = pagos || [];
     vm.deletePago = deletePago;
+    vm.userIsDelayed = false;
+    vm.userIsAlmostDelayed = false;
+    vm.userIsUpToDate = false;
 
     $scope.$watchCollection('vm.pagos', watchPagos);
 
@@ -52,9 +55,9 @@
       var fechaUltimoPago = vm.pagos.length > 0 ? new Date(vm.pagos[0].fecha) : undefined;
       var today = new Date();
 
-      vm.userIsDelayed = alquilerHelper.alquilerVencido(contrato.diaDeVencimiento, fechaUltimoPago, today) || false;
-      vm.userIsAlmostDelayed = alquilerHelper.alquilerAPuntoDeVencer(contrato.diaDeVencimiento, fechaUltimoPago, today) || false;
-      vm.userIsUpToDate = alquilerHelper.alquilerAlDia(contrato.diaDeVencimiento, fechaUltimoPago, today) || false;
+      vm.userIsDelayed = alquilerHelper.alquilerVencido(contrato.diaDeVencimiento, fechaUltimoPago, today);
+      vm.userIsAlmostDelayed = alquilerHelper.alquilerAPuntoDeVencer(contrato.diaDeVencimiento, fechaUltimoPago, today);
+      vm.userIsUpToDate = alquilerHelper.alquilerAlDia(contrato.diaDeVencimiento, fechaUltimoPago, today);
     }
 
     function sortPagosAsc(a, b) {
