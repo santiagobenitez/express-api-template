@@ -125,6 +125,16 @@
         resolve: {
           contrato: getContrato,
         }
+      })
+      .state('pago-edit', {
+        url: '/contratos/{id}/pagos/{pagoid}/editar',
+        templateUrl: 'app/pagos/pago-editar.html',
+        controller: 'PagoEditarController',
+        controllerAs: 'vm',
+        resolve: {
+          pago: getPago,
+          contrato: getContrato
+        }
       });
 
 
@@ -163,6 +173,11 @@
     getAllPagosByContrato.$inject = ['pagoService', '$stateParams'];
     function getAllPagosByContrato(pagoService, $stateParams) {
       return pagoService.getAll($stateParams.id);
+    }
+
+    getPago.$inject = ['pagoService', '$stateParams'];
+    function getPago(pagoService, $stateParams) {
+      return pagoService.get($stateParams.id, $stateParams.pagoid);
     }
 
   }

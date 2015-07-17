@@ -203,7 +203,7 @@
                 <tr ng-repeat="alquiler in vm.alquileresCalculados">
                     <td>{{alquiler.fechaDesde | date: 'dd/MM/yyyy'}}</td>
                     <td>{{alquiler.fechaHasta | date: 'dd/MM/yyyy'}}</td>
-                    <td>{{alquiler.valor}}</td>
+                    <td>{{alquiler.valor | number:2}}</td>
                 </tr>
             </tbdoy>
         </table>

@@ -38,6 +38,10 @@ describe('pagoService', function() {
     it('should have update defined', function() {
       expect(pagoService.update).toBeDefined();
     });
+    it('should have remove defined', function() {
+      expect(pagoService.remove).toBeDefined();
+    });
+
   });
 
   describe('getAll', function() {
@@ -244,6 +248,52 @@ describe('pagoService', function() {
       });
       //act
       pagoService.update(pagoToUpdate).then(null, function(err) {
+        _error = err;
+      });
+      $httpBackend.flush();
+      //assert
+      expect(_error).toBe('unexpected error');
+    });
+
+  });
+
+describe('remove', function() {
+
+    beforeEach(inject(function(_pagoService_) {
+      pagoService = _pagoService_;
+    }));
+
+    afterEach(function() {
+      pagoService = null;
+      $httpBackend.verifyNoOutstandingExpectation();
+      $httpBackend.verifyNoOutstandingRequest();
+    });
+
+
+    it("should return an empty object when a pago was removed successfully", function() {
+      //arrange
+      var fakePago = {removed: true};
+
+      var _pago;
+      $httpBackend.whenDELETE(urlConstants.api + 'contratos/1/pagos/2').respond(fakePago);
+      //act
+      pagoService.remove(1, 2).then(function(pago) {
+        _pago = pago;
+      });
+      $httpBackend.flush();
+      //assert
+      expect(_pago.removed).toBeTruthy();
+    });
+
+
+    it("should return an error msg when there was an error while processing the get of a pago", function() {
+      //arrange
+      var _error;
+      $httpBackend.whenDELETE(urlConstants.api + 'contratos/1/pagos/2').respond(400, {
+        message: 'unexpected error'
+      });
+      //act
+      pagoService.remove(1, 2).then(null, function(err) {
         _error = err;
       });
       $httpBackend.flush();

@@ -10,7 +10,8 @@
       get: get,
       getAll: getAll,
       create: create,
-      update: update
+      update: update,
+      remove: remove
     };
 
     function get(contratoId, pagoId) {
@@ -42,6 +43,14 @@
 
     function update(pago) {
       return $http.put(URL.api + 'contratos/' + pago.contrato + '/pagos/' + pago._id, pago).then(function(response) {
+        return response.data;
+      }, function(err) {
+        return $q.reject(err.data.message);
+      });
+    }
+
+    function remove(contratoId, pagoId) {
+      return $http.delete(URL.api + 'contratos/' + contratoId + '/pagos/' + pagoId).then(function(response) {
         return response.data;
       }, function(err) {
         return $q.reject(err.data.message);

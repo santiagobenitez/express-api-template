@@ -3,15 +3,15 @@
 describe('PagoDetalleController', function() {
   var pagoController,
     $controller,
-    pagoHelper;
+    alquilerHelper;
 
   beforeEach(module('app'));
-  beforeEach(inject(function(_$controller_, _pagoHelper_) {
+  beforeEach(inject(function(_$controller_, _alquilerHelper_) {
     $controller = _$controller_;
-    pagoHelper = _pagoHelper_;
+    alquilerHelper = _alquilerHelper_;
   }));
   afterEach(function() {
-    $controller = pagoController = pagoHelper = null;
+    $controller = pagoController = alquilerHelper = null;
   });
 
   describe('functions/vars definition', function() {
@@ -52,7 +52,7 @@ describe('PagoDetalleController', function() {
     return $controller('PagoDetalleController', {
       pagos: pagos || [],
       contrato: contrato || {},
-      pagoHelper: pagoHelper
+      alquilerHelper: alquilerHelper
     });
   }
 

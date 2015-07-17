@@ -3,62 +3,20 @@
     <a href='#/contratos/{{vm.contrato._id}}/pagos/crear' class="btn btn-primary md-shadow-bottom-z-2 md-fab jumbotron-main-action"><span class="glyphicon glyphicon-plus"></span></a>
 </div>
 <div class="alert alert-success" role="alert" ng-if="vm.userIsUpToDate">
-  El Inquilino se encuentra al dia con los pagos
+    El Inquilino se encuentra al dia con los pagos
 </div>
 <div class="alert alert-warning" role="alert" ng-if="vm.userIsAlmostDelayed">
-  El Inquilino esta cerca de la fecha de vencimiento del pago del alquiler del mes actual
+    El Inquilino esta cerca de la fecha de vencimiento del pago del alquiler del mes actual
 </div>
 <div class="alert alert-danger" role="alert" ng-if="vm.userIsDelayed">
-  El inquilino no ha pagado aun el mes actual
+    El inquilino no ha pagado aun el mes actual
 </div>
-<div class="page-header">
-    <h3>Detalle del Contrato</h3>
-</div>
-<form class="form-horizontal" style="margin-bottom:5px;">
-    <div class="row">
-        <div class="col-md-5">
-            <div class="form-group">
-                <label for="propiedad" class="col-md-3 control-label text-left">Propiedad</label>
-                <div class="col-md-9">
-                    <p class="form-control-static">{{vm.contrato.propiedadDireccion}}</p>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="inquilino" class="col-md-3 control-label text-left">Inquilino</label>
-                <div class="col-md-9">
-                    <p class="form-control-static">{{vm.contrato.inquilinoNombreCompleto}}</p>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="alquiler" class="col-md-3 control-label text-left">Alquiler</label>
-                <div class="col-md-9">
-                    <p class="form-control-static">{{vm.contrato.alquiler}}</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-5">
-           <div class="form-group">
-                <label for="fechaDesde" class="col-md-3 control-label text-left">Fecha Desde</label>
-                <div class="col-md-9">
-                    <p class="form-control-static">{{vm.contrato.fechaDesde | date: 'dd/MM/yyyy'}}</p>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="fechaHasta" class="col-md-3 control-label text-left">Fecha Hasta</label>
-                <div class="col-md-9">
-                    <p class="form-control-static">{{vm.contrato.fechaHasta | date: 'dd/MM/yyyy'}}</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</form>
-<div class="page-header">
-    <h3>Pagos realizados</h3>
-</div>
+<contrato-detalle contrato="vm.contrato"></contrato-detalle>
 <table class="table bs-table">
     <thead>
         <tr>
-            <th class="text">Fecha</th>
+            <th class="text">Fecha Creacion</th>
+            <th class="text">Pago</th>
             <th class="text">Realizado Por</th>
             <th class="number">Importe</th>
             <th class="actions">Acciones</th>
@@ -66,10 +24,12 @@
     </thead>
     <tbody>
         <tr ng-repeat="pago in vm.pagos">
-            <td class="text">{{pago.fecha | date: 'dd/MM/yyyy' }}</td>
+            <td class="text">{{pago.fechaCreacion | date: 'dd/MM/yyyy' }}</td>
+            <td class="text">{{pago.fecha | date: 'MM/yyyy' }}</td>
             <td class="text">{{pago.realizadoPor}}</td>
             <td class="number">{{pago.importe}}</td>
             <td class="actions">
+                <a href="" ng-click="vm.deletePago(pago)" tooltip="eliminar"><span class="glyphicon glyphicon-trash"></span></a>
                 <a ng-href="#/contratos/{{vm.contrato._id}}/pagos/{{pago._id}}/editar" tooltip="editar"><span class="glyphicon glyphicon-pencil"></span></a>
             </td>
         </tr>

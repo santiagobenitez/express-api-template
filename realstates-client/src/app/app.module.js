@@ -10,7 +10,9 @@
     'app.clientes',
     'app.contratos',
     'app.helpers',
-    'app.pagos'
+    'app.pagos',
+    'app.components.contrato',
+    'app.shared'
   ]);
 
 }());

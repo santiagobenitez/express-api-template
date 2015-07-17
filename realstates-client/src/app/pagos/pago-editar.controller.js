@@ -1,16 +1,13 @@
 (function() {
   'use strict';
 
-  angular.module('app.pagos').controller('PagoCrearController', PagoCrearController);
+  angular.module('app.pagos').controller('PagoEditarController', PagoEditarController);
 
-  PagoCrearController.$inject = ['pagoService', 'contrato', '$state', 'messageService', '$scope', 'alquilerHelper'];
+  PagoEditarController.$inject = ['pagoService', 'contrato', 'pago', '$state', 'messageService', '$scope', 'alquilerHelper'];
 
-  function PagoCrearController(pagoService, contrato, $state, messageService, $scope, alquilerHelper) {
+  function PagoEditarController(pagoService, contrato, pago, $state, messageService, $scope, alquilerHelper) {
     var vm = this;
-    vm.pago = {
-      fecha: (new Date()).toISOString()
-    };
-
+    vm.pago = pago;
     vm.contrato = contrato;
     vm.importeSugerido = '';
     vm.save = save;
@@ -22,13 +19,10 @@
       function definitions
     */
     function save() {
-      vm.pago.contrato = vm.contrato._id;
-      pagoService.create(vm.pago).then(function(id) {
-        messageService.success('El pago ha sido creado exitosamente');
-        $state.go('pago-edit', {
-          pagoid: id,
-          id: vm.contrato._id
-        });
+      pagoService.update(vm.pago).then(function() {
+        messageService.success('El pago ha sido guardado exitosamente');
+        $scope.form.$setPristine();
+        $scope.form.$setUntouched();
       }, function(err) {
         messageService.error(err);
       });
