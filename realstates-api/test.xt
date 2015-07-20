@@ -1,0 +1,63 @@
+Running app as a module
+
+
+  clientes api
+    endpoints
+connected to database
+[0mPOST /api/clientes [33m400 [0m21.529 ms - 7925[0m
+      1) should create a new cliente when a request is made correctly
+[0mPOST /api/clientes [33m400 [0m4.803 ms - 7925[0m
+      2) should return a 400 error with a message of required apellido when the apellido was not submited
+[0mGET /api/clientes [32m200 [0m10.459 ms - 879[0m
+      3) should get the recently created cliente as part of the result set when requesting /api/propiedades
+[0mGET /api/clientes/undefined [31m500 [0m8.647 ms - 16007[0m
+      4) should get the the recently created cliente when requesting /api/clientes/{id}
+[0mPUT /api/clientes/undefined [31m500 [0m6.725 ms - 9892[0m
+      5) should update the the recently created cliente when requesting put /api/clientes/{id}
+[0mDELETE /api/clientes/undefined [31m500 [0m5.238 ms - 1778[0m
+      6) should remove the the recently created propiedad when requesting delete /api/clientes/{id}
+[0mGET /api/clientes/undefined [31m500 [0m6.973 ms - 16007[0m
+      7) should return an error when requesting the recently removed cliente
+
+
+  0 passing (235ms)
+  7 failing
+
+  1) clientes api endpoints should create a new cliente when a request is made correctly:
+     Uncaught AssertionError: expected [Error: Bad Request] to be null
+  
+
+  2) clientes api endpoints should return a 400 error with a message of required apellido when the apellido was not submited:
+     Uncaught AssertionError: expected [Error: Bad Request] to be null
+  
+
+  3) clientes api endpoints should get the recently created cliente as part of the result set when requesting /api/propiedades:
+     Uncaught AssertionError: expected [ Array(3) ] to include undefined
+      at C:\Users\Santiago.Benitez\Documents\santiago\bienesraices\bienesraices\realstates-api\integration-tests\clientes.spec.js:70:18
+      at _stream_readable.js:908:16
+
+  4) clientes api endpoints should get the the recently created cliente when requesting /api/clientes/{id}:
+     Uncaught AssertionError: expected [Error: Internal Server Error] to be null
+  
+
+  5) clientes api endpoints should update the the recently created cliente when requesting put /api/clientes/{id}:
+     Uncaught AssertionError: expected [Error: Internal Server Error] to be null
+  
+
+  6) clientes api endpoints should remove the the recently created propiedad when requesting delete /api/clientes/{id}:
+     Uncaught AssertionError: expected [Error: Internal Server Error] to be null
+  
+
+  7) clientes api endpoints should return an error when requesting the recently removed cliente:
+
+      Uncaught AssertionError: expected 500 to deeply equal 404
+      + expected - actual
+
+      -500
+      +404
+      
+      at C:\Users\Santiago.Benitez\Documents\santiago\bienesraices\bienesraices\realstates-api\integration-tests\clientes.spec.js:115:31
+      at _stream_readable.js:908:16
+
+
+

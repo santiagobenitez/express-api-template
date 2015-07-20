@@ -13,6 +13,7 @@ var http = require('http');
 var dbUrl = process.env.MONGO_URL || 'mongodb://@127.0.0.1:27017/bienesraices';
 var mongoose = require('mongoose');
 var cors = require('cors');
+var expressValidator = require('express-validator');
 mongoose.connect(dbUrl);
 
 mongoose.connection.on('error', console.error.bind(console, 'connection error:'));
@@ -37,6 +38,7 @@ app.use(bodyParser.urlencoded({
   extended: false
 }));
 app.use(cookieParser());
+app.use(expressValidator());
 
 configureRoutes(app);
 

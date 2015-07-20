@@ -29,10 +29,32 @@ describe('clientes api', function() {
       superagent.post('http://localhost:3003/api/clientes')
         .send(newCliente)
         .end(function(e, res) {
-          console.log(e);
           expect(e).to.be.null;
           expect(res.body._id).to.exist;
           newCliente._id = res.body._id;
+          done();
+        });
+    });
+
+    it('should return a 400 error with a message of required apellido when the apellido was not submited', function(done) {
+      var invalidCliente = {
+        direccion: {
+          codigoPostal: '8000',
+          direccion: 'Charlone 650',
+          ciudad: 'bahia blanca',
+          provincia: 'buenos aires',
+          pais: 'argentina'
+        },
+        nombre: 'santiago',
+        nroTelefonoCasa: 12345678,
+        nroTelefonoCelular: 123213456,
+      };
+
+      superagent.post('http://localhost:3003/api/clientes')
+        .send(invalidCliente)
+        .end(function(e, res) {
+          expect(res.status).to.eql(400);
+          expect(res.body.errors.apellido.msg).to.exist;
           done();
         });
     });
@@ -71,6 +93,27 @@ describe('clientes api', function() {
           expect(res.body.nombre).to.eql('carmelo');
           expect(res.body.direccion.direccion).to.eql('Balbin 2325');
           newCliente = res.body;
+          done();
+        });
+    });
+
+    it('should return a 400 error with a message of required nombre when requesting put /api/clientes/{id} without a nombre', function(done) {
+      var invalidCliente = {
+        direccion: {
+          codigoPostal: '8000',
+          direccion: 'Charlone 650',
+          ciudad: 'bahia blanca',
+          provincia: 'buenos aires',
+          pais: 'argentina'
+        },
+        apellido: 'santiago',
+        nroTelefonoCasa: 12345678,
+        nroTelefonoCelular: 123213456,
+      };
+      superagent.put('http://localhost:3003/api/clientes/' + newCliente._id, invalidCliente)
+        .end(function(e, res) {
+          expect(res.status).to.eql(400);
+          expect(res.body.errors.nombre.msg).to.exist;
           done();
         });
     });
