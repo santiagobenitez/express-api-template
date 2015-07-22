@@ -66,6 +66,30 @@ describe('propiedades api', function() {
         });
     });
 
+    it('should return a 400 error with a message of propietario when the propietario was not submited', function(done) {
+      var newInvalidPropiedad = {
+        direccion: {
+          codigoPostal: '8000',
+          direccion: 'Charlone 650',
+          ciudad: 'bahia blanca',
+          provincia: 'buenos aires',
+          pais: 'argentina'
+        },
+        ambientes: 1,
+        banios: 1,
+        expensas: 1,
+        metrosCuadrados: 1,
+      };
+
+      superagent.post('http://localhost:3003/api/propiedades')
+        .send(newInvalidPropiedad)
+        .end(function(e, res) {
+          expect(res.status).to.eql(400);
+          expect(res.body.errors.propietario.msg).to.exist;
+          done();
+        });
+    });
+
     it('should get the recently created propiedad as part of the result set when requesting /api/propiedades', function(done) {
       superagent.get('http://localhost:3003/api/propiedades')
         .end(function(e, res) {

@@ -2,12 +2,13 @@
 
 var routes = require('./propiedades.routes');
 var express = require('express');
+var propiedadValidators = require('./propiedad.validators');
 var router = express.Router();
 
 router.get('/', routes.getAll);
 router.get('/:id', routes.get);
-router.post('/', routes.post);
+router.post('/', propiedadValidators.editValidator, routes.post);
+router.put('/:id', propiedadValidators.editValidator, routes.update);
 router.delete('/:id', routes.remove);
-router.put('/:id', routes.update);
 
 module.exports = router;

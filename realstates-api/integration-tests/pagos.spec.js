@@ -37,7 +37,8 @@ var newContrato = {
   interes: 10,
   alquiler: 1000,
   deposito: 100,
-  multaDiaria: 100
+  multaDiaria: 100,
+  diaDeVencimiento: 10
 };
 
 var newPago = {
@@ -95,6 +96,40 @@ describe('pagos api', function() {
           expect(e).to.be.null;
           expect(res.body._id).to.exist;
           newPago._id = res.body._id;
+          done();
+        });
+    });
+
+    it('should return a 400 error with a message of required contrato when the contrato was not submited', function(done) {
+      var newInvalidPago = {
+        fecha: new Date(2018, 6, 18),
+        importe: 1000,
+        realizadoPor: 'Santiago'
+      }
+
+      superagent.post('http://localhost:3003/api/contratos/' + newContrato._id + '/pagos')
+        .send(newInvalidPago)
+        .end(function(e, res) {
+          expect(res.status).to.eql(400);
+          expect(res.body.errors.contrato.msg).to.exist;
+          done();
+        });
+    });
+
+
+    it('should return a 400 error with a message of required contrato when the contrato was submited but is invalid', function(done) {
+      var newInvalidPago = {
+        fecha: new Date(2018, 6, 18),
+        importe: 1000,
+        realizadoPor: 'Santiago',
+        contrato: 'abc12345'
+      }
+
+      superagent.post('http://localhost:3003/api/contratos/' + newContrato._id + '/pagos')
+        .send(newInvalidPago)
+        .end(function(e, res) {
+          expect(res.status).to.eql(400);
+          expect(res.body.errors.contrato.msg).to.exist;
           done();
         });
     });

@@ -3,11 +3,12 @@
 var routes = require('./contrato.routes');
 var express = require('express');
 var router = express.Router();
+var contratoValidator = require('./contrato.validators');
 
 router.get('/', routes.getAll);
 router.get('/:id', routes.get);
-router.post('/', routes.post);
+router.post('/', contratoValidator.editValidator, routes.post);
+router.put('/:id', contratoValidator.editValidator, routes.update);
 router.delete('/:id', routes.remove);
-router.put('/:id', routes.update);
 
 module.exports = router;

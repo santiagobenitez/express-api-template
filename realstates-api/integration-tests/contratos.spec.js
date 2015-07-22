@@ -37,7 +37,8 @@ var newContrato = {
   interes: 10,
   alquiler: 1000,
   deposito: 100,
-  multaDiaria: 100
+  multaDiaria: 100,
+  diaDeVencimiento: 10
 };
 
 describe('contratos api', function() {
@@ -80,6 +81,47 @@ describe('contratos api', function() {
           expect(e).to.be.null;
           expect(res.body._id).to.exist;
           newContrato._id = res.body._id;
+          done();
+        });
+    });
+
+    it('should return a 400 error with a message of required inquilino when the inquilino was not submited', function(done) {
+      var newInvalidContrato = {
+        fechaHasta: new Date(2015, 6, 18),
+        fechaDesde: new Date(2013, 8, 18),
+        tipoInteres: 'Semestral',
+        interes: 10,
+        alquiler: 1000,
+        deposito: 100,
+        multaDiaria: 100
+      };
+
+      superagent.post('http://localhost:3003/api/contratos')
+        .send(newInvalidContrato)
+        .end(function(e, res) {
+          expect(res.status).to.eql(400);
+          expect(res.body.errors.inquilino.msg).to.exist;
+          done();
+        });
+    });
+
+    it('should return a 400 error with a message of required inquilino when the inquilino was submited but is an invalid id', function(done) {
+      var newInvalidContrato = {
+        fechaHasta: new Date(2015, 6, 18),
+        fechaDesde: new Date(2013, 8, 18),
+        tipoInteres: 'Semestral',
+        interes: 10,
+        alquiler: 1000,
+        deposito: 100,
+        multaDiaria: 100,
+        inquilino: 'abc12345'
+      };
+
+      superagent.post('http://localhost:3003/api/contratos')
+        .send(newInvalidContrato)
+        .end(function(e, res) {
+          expect(res.status).to.eql(400);
+          expect(res.body.errors.inquilino.msg).to.exist;
           done();
         });
     });
