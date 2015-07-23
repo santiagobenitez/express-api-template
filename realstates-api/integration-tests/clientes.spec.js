@@ -113,7 +113,7 @@ describe('clientes api', function() {
       superagent.put('http://localhost:3003/api/clientes/' + newCliente._id, invalidCliente)
         .end(function(e, res) {
           expect(res.status).to.eql(400);
-          expect(res.body.errors.nombre.msg).to.exist;
+          expect(res.body.error.nombre.msg).to.exist;
           done();
         });
     });

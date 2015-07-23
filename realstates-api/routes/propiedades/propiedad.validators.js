@@ -9,10 +9,10 @@ function editValidator(req, res, next) {
   req.checkBody('metrosCuadrados', 'Los metros cuadrados deben ser un valor numerico y es requerido').notEmpty().isNumeric();
 
   var errors = req.validationErrors(true);
-  debugger;
   if (errors) {
     return res.status(400).json({
-      errors: errors
+      message: 'Han ocurrido errores de validacion. Verifique los datos enviados.',
+      error: errors
     });
   }
 

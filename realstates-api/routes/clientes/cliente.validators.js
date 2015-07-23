@@ -11,7 +11,10 @@ function editValidator(req, res, next) {
   var errors = req.validationErrors(true);
 
   if (errors) {
-    return res.status(400).json({errors: errors });
+    return res.status(400).json({
+      message: 'Han ocurrido errores de validacion. Verifique los datos enviados.',
+      error: errors
+    });
   }
 
   return next();

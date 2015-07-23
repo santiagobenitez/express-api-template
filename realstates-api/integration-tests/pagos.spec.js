@@ -111,7 +111,7 @@ describe('pagos api', function() {
         .send(newInvalidPago)
         .end(function(e, res) {
           expect(res.status).to.eql(400);
-          expect(res.body.errors.contrato.msg).to.exist;
+          expect(res.body.error.contrato.msg).to.exist;
           done();
         });
     });
@@ -129,7 +129,7 @@ describe('pagos api', function() {
         .send(newInvalidPago)
         .end(function(e, res) {
           expect(res.status).to.eql(400);
-          expect(res.body.errors.contrato.msg).to.exist;
+          expect(res.body.error.contrato.msg).to.exist;
           done();
         });
     });
