@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 'use strict';
 
 var express = require('express');
@@ -71,10 +72,19 @@ if (app.get('env') === 'development') {
 }
 
 /**
+ * Uncaught exceptions logging
+*/
+process.on('uncaughtException', function(err) {
+  console.log(err.stack);
+  throw err;
+});
+
+/**
  * Create HTTP server.
  */
 
 var server = http.createServer(app);
+
 
 /**
  * Listen on provided port, on all network interfaces.

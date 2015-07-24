@@ -37,6 +37,7 @@ describe('clientes api', function() {
     });
 
     it('should return a 400 error with a message of required apellido when the apellido was not submited', function(done) {
+      debugger;
       var invalidCliente = {
         direccion: {
           codigoPostal: '8000',
@@ -54,7 +55,7 @@ describe('clientes api', function() {
         .send(invalidCliente)
         .end(function(e, res) {
           expect(res.status).to.eql(400);
-          expect(res.body.errors.apellido.msg).to.exist;
+          expect(res.body.error.apellido.msg).to.exist;
           done();
         });
     });

@@ -3,7 +3,6 @@
 var clienteService = require('../../services/cliente.service');
 
 function getAll(req, res, next) {
-
   clienteService.getAll(function(e, objs) {
     if (e) {
       return next(e);
@@ -16,6 +15,7 @@ function getAll(req, res, next) {
 }
 
 function post(req, res, next) {
+
   clienteService.create(req.body, function(e, obj) {
     if (e) {
       return next(e);
