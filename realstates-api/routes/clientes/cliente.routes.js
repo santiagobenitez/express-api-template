@@ -1,6 +1,7 @@
 'use strict';
 
 var clienteService = require('../../services/cliente.service');
+var logger = require('../../helpers/logger');
 
 function getAll(req, res, next) {
   clienteService.getAll(function(e, objs) {
@@ -24,6 +25,8 @@ function post(req, res, next) {
     res.status(200).json({
       _id: obj._id
     });
+
+    logger.info({res: res}, 'Creacion exitosa del cliente: %s', obj._id);
   });
 }
 
@@ -50,6 +53,7 @@ function remove(req, res, next) {
       return next(e);
     }
     res.status(200).end();
+    logger.info({res: res}, 'Eliminacion exitosa de un cliente: %s', req.params.id);
   });
 }
 
@@ -62,6 +66,7 @@ function update(req, res, next) {
     }
 
     res.status(200).json(obj);
+    logger.info({res: res, updatedObj: obj}, 'Actualizacion exitosa del cliente: %s', obj._id);
   });
 }
 

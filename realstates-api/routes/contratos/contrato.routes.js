@@ -1,6 +1,7 @@
 'use strict';
 
 var contratoService = require('../../services/contrato.service');
+var logger = require('../../helpers/logger');
 
 function getAll(req, res, next) {
 
@@ -24,6 +25,8 @@ function post(req, res, next) {
     res.status(200).json({
       _id: obj._id
     });
+
+    logger.info({res: res}, 'Creacion exitosa del contrato: %s', obj._id);
   });
 }
 
@@ -50,6 +53,8 @@ function remove(req, res, next) {
       return next(e);
     }
     res.status(200).end();
+
+    logger.info({res: res}, 'Eliminacion exitosa del contrato: %s', req.params.id);
   });
 }
 
@@ -62,6 +67,7 @@ function update(req, res, next) {
     }
 
     res.status(200).json(obj);
+    logger.info({res: res, updatedObj: obj}, 'Actualizacion exitosa del contrato: %s', obj._id);
   });
 }
 

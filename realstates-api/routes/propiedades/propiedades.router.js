@@ -2,7 +2,7 @@
 
 var routes = require('./propiedades.routes');
 var express = require('express');
-var propiedadValidators = require('./propiedad.validators');
+var propiedadValidators = require('./propiedades.validators');
 var router = express.Router();
 
 router.get('/', routes.getAll);

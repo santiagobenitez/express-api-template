@@ -5,7 +5,7 @@
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
-var logger = require('morgan');
+//var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var debug = require('debug')('realstates-api:server');
@@ -14,6 +14,8 @@ var dbUrl = process.env.MONGO_URL || 'mongodb://@127.0.0.1:27017/bienesraices';
 var mongoose = require('mongoose');
 var cors = require('cors');
 var expressValidator = require('express-validator');
+var logger = require('./helpers/logger');
+
 mongoose.connect(dbUrl);
 
 mongoose.connection.on('error', console.error.bind(console, 'connection error:'));
@@ -30,9 +32,14 @@ var app = express();
 var port = normalizePort(process.env.PORT || '3003');
 app.set('port', port);
 
+app.use(function(req, res, next) {
+  logger.info({req: req});
+  next();
+});
+
 //app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(cors());
-app.use(logger('dev'));
+//app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: false
@@ -52,6 +59,12 @@ app.use(function(req, res, next) {
 // error handlers
 
 // development error handler
+
+app.use(function(err, req, res, next) {
+  //handle error
+  logger.error(err);
+  next(err);
+});
 // will print stacktrace
 if (app.get('env') === 'development') {
   app.use(function(err, req, res) {
@@ -75,7 +88,7 @@ if (app.get('env') === 'development') {
  * Uncaught exceptions logging
 */
 process.on('uncaughtException', function(err) {
-  console.log(err.stack);
+  logger.fatal(err);
   throw err;
 });
 

@@ -1,5 +1,7 @@
 'use strict';
 
+var logger = require('../../helpers/logger');
+
 function editValidator(req, res, next) {
   req.checkBody('fechaDesde', 'Ingrese una fecha desde valida').notEmpty().isDate();
   req.checkBody('fechaHasta', 'Ingrese una fecha hasta valida').notEmpty().isDate();
@@ -16,8 +18,10 @@ function editValidator(req, res, next) {
   var errors = req.validationErrors(true);
 
   if (errors) {
+    var error = new Error('Han ocurrido errores de validacion al crear/modificar un contrato. Verifique los datos enviados.');
+    logger.warn({validationErrors: errors}, error);
     return res.status(400).json({
-      message: 'Han ocurrido errores de validacion. Verifique los datos enviados.',
+      message: error.message,
       error: errors
     });
   }
