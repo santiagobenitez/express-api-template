@@ -1,0 +1,22 @@
+<div class="jumbotron md-whiteframe-z1" style="position: relative">
+    <h1>Usuarios</h1>
+    <a href='#/usuarios/crear' class="btn btn-primary md-shadow-bottom-z-2 md-fab jumbotron-main-action"><span class="glyphicon glyphicon-plus"></span></a>
+</div>
+<table class="table bs-table">
+    <thead>
+        <tr>
+            <th class="text">User Name</th>
+            <th class="text">Activo</th>
+            <th class="actions">Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="user in vm.users">
+            <td class="text">{{user.userName}}</td>
+            <td class="text">{{user.activo ? 'Si' : 'No'}}</td>
+            <td class="actions">
+                <a ng-href="#/usuarios/{{user_id}}/editar" tooltip="editar"><span class="glyphicon glyphicon-pencil"></span></a>
+            </td>
+        </tr>
+    </tbody>
+</table>

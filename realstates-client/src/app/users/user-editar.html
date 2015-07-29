@@ -1,0 +1,39 @@
+<div class="jumbotron md-whiteframe-z1" style="position: relative">
+    <h1 ng-if='!vm.user._id'>Crear Usuario</h1>
+    <h1 ng-if='vm.user._id'>Editar Usuario</h1>
+</div>
+<form name="form" novalidate>
+    <fieldset>
+        <legend>Credenciales</legend>
+    </fieldset>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group" ng-class="{'has-success': (form.$submitted || form.userName.$touched) && !form.userName.$error.required,
+          'has-error': (form.$submitted || form.userName.$touched) && (form.userName.$error.required),
+          'has-feedback': (form.$submitted || form.userName.$touched)}">
+                <label class="control-label" for="userName">User Name</label>
+                <input type="text" class="form-control" ng-model="vm.user.userName" name="userName" id="userName" required="required" placeholder="userName">
+                <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-show="form.$submitted || form.userName.$touched" ng-class="{'glyphicon-ok': !form.userName.$error.required, 'glyphicon-remove': form.userName.$error.required} ">
+            </span>
+                <div ng-show="form.$submitted || form.userName.$touched">
+                    <span class='control-error' ng-show="form.userName.$error.required">El nombre de usario es requerido</span>
+                </div>
+            </div>
+            <div class="form-group" ng-class="{'has-success': (form.$submitted || form.password.$touched) && !form.password.$error.required,
+          'has-error': (form.$submitted || form.password.$touched) && (form.password.$error.required),
+          'has-feedback': (form.$submitted || form.password.$touched)}">
+                <label class="control-label" for="password">Password</label>
+                <input type="text" class="form-control" ng-model="vm.user.password" name="password" id="password" required="required" placeholder="password">
+                <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-show="form.$submitted || form.password.$touched" ng-class="{'glyphicon-ok': !form.password.$error.required, 'glyphicon-remove': form.password.$error.required} ">
+            </span>
+                <div ng-show="form.$submitted || form.password.$touched">
+                    <span class='control-error' ng-show="form.password.$error.required">El password es requerido</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="pull-right" style="margin-top: 5px">
+        <a class="btn btn-default md-shadow-bottom-z-1" href="#/usuarios">Cancelar</a>
+        <button type="submit" class="btn btn-primary md-shadow-bottom-z-1" ng-click="vm.saveUsuario()" ng-disabled="!form.$valid">Guardar</button>
+    </div>
+</form>

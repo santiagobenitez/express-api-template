@@ -135,8 +135,31 @@
           pago: getPago,
           contrato: getContrato
         }
+      })
+      .state('user-new', {
+        url: '/usuarios/crear',
+        templateUrl: 'app/users/user-editar.html',
+        controller: 'UserCrearController',
+        controllerAs: 'vm'
+      })
+      .state('user-edit', {
+        url: '/usuarios/{id}/editar',
+        templateUrl: 'app/usuarios/user-editar.html',
+        controller: 'UserEditarController',
+        controllerAs: 'vm',
+        resolve: {
+          user: getUser
+        }
+      })
+      .state('user-list', {
+        url: '/usuarios',
+        templateUrl: 'app/usuarios/user-list.html',
+        controller: 'UserListController',
+        controllerAs: 'vm',
+        resolve: {
+          users: getAllUsers
+        }
       });
-
 
     $urlRouterProvider.otherwise('/');
 
@@ -178,6 +201,16 @@
     getPago.$inject = ['pagoService', '$stateParams'];
     function getPago(pagoService, $stateParams) {
       return pagoService.get($stateParams.id, $stateParams.pagoid);
+    }
+
+    getAllUsers.$inject = ['userService'];
+    function getAllUsers(userService) {
+      return userService.getAll();
+    }
+
+    getUser.$inject = ['userService', '$stateParams'];
+    function getUser(userService, $stateParams) {
+      return userService.get($stateParams.id);
     }
 
   }

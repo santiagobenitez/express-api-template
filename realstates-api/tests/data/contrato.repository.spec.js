@@ -38,7 +38,8 @@ var newContrato = {
   interes: 10,
   alquiler: 1000,
   deposito: 100,
-  multaDiaria: 100
+  multaDiaria: 100,
+  diaDeVencimiento: 5
 };
 
 describe('contratoRepository', function() {

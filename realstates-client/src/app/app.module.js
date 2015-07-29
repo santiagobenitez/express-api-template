@@ -12,7 +12,8 @@
     'app.helpers',
     'app.pagos',
     'app.components.contrato',
-    'app.shared'
+    'app.shared',
+    'app.users'
   ]);
 
 }());
