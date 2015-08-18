@@ -36,7 +36,6 @@ describe('propiedades api', function() {
     superagent.post('http://localhost:3003/api/clientes')
       .send(newCliente)
       .end(function(e, res) {
-        console.log(e);
         expect(e).to.be.null;
         expect(res.body._id).to.exist;
         newCliente._id = res.body._id;

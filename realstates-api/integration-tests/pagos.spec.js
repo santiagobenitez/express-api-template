@@ -53,7 +53,6 @@ describe('pagos api', function() {
     superagent.post('http://localhost:3003/api/clientes')
       .send(newCliente)
       .end(function(e, res) {
-        console.log(e);
         newCliente._id = res.body._id;
         newPropiedad.propietario = newCliente._id;
         newContrato.inquilino = newCliente._id;
