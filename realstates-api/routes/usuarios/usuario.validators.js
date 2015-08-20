@@ -6,6 +6,7 @@ function editValidator(req, res, next) {
 
   req.checkBody('userName', 'El nombre de usuario es requerido').notEmpty();
   req.checkBody('password', 'El password es requerido').notEmpty();
+  req.checkBody('activo', 'El estado (activo/inactivo) es requerido').notEmpty();
 
   var errors = req.validationErrors(true);
 

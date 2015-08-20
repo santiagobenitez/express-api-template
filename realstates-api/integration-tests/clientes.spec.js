@@ -37,7 +37,6 @@ describe('clientes api', function() {
     });
 
     it('should return a 400 error with a message of required apellido when the apellido was not submited', function(done) {
-      debugger;
       var invalidCliente = {
         direccion: {
           codigoPostal: '8000',
