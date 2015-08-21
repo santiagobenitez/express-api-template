@@ -144,7 +144,7 @@
       })
       .state('user-edit', {
         url: '/usuarios/{id}/editar',
-        templateUrl: 'app/usuarios/user-editar.html',
+        templateUrl: 'app/users/user-editar.html',
         controller: 'UserEditarController',
         controllerAs: 'vm',
         resolve: {
@@ -153,7 +153,7 @@
       })
       .state('user-list', {
         url: '/usuarios',
-        templateUrl: 'app/usuarios/user-list.html',
+        templateUrl: 'app/users/user-list.html',
         controller: 'UserListController',
         controllerAs: 'vm',
         resolve: {

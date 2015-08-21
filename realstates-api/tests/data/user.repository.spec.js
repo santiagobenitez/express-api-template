@@ -49,16 +49,15 @@ describe('userRepository', function() {
       })
     });
 
-    it('should return an error object when the password property is not specified', function(done) {
+    it('should return an error object when the passwordHash property is not specified', function(done) {
       var newUser = {
         userName: 'test',
-        passwordHash: 'asdasdasdasdasd',
         activo: true
       };
 
       userRepository.create(newUser, function(e, obj) {
         expect(e).not.to.be.null;
-        expect(e.password.message).to.exist;
+        expect(e.passwordHash.message).to.exist;
         done();
       });
     });
@@ -109,13 +108,13 @@ describe('userRepository', function() {
 
   describe('update', function() {
     it('should update the user when the password and userName are modified', function(done) {
-      newUser.password = 'testEdit'
+      newUser.passwordHash = 'testEdit'
       newUser.userName = 'userNameEdit';
 
       userRepository.update(newUser._id, newUser, function(e, obj) {
         expect(e).to.be.null;
         newUser = obj;
-        expect(newUser.password).to.eql('testEdit');
+        expect(newUser.passwordHash).to.eql('testEdit');
         expect(newUser.userName).to.eql('userNameEdit');
         done();
       });

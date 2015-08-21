@@ -6,6 +6,11 @@
 
   function UserCrearController(userService, $state, messageService) {
     var vm = this;
+    
+    vm.user = {
+      activo: false
+    };
+
     vm.saveUsuario = function() {
 
       userService.create(vm.user).then(function(id) {

@@ -23,12 +23,17 @@
           'has-error': (form.$submitted || form.password.$touched) && (form.password.$error.required),
           'has-feedback': (form.$submitted || form.password.$touched)}">
                 <label class="control-label" for="password">Password</label>
-                <input type="text" class="form-control" ng-model="vm.user.password" name="password" id="password" required="required" placeholder="password">
+                <input type="password" class="form-control" ng-model="vm.user.password" name="password" id="password" required="required" placeholder="password">
                 <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-show="form.$submitted || form.password.$touched" ng-class="{'glyphicon-ok': !form.password.$error.required, 'glyphicon-remove': form.password.$error.required} ">
             </span>
                 <div ng-show="form.$submitted || form.password.$touched">
                     <span class='control-error' ng-show="form.password.$error.required">El password es requerido</span>
                 </div>
+            </div>
+            <div class="checkbox">
+                <label>
+                   <input type="checkbox" ng-model="vm.user.activo"> Activo
+                </label>
             </div>
         </div>
     </div>
