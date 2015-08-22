@@ -176,9 +176,7 @@ describe('ContratoCrearController', function() {
     });
 
     it('should show an error message when there was an error while creating the propiedad', function() {
-      var _errorFn,
-        _state,
-        _data;
+      var _errorFn;
 
       spyOn(contratoService, 'create').and.returnValue({
         then: function(successFn, errorFn) {

@@ -86,4 +86,14 @@ module.exports = function(options) {
   });
 
   gulp.task('build', ['html', 'fonts', 'other']);
+
+  gulp.task('build:prod', ['clean'], function() {
+    options.env = 'prod';
+    gulp.start('build');
+  });
+
+  gulp.task('build:dev', ['clean'], function() {
+    options.env = 'dev';
+    gulp.start('build');
+  });
 };

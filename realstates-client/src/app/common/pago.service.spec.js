@@ -3,13 +3,16 @@
 describe('pagoService', function() {
   var pagoService,
     $httpBackend,
-    urlConstants;
+    urlConstants,
+    $state;
+
 
   beforeEach(module('app'));
 
-  beforeEach(inject(function(_$httpBackend_, _URL_) {
+  beforeEach(inject(function(_$httpBackend_, _URL_, _$state_) {
     $httpBackend = _$httpBackend_;
     urlConstants = _URL_;
+    $state = _$state_;
   }));
 
   afterEach(function() {
@@ -47,6 +50,8 @@ describe('pagoService', function() {
   describe('getAll', function() {
     beforeEach(inject(function(_pagoService_) {
       pagoService = _pagoService_;
+      spyOn($state, 'go').and.callFake(function() {});
+
     }));
     afterEach(function() {
       pagoService = null;
@@ -110,6 +115,8 @@ describe('pagoService', function() {
   describe('create', function() {
     beforeEach(inject(function(_pagoService_) {
       pagoService = _pagoService_;
+      spyOn($state, 'go').and.callFake(function() {});
+
     }));
     afterEach(function() {
       pagoService = null;
@@ -161,6 +168,8 @@ describe('pagoService', function() {
 
     beforeEach(inject(function(_pagoService_) {
       pagoService = _pagoService_;
+      spyOn($state, 'go').and.callFake(function() {});
+
     }));
 
     afterEach(function() {
@@ -208,6 +217,8 @@ describe('pagoService', function() {
   describe('update', function() {
     beforeEach(inject(function(_pagoService_) {
       pagoService = _pagoService_;
+      spyOn($state, 'go').and.callFake(function() {});
+
     }));
     afterEach(function() {
       pagoService = null;
@@ -257,10 +268,12 @@ describe('pagoService', function() {
 
   });
 
-describe('remove', function() {
+  describe('remove', function() {
 
     beforeEach(inject(function(_pagoService_) {
       pagoService = _pagoService_;
+      spyOn($state, 'go').and.callFake(function() {});
+
     }));
 
     afterEach(function() {
@@ -272,7 +285,9 @@ describe('remove', function() {
 
     it("should return an empty object when a pago was removed successfully", function() {
       //arrange
-      var fakePago = {removed: true};
+      var fakePago = {
+        removed: true
+      };
 
       var _pago;
       $httpBackend.whenDELETE(urlConstants.api + 'contratos/1/pagos/2').respond(fakePago);

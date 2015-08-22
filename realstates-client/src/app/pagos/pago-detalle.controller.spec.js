@@ -92,7 +92,7 @@ describe('PagoDetalleController', function() {
       pagoController.deletePago(pagos[0]);
       _confirmationFn();
 
-      expect(pagoService.remove.calls.count()).toBe(1);;
+      expect(pagoService.remove.calls.count()).toBe(1);
     });
 
     it('should delete a pago when the pago was removed successfully', function() {
@@ -117,7 +117,7 @@ describe('PagoDetalleController', function() {
       _confirmationFn();
       _successFn();
 
-      expect(pagos[0]._id).not.toBe('1');;
+      expect(pagos[0]._id).not.toBe('1');
     });
 
 
@@ -139,13 +139,13 @@ describe('PagoDetalleController', function() {
         }
       });
 
-      spyOn(messageService, 'error').and.callFake(function() {})
+      spyOn(messageService, 'error').and.callFake(function() {});
 
       pagoController.deletePago(pagos[0]);
       _confirmationFn();
       _errorFn();
 
-      expect(messageService.error.calls.count()).toBe(1);;
+      expect(messageService.error.calls.count()).toBe(1);
     });
 
   });

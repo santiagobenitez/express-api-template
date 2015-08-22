@@ -26,7 +26,9 @@ module.exports = function(options) {
     ];
 
     var srcFiles = [
-       options.src + '/{app,components}/**/*.js'
+      options.libs + '/*.js',
+      options.src + '/{app,components}/**/*.js',
+      '!' + options.src + '/app/environments/*.prod.configuration.js'
     ].concat(specFiles.map(function(file) {
       return '!' + file;
     }));

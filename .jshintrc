@@ -28,6 +28,8 @@
         "afterEach": false,
         "expect": false,
         "spyOn":false,
-        "jasmine": false
+        "jasmine": false,
+        "xdescribe": false,
+        "xit": false
     }
 }

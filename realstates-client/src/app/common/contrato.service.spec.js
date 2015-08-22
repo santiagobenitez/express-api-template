@@ -3,13 +3,15 @@
 describe('contratoService', function() {
   var contratoService,
     $httpBackend,
-    urlConstants;
+    urlConstants,
+    $state;
 
   beforeEach(module('app'));
 
-  beforeEach(inject(function(_$httpBackend_, _URL_) {
+  beforeEach(inject(function(_$httpBackend_, _URL_, _$state_) {
     $httpBackend = _$httpBackend_;
     urlConstants = _URL_;
+    $state = _$state_;
   }));
 
   afterEach(function() {
@@ -43,6 +45,8 @@ describe('contratoService', function() {
   describe('getAll', function() {
     beforeEach(inject(function(_contratoService_) {
       contratoService = _contratoService_;
+      spyOn($state, 'go').and.callFake(function() {});
+
     }));
     afterEach(function() {
       contratoService = null;
@@ -106,6 +110,8 @@ describe('contratoService', function() {
   describe('create', function() {
     beforeEach(inject(function(_contratoService_) {
       contratoService = _contratoService_;
+      spyOn($state, 'go').and.callFake(function() {});
+
     }));
     afterEach(function() {
       contratoService = null;
@@ -152,6 +158,8 @@ describe('contratoService', function() {
   describe('get', function() {
     beforeEach(inject(function(_contratoService_) {
       contratoService = _contratoService_;
+      spyOn($state, 'go').and.callFake(function() {});
+
     }));
     afterEach(function() {
       contratoService = null;
@@ -198,6 +206,8 @@ describe('contratoService', function() {
   describe('update', function() {
     beforeEach(inject(function(_contratoService_) {
       contratoService = _contratoService_;
+      spyOn($state, 'go').and.callFake(function() {});
+
     }));
     afterEach(function() {
       contratoService = null;
@@ -226,7 +236,7 @@ describe('contratoService', function() {
 
     it("should return an error msg when there was an error while updating the cliente", function() {
       //arrange
-       var clienteToUpdate = {
+      var clienteToUpdate = {
         _id: '1'
       };
       var _error;

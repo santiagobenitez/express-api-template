@@ -89,9 +89,7 @@ describe('PagoEditarController', function() {
     });
 
     it('should show an error message when there was an while creating the pago', function() {
-      var _errorFn,
-          _state,
-          _data;
+      var _errorFn;
 
       spyOn(pagoService, 'update').and.returnValue({
         then: function(successFn, errorFn) {

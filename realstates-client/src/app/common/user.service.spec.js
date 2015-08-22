@@ -3,13 +3,15 @@
 describe('userService', function() {
   var userService,
     $httpBackend,
-    urlConstants;
+    urlConstants,
+    $state;
 
   beforeEach(module('app'));
 
-  beforeEach(inject(function(_$httpBackend_, _URL_) {
+  beforeEach(inject(function(_$httpBackend_, _URL_, _$state_) {
     $httpBackend = _$httpBackend_;
     urlConstants = _URL_;
+    $state = _$state_;
   }));
 
   afterEach(function() {
@@ -43,6 +45,8 @@ describe('userService', function() {
   describe('getAll', function() {
     beforeEach(inject(function(_userService_) {
       userService = _userService_;
+      spyOn($state, 'go').and.callFake(function() {});
+
     }));
     afterEach(function() {
       userService = null;
@@ -106,6 +110,8 @@ describe('userService', function() {
   describe('create', function() {
     beforeEach(inject(function(_userService_) {
       userService = _userService_;
+      spyOn($state, 'go').and.callFake(function() {});
+
     }));
     afterEach(function() {
       userService = null;
@@ -152,6 +158,8 @@ describe('userService', function() {
   describe('get', function() {
     beforeEach(inject(function(_userService_) {
       userService = _userService_;
+      spyOn($state, 'go').and.callFake(function() {});
+
     }));
     afterEach(function() {
       userService = null;
@@ -198,6 +206,8 @@ describe('userService', function() {
   describe('update', function() {
     beforeEach(inject(function(_userService_) {
       userService = _userService_;
+      spyOn($state, 'go').and.callFake(function() {});
+
     }));
     afterEach(function() {
       userService = null;
@@ -226,7 +236,7 @@ describe('userService', function() {
 
     it("should return an error msg when there was an error while updating the usuario", function() {
       //arrange
-       var userToUpdate = {
+      var userToUpdate = {
         _id: '1'
       };
       var _error;

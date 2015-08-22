@@ -141,8 +141,8 @@
     clientSecret: null,
     sendClientIdAndSecretInAuthorizationHeader: false,
     grantType: "password",
-    grantPath: "/oauth2/token",
-    revokePath: "/oauth2/revoke"
+    grantPath: "/token",
+    revokePath: "/revoke"
   };
 
   var requiredKeys = ["baseUrl", "clientId", "grantType", "grantPath", "revokePath"];

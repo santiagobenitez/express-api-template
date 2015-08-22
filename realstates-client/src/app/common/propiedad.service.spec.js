@@ -3,13 +3,15 @@
 describe('propiedadService', function() {
   var propiedadService,
     $httpBackend,
-    urlConstants;
+    urlConstants,
+    $state;
 
   beforeEach(module('app'));
 
-  beforeEach(inject(function(_$httpBackend_, _URL_) {
+  beforeEach(inject(function(_$httpBackend_, _URL_, _$state_) {
     $httpBackend = _$httpBackend_;
     urlConstants = _URL_;
+    $state = _$state_;
   }));
 
   afterEach(function() {
@@ -45,6 +47,8 @@ describe('propiedadService', function() {
   describe('getAll', function() {
     beforeEach(inject(function(_propiedadService_) {
       propiedadService = _propiedadService_;
+      spyOn($state, 'go').and.callFake(function() {});
+
     }));
     afterEach(function() {
       propiedadService = null;
@@ -53,7 +57,9 @@ describe('propiedadService', function() {
     });
     it("should return an empty array when there are no propiedades", function() {
       //arrange
-      var fakePropiedades = {items: [] };
+      var fakePropiedades = {
+        items: []
+      };
       var _propiedades;
       $httpBackend.whenGET(urlConstants.api + 'propiedades').respond(fakePropiedades);
       //act
@@ -67,9 +73,11 @@ describe('propiedadService', function() {
 
     it("should return a propiedad when there is one propiedad", function() {
       //arrange
-      var fakePropiedades = {items: [{
-        _id: '123'
-      }]}
+      var fakePropiedades = {
+        items: [{
+          _id: '123'
+        }]
+      };
       var _propiedades;
       $httpBackend.whenGET(urlConstants.api + 'propiedades').respond(fakePropiedades);
       //act
@@ -84,10 +92,7 @@ describe('propiedadService', function() {
 
 
     it("should return an error msg when there was an error while processing the getAll", function() {
-      //arrange
-    var fakePropiedades = {items: [{
-        _id: '123'
-      }]}
+
       var _error;
       $httpBackend.whenGET(urlConstants.api + 'propiedades').respond(400, {
         message: 'unexpected error'
@@ -106,6 +111,8 @@ describe('propiedadService', function() {
   describe('get', function() {
     beforeEach(inject(function(_propiedadService_) {
       propiedadService = _propiedadService_;
+      spyOn($state, 'go').and.callFake(function() {});
+
     }));
     afterEach(function() {
       propiedadService = null;
@@ -152,6 +159,8 @@ describe('propiedadService', function() {
   describe('create', function() {
     beforeEach(inject(function(_propiedadService_) {
       propiedadService = _propiedadService_;
+      spyOn($state, 'go').and.callFake(function() {});
+
     }));
     afterEach(function() {
       propiedadService = null;
@@ -198,6 +207,8 @@ describe('propiedadService', function() {
   describe('update', function() {
     beforeEach(inject(function(_propiedadService_) {
       propiedadService = _propiedadService_;
+      spyOn($state, 'go').and.callFake(function() {});
+
     }));
     afterEach(function() {
       propiedadService = null;

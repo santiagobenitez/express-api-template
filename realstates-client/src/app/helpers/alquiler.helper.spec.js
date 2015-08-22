@@ -163,7 +163,7 @@ describe('AlquilerHelper', function() {
 
       var alquilerActual = alquilerHelper.getAlquilerActual(fechaDesde, fechaHasta, tipoInteres, interes, alquiler);
       expect(alquilerActual).toBe(1000);
-    })
+    });
 
     it('should return the alquiler plus an interes of 10% when the date is after contract finished', function() {
       var fechaDesde = new Date(),
@@ -229,7 +229,7 @@ describe('alquilerVencido', function() {
 
     it('should return true when the expire day is 10th, the current day is the 11th and there is not a previous payment', function() {
       var currentDate = new Date(2015, 7, 11);
-      var lastPayment = undefined;
+      var lastPayment;
       var expireDay = 10;
 
       var rentExpired = alquilerHelper.alquilerVencido(expireDay, lastPayment, currentDate);
@@ -306,7 +306,7 @@ describe('alquilerVencido', function() {
 
     it('should return true when the expire day is 10th, the current day is the 8th and there is not a payment', function() {
       var currentDate = new Date(2015, 7, 8);
-      var lastPayment = undefined;
+      var lastPayment;
       var expireDay = 10;
 
       var rentAlmostExpired = alquilerHelper.alquilerAPuntoDeVencer(expireDay, lastPayment, currentDate);
@@ -333,7 +333,7 @@ describe('alquilerVencido', function() {
 
     it('should return false when the expire day is 10th, the current day is the 11th and there is not a payment', function() {
       var currentDate = new Date(2015, 7, 11);
-      var lastPayment = undefined;
+      var lastPayment;
       var expireDay = 10;
 
       var rentUpToDate = alquilerHelper.alquilerAlDia(expireDay, lastPayment, currentDate);
@@ -387,7 +387,7 @@ describe('calcularImporteSegurido', function () {
         multaDiaria = 10,
         alquiler = 100;
 
-      var value = alquilerHelper.calcularImporteSugerido(diaDeVencimiento, fecha, fechaDePago, alquiler, multaDiaria)
+      var value = alquilerHelper.calcularImporteSugerido(diaDeVencimiento, fecha, fechaDePago, alquiler, multaDiaria);
 
       expect(value).toBe(alquiler);
     });
@@ -401,7 +401,7 @@ describe('calcularImporteSegurido', function () {
 
       var alquilerUnDiaDemorado = alquiler + (alquiler * 0.1);
 
-      var value = alquilerHelper.calcularImporteSugerido(diaDeVencimiento, fecha, fechaDePago, alquiler, multaDiaria)
+      var value = alquilerHelper.calcularImporteSugerido(diaDeVencimiento, fecha, fechaDePago, alquiler, multaDiaria);
 
       expect(value).toBe(alquilerUnDiaDemorado);
     });
@@ -413,7 +413,7 @@ describe('calcularImporteSegurido', function () {
         multaDiaria = 10,
         alquiler = 1000;
 
-      var value = alquilerHelper.calcularImporteSugerido(diaDeVencimiento, fecha, fechaDePago, alquiler, multaDiaria)
+      var value = alquilerHelper.calcularImporteSugerido(diaDeVencimiento, fecha, fechaDePago, alquiler, multaDiaria);
 
       expect(value).toBe(alquiler);
     });

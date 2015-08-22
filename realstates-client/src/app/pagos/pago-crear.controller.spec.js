@@ -61,7 +61,7 @@ describe('PagoCrearController', function() {
     it('should go to the state of pago-edit when a cliente was created successfully', function() {
       var _successFn,
           _state,
-          _data;
+        _data;
 
       spyOn(pagoService, 'create').and.returnValue({
         then: function(successFn) {
@@ -81,9 +81,7 @@ describe('PagoCrearController', function() {
     });
 
     it('should show an error message when there was an while creating the pago', function() {
-      var _errorFn,
-          _state,
-          _data;
+      var _errorFn;
 
       spyOn(pagoService, 'create').and.returnValue({
         then: function(successFn, errorFn) {

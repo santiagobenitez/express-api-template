@@ -128,7 +128,7 @@ describe('propiedadRepository', function() {
       });
     });
 
-    it('should return null when the id is valid but the object was not found', function() {
+    it('should return null when the id is valid but the object was not found', function(done) {
       // 556c217f3bb8bc6017a8f2e8
       propiedadRepository.get('556c217f3bb8bc6017a8f2e5', function(e, obj) {
 

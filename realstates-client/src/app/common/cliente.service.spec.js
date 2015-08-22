@@ -3,13 +3,15 @@
 describe('clienteService', function() {
   var clienteService,
     $httpBackend,
-    urlConstants;
+    urlConstants,
+    $state;
 
   beforeEach(module('app'));
 
-  beforeEach(inject(function(_$httpBackend_, _URL_) {
+  beforeEach(inject(function(_$httpBackend_, _URL_, _$state_) {
     $httpBackend = _$httpBackend_;
     urlConstants = _URL_;
+    $state = _$state_;
   }));
 
   afterEach(function() {
@@ -43,6 +45,7 @@ describe('clienteService', function() {
   describe('getAll', function() {
     beforeEach(inject(function(_clienteService_) {
       clienteService = _clienteService_;
+      spyOn($state, 'go').and.callFake(function() {});
     }));
     afterEach(function() {
       clienteService = null;
@@ -106,6 +109,8 @@ describe('clienteService', function() {
   describe('create', function() {
     beforeEach(inject(function(_clienteService_) {
       clienteService = _clienteService_;
+      spyOn($state, 'go').and.callFake(function() {});
+
     }));
     afterEach(function() {
       clienteService = null;
@@ -152,6 +157,8 @@ describe('clienteService', function() {
   describe('get', function() {
     beforeEach(inject(function(_clienteService_) {
       clienteService = _clienteService_;
+      spyOn($state, 'go').and.callFake(function() {});
+
     }));
     afterEach(function() {
       clienteService = null;
@@ -198,6 +205,8 @@ describe('clienteService', function() {
   describe('update', function() {
     beforeEach(inject(function(_clienteService_) {
       clienteService = _clienteService_;
+      spyOn($state, 'go').and.callFake(function() {});
+
     }));
     afterEach(function() {
       clienteService = null;
@@ -226,7 +235,7 @@ describe('clienteService', function() {
 
     it("should return an error msg when there was an error while updating the cliente", function() {
       //arrange
-       var clienteToUpdate = {
+      var clienteToUpdate = {
         _id: '1'
       };
       var _error;

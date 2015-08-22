@@ -158,9 +158,7 @@ describe('ContratoEditarController', function() {
     });
 
     it('should show a success message when a contrato was updated successfully', function() {
-      var _successFn,
-        _state,
-        _data;
+      var _successFn;
 
       spyOn(contratoService, 'update').and.returnValue({
         then: function(successFn) {
@@ -176,9 +174,7 @@ describe('ContratoEditarController', function() {
     });
 
     it('should show an error message when there was an error while creating the propiedad', function() {
-      var _errorFn,
-        _state,
-        _data;
+      var _errorFn;
 
       spyOn(contratoService, 'update').and.returnValue({
         then: function(successFn, errorFn) {

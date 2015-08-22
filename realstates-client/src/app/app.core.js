@@ -9,7 +9,11 @@
     'ngSanitize',
     'ui.router',
     'ui.bootstrap',
-    'ui.select'
+    'ui.select',
+    'base64',
+    'angular-oauth2',
+    'LocalStorageModule',
+    'blockUI'
   ]);
 
 }());
