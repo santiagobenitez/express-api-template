@@ -25,24 +25,6 @@ describe('clienteRepository', function() {
     mongoose.disconnect();
   });
 
-  describe('function declaratios', function() {
-    it('should have create defined', function() {
-      expect(clienteRepository.create).to.exist;
-    });
-    it('should have getAll defined', function() {
-      expect(clienteRepository.getAll).to.exist;
-    });
-    it('should have get defined', function() {
-      expect(clienteRepository.get).to.exist;
-    });
-    it('should have remove defined', function() {
-      expect(clienteRepository.remove).to.exist;
-    });
-    it('should have update defined', function() {
-      expect(clienteRepository.update).to.exist;
-    });
-  });
-
   describe('create', function() {
     it('should create a new cliente when it is a valid cliente', function(done) {
 
@@ -105,11 +87,9 @@ describe('clienteRepository', function() {
       });
     });
 
-    it('should return null when the id is valid but the object was not found', function() {
+    it('should return null when the id is valid but the object was not found', function(done) {
       // 556c217f3bb8bc6017a8f2e8
       clienteRepository.get('556c217f3bb8bc6017a8f2e5', function(e, obj) {
-
-        expect(e).to.be.null;
         expect(obj).to.be.null;
         done();
       });

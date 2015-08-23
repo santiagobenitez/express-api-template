@@ -2,6 +2,8 @@
 
 var userService = require('../../services/user.service');
 var logger = require('../../helpers/logger');
+var jwt = require('jsonwebtoken');
+var config = require('../../config');
 
 function getAll(req, res, next) {
   userService.getAll(function(e, objs) {
@@ -69,6 +71,7 @@ function update(req, res, next) {
     logger.info({res: res, updatedObj: obj}, 'Actualizacion exitosa del usuario: %s', obj._id);
   });
 }
+
 
 module.exports = {
   post: post,

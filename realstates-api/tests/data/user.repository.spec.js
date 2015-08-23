@@ -20,24 +20,6 @@ describe('userRepository', function() {
     mongoose.disconnect();
   });
 
-  describe('function declaratios', function() {
-    it('should have create defined', function() {
-      expect(userRepository.create).to.exist;
-    });
-    it('should have getAll defined', function() {
-      expect(userRepository.getAll).to.exist;
-    });
-    it('should have get defined', function() {
-      expect(userRepository.get).to.exist;
-    });
-    it('should have remove defined', function() {
-      expect(userRepository.remove).to.exist;
-    });
-    it('should have update defined', function() {
-      expect(userRepository.update).to.exist;
-    });
-  });
-
   describe('create', function() {
     it('should create a new user when it is a valid user', function(done) {
 
@@ -81,7 +63,6 @@ describe('userRepository', function() {
     it('should return the recently created user as part of the result', function(done) {
 
       userRepository.get(newUser._id, function(e, obj) {
-        expect(e).to.be.null;
         expect(obj._id).to.eql(newUser._id);
         done();
       });
@@ -94,16 +75,33 @@ describe('userRepository', function() {
       });
     });
 
-    it('should return null when the id is valid but the object was not found', function() {
+    it('should return null when the id is valid but the object was not found', function(done) {
       // 556c217f3bb8bc6017a8f2e8
       userRepository.get('556c217f3bb8bc6017a8f2e5', function(e, obj) {
-
-        expect(e).to.be.null;
         expect(obj).to.be.null;
         done();
       });
 
     })
+  });
+
+  describe('getByUserName', function() {
+    it('should return the recently created user as part of the result', function(done) {
+
+      userRepository.getByUserName(newUser.userName, function(e, obj) {
+        expect(obj._id).to.eql(newUser._id);
+        done();
+      });
+    });
+
+    it('should return null when the there is not a user with such a userName', function(done) {
+      // 556c217f3bb8bc6017a8f2e8
+      userRepository.getByUserName('santiago', function(e, obj) {
+        expect(obj).to.be.null;
+        done();
+      });
+
+    });
   });
 
   describe('update', function() {
@@ -128,6 +126,7 @@ describe('userRepository', function() {
     });
   });
 
+
   describe('remove', function() {
     it('should return an error when the object was not removed', function(done) {
       userRepository.remove(newUser._id + "a", function(e) {
@@ -143,5 +142,7 @@ describe('userRepository', function() {
       });
     });
   });
+
+
 
 });

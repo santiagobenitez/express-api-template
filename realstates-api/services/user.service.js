@@ -68,9 +68,38 @@ function update(id, objToUpdate, cb) {
   });
 }
 
+function getByCredentials(userName, password, cb) {
 
-module.exports.create = create;
-module.exports.getAll = getAll;
-module.exports.get = get;
-module.exports.remove = remove;
-module.exports.update = update;
+  userRepository.getByUserName(userName, function(e, user) {
+
+    if(e){
+      return cb(e, null);
+    }
+
+    if(!user){
+      return cb(null, null);
+    }
+
+    bcrypt.compare(password, user.passwordHash, function (e, result) {
+
+      if(result){
+        return cb(null, user);
+      }
+
+      cb(null, null);
+    });
+
+  })
+}
+
+
+module.exports = {
+  create: create,
+  getAll: getAll,
+  get: get,
+  remove: remove,
+  update: update,
+  getByCredentials: getByCredentials
+}
+
+

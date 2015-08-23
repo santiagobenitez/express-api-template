@@ -11,7 +11,7 @@
     "requireOperatorBeforeLineBreak": true,
     "requireCamelCaseOrUpperCaseIdentifiers": true,
     "maximumLineLength": {
-      "value": 200,
+      "value": 300,
       "allowComments": true,
       "allowRegex": true
     },

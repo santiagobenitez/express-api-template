@@ -8,31 +8,12 @@ var sinon = require('sinon');
 
 describe('userService', function() {
 
-  describe('function declaration/definition', function() {
-    it('should have create defined', function() {
-      expect(userService.create).to.exist;
-    });
-    it('should have getAll defined', function() {
-      expect(userService.getAll).to.exist;
-    });
-    it('should have get defined', function() {
-      expect(userService.get).to.exist;
-    });
-    it('should have remove defined', function() {
-      expect(userService.remove).to.exist;
-    });
-    it('shoud have update defined', function() {
-      expect(userService.update).to.exist;
-    });
-  });
-
   describe('create', function() {
 
     afterEach(function() {
       if (bcrypt.hash.restore) bcrypt.hash.restore();
       if (userRepository.create.restore) userRepository.create.restore();
     });
-
 
     it('should call bscrypt with the users password when it is called', function() {
       var user = {
@@ -120,7 +101,9 @@ describe('userService', function() {
       });
 
       bcryptStub.getCall(0).args[2](null, 'test');
-      userRepoStub.getCall(0).args[1](null, {_id: 1});
+      userRepoStub.getCall(0).args[1](null, {
+        _id: 1
+      });
 
       expect(newUser._id).to.eql(1);
     });
@@ -258,7 +241,7 @@ describe('userService', function() {
   });
 
   describe('update', function() {
-     afterEach(function() {
+    afterEach(function() {
       if (bcrypt.hash.restore) bcrypt.hash.restore();
       if (userRepository.update.restore) userRepository.update.restore();
     });
@@ -349,9 +332,77 @@ describe('userService', function() {
       });
 
       bcryptStub.getCall(0).args[2](null, 'test');
-      userRepoStub.getCall(0).args[2](null, {_id: 1});
+      userRepoStub.getCall(0).args[2](null, {
+        _id: 1
+      });
 
       expect(updatedUser._id).to.eql(1);
     });
+  });
+
+  describe('getByCredentials', function() {
+
+    afterEach(function() {
+      if (bcrypt.compare.restore) bcrypt.compare.restore();
+      if (userRepository.getByUserName.restore) userRepository.getByUserName.restore();
+    });
+
+
+    it('should call the cb function with an error when getByUserName returns an error', function() {
+      var id = 1;
+
+      var stub = sinon.stub(userRepository, 'getByUserName');
+      var error = new Error('unexpected error');
+      var inputCallbackSpy = sinon.spy();
+
+      userService.getByCredentials('test','pass', inputCallbackSpy);
+      //call the function gave to our repository stub
+      stub.getCall(0).args[1](error, null);
+      expect(inputCallbackSpy.getCall(0).args[0]).to.eql(error);
+    });
+
+    it('should return null when there are no users in the db with the specified userName', function() {
+      var _user;
+      var getByUserNameStub = sinon.stub(userRepository, 'getByUserName');
+
+      userService.getByCredentials('test', 'pass', function(e, user) {
+        _user = user;
+      });
+
+      getByUserNameStub.getCall(0).args[1](null, null);
+
+      expect(_user).to.be.null;
+    });
+
+    it('should return null when comparison of password and passwordHash returns false', function() {
+      var _user;
+      var getByUserNameStub = sinon.stub(userRepository, 'getByUserName');
+      var compareStub = sinon.stub(bcrypt, 'compare');
+
+      userService.getByCredentials('test', 'pass', function(e, user) {
+        _user = user;
+      });
+
+      getByUserNameStub.getCall(0).args[1](null, {password: 'test'});
+      compareStub.getCall(0).args[2](null, false);
+
+      expect(_user).to.be.null;
+    });
+
+    it('should return the user when comparison of password and passwordHash returns true', function() {
+      var _user;
+      var getByUserNameStub = sinon.stub(userRepository, 'getByUserName');
+      var compareStub = sinon.stub(bcrypt, 'compare');
+
+      userService.getByCredentials('test', 'pass', function(e, user) {
+        _user = user;
+      });
+
+      getByUserNameStub.getCall(0).args[1](null, {password: 'test'});
+      compareStub.getCall(0).args[2](null, true);
+
+      expect('test').to.eql(_user.password);
+    });
+
   });
 });

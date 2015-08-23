@@ -1,34 +1,46 @@
 // jshint ignore: start
 
-var clienteService = require('../../services/cliente.service');
-var clienteRoutes = require('../../routes/clientes/cliente.routes');
+var userService = require('../../services/user.service');
+var userRoutes = require('../../routes/usuarios/usuario.routes');
+var logger = require('../../helpers/logger');
+
 var sinon = require('sinon');
 var expect = require('chai').expect;
 
-describe('clienteRoutes', function() {
+describe('userRoutes', function() {
+
+  before(function() {
+    sinon.stub(logger, 'info');
+    sinon.stub(logger, 'error');
+  });
+
+  after(function() {
+    logger.error.restore();
+    logger.info.restore();
+  });
 
   describe('post', function() {
 
     afterEach(function() {
-      if (clienteService.create.restore) {
-        clienteService.create.restore();
+      if (userService.create.restore) {
+        userService.create.restore();
       }
     });
 
-    it('should call clienteService create when is called with the information provided', function() {
-      var mock = sinon.mock(clienteService);
+    it('should call userService create when is called with the information provided', function() {
+      var mock = sinon.mock(userService);
       var req = {
         body: {}
       };
       mock.expects('create').exactly(1).withArgs(req.body);
 
-      clienteRoutes.post(req, null, null);
+      userRoutes.post(req, null, null);
       mock.verify();
     });
 
-    it('should call next with the error given by the clienteService when there is an error in the creation of a cliente', function() {
+    it('should call next with the error given by the userService when there is an error in the creation of a user', function() {
       var _cb;
-      var stub = sinon.stub(clienteService, 'create');
+      var stub = sinon.stub(userService, 'create');
       var nextSpy = sinon.spy();
 
       var error = new Error('test error');
@@ -36,16 +48,16 @@ describe('clienteRoutes', function() {
         body: {}
       };
 
-      clienteRoutes.post(req, null, nextSpy);
+      userRoutes.post(req, null, nextSpy);
       _cb = stub.getCall(0).args[1];
       _cb(error, null);
 
       expect(nextSpy.withArgs(error).calledOnce).to.be.true;
     });
 
-    it('should call res with status 200 and the id provided when the cliente was successfuly created', function() {
+    it('should call res with status 200 and the id provided when the user was successfuly created', function() {
       var _cb;
-      var stub = sinon.stub(clienteService, 'create');
+      var stub = sinon.stub(userService, 'create');
       var jsonObj = {
         json: function() {}
       }
@@ -57,7 +69,7 @@ describe('clienteRoutes', function() {
 
       statusStub.onFirstCall().returns(jsonObj);
       var req = {};
-      clienteRoutes.post(req, resObj, null);
+      userRoutes.post(req, resObj, null);
       _cb = stub.getCall(0).args[1];
       _cb(null, {
         _id: '123'
@@ -72,23 +84,23 @@ describe('clienteRoutes', function() {
   describe('getAll', function() {
 
     afterEach(function() {
-      if (clienteService.getAll.restore) clienteService.getAll.restore();
+      if (userService.getAll.restore) userService.getAll.restore();
     });
 
-    it('should call clienteService to get all the clientes when it is called', function() {
-      var mock = sinon.mock(clienteService);
+    it('should call userService to get all the users when it is called', function() {
+      var mock = sinon.mock(userService);
       var req = {
         body: {}
       };
       mock.expects('getAll').exactly(1);
 
-      clienteRoutes.getAll(req, null, null);
+      userRoutes.getAll(req, null, null);
       mock.verify();
     });
 
-    it('should call next with the error given by the clienteService when there is an error in the getAll call', function() {
+    it('should call next with the error given by the userService when there is an error in the getAll call', function() {
       var _cb;
-      var stub = sinon.stub(clienteService, 'getAll');
+      var stub = sinon.stub(userService, 'getAll');
       var nextSpy = sinon.spy();
 
       var error = new Error('test error');
@@ -96,16 +108,16 @@ describe('clienteRoutes', function() {
         body: {}
       };
 
-      clienteRoutes.getAll(req, null, nextSpy);
+      userRoutes.getAll(req, null, nextSpy);
       _cb = stub.getCall(0).args[0];
       _cb(error, null);
 
       expect(nextSpy.withArgs(error).calledOnce).to.be.true;
     });
 
-    it('should call res with status 200 and the items provided when the clientes were returned successfuly', function() {
+    it('should call res with status 200 and the items provided when the users were returned successfuly', function() {
       var _cb;
-      var stub = sinon.stub(clienteService, 'getAll');
+      var stub = sinon.stub(userService, 'getAll');
       var jsonObj = {
         json: function() {}
       }
@@ -117,7 +129,7 @@ describe('clienteRoutes', function() {
 
       statusStub.onFirstCall().returns(jsonObj);
       var req = {};
-      clienteRoutes.getAll(req, resObj, null);
+      userRoutes.getAll(req, resObj, null);
       _cb = stub.getCall(0).args[0];
       var items = [{
         _id: '123'
@@ -134,11 +146,11 @@ describe('clienteRoutes', function() {
   describe('get', function() {
 
     afterEach(function() {
-      if (clienteService.get.restore) clienteService.get.restore();
+      if (userService.get.restore) userService.get.restore();
     });
 
-    it('should call clienteService to get the cliente with the id specified in the params', function() {
-      var mock = sinon.mock(clienteService);
+    it('should call userService to get the user with the id specified in the params', function() {
+      var mock = sinon.mock(userService);
       var req = {
         params: {
           id: '123'
@@ -146,13 +158,13 @@ describe('clienteRoutes', function() {
       };
       mock.expects('get').exactly(1).withArgs(req.params.id);
 
-      clienteRoutes.get(req, null, null);
+      userRoutes.get(req, null, null);
       mock.verify();
     });
 
-    it('should call next with the error given by the clienteService when there is an error in the get call', function() {
+    it('should call next with the error given by the userService when there is an error in the get call', function() {
       var _cb;
-      var stub = sinon.stub(clienteService, 'get');
+      var stub = sinon.stub(userService, 'get');
       var nextSpy = sinon.spy();
 
       var error = new Error('test error');
@@ -162,16 +174,16 @@ describe('clienteRoutes', function() {
         }
       };
 
-      clienteRoutes.get(req, null, nextSpy);
+      userRoutes.get(req, null, nextSpy);
       _cb = stub.getCall(0).args[1];
       _cb(error, null);
 
       expect(nextSpy.withArgs(error).calledOnce).to.be.true;
     });
 
-    it('should call next with the error of not found 404 when the object return by the clienteService is null', function() {
+    it('should call next with the error of not found 404 when the object return by the userService is null', function() {
       var _cb;
-      var stub = sinon.stub(clienteService, 'get');
+      var stub = sinon.stub(userService, 'get');
       var nextSpy = sinon.spy();
 
       var req = {
@@ -180,17 +192,17 @@ describe('clienteRoutes', function() {
         }
       };
 
-      clienteRoutes.get(req, null, nextSpy);
+      userRoutes.get(req, null, nextSpy);
       _cb = stub.getCall(0).args[1];
       _cb(null, null);
 
       expect(nextSpy.getCall(0).args[0].status).to.eql(404);
     });
 
-    it('should call res with status 200 and the propiedad when the cliente was returned successfuly', function() {
+    it('should call res with status 200 and the propiedad when the user was returned successfuly', function() {
 
       var _cb;
-      var stub = sinon.stub(clienteService, 'get');
+      var stub = sinon.stub(userService, 'get');
       var jsonObj = {
         json: function() {}
       }
@@ -206,7 +218,7 @@ describe('clienteRoutes', function() {
           id: '123'
         }
       };
-      clienteRoutes.get(req, resObj, null);
+      userRoutes.get(req, resObj, null);
       _cb = stub.getCall(0).args[1];
       var item = {
         _id: '123'
@@ -222,11 +234,11 @@ describe('clienteRoutes', function() {
   describe('remove', function() {
 
     afterEach(function() {
-      if (clienteService.remove.restore) clienteService.remove.restore();
+      if (userService.remove.restore) userService.remove.restore();
     });
 
-    it('should call clienteService to remove the cliente with the id specified in the params', function() {
-      var mock = sinon.mock(clienteService);
+    it('should call userService to remove the user with the id specified in the params', function() {
+      var mock = sinon.mock(userService);
       var req = {
         params: {
           id: '123'
@@ -234,13 +246,13 @@ describe('clienteRoutes', function() {
       };
       mock.expects('remove').exactly(1).withArgs(req.params.id);
 
-      clienteRoutes.remove(req, null, null);
+      userRoutes.remove(req, null, null);
       mock.verify();
     });
 
-    it('should call next with the error given by the clienteService when there is an error in the remove call', function() {
+    it('should call next with the error given by the userService when there is an error in the remove call', function() {
       var _cb;
-      var stub = sinon.stub(clienteService, 'remove');
+      var stub = sinon.stub(userService, 'remove');
       var nextSpy = sinon.spy();
 
       var error = new Error('test error');
@@ -250,17 +262,17 @@ describe('clienteRoutes', function() {
         }
       };
 
-      clienteRoutes.remove(req, null, nextSpy);
+      userRoutes.remove(req, null, nextSpy);
       _cb = stub.getCall(0).args[1];
       _cb(error, null);
 
       expect(nextSpy.withArgs(error).calledOnce).to.be.true;
     });
 
-    it('should call res with status 200 when the cliente was removed successfuly', function() {
+    it('should call res with status 200 when the user was removed successfuly', function() {
 
       var _cb;
-      var stub = sinon.stub(clienteService, 'remove');
+      var stub = sinon.stub(userService, 'remove');
       var endfn = {
         end: function() {}
       }
@@ -276,7 +288,7 @@ describe('clienteRoutes', function() {
           id: '123'
         }
       };
-      clienteRoutes.remove(req, resObj, null);
+      userRoutes.remove(req, resObj, null);
       _cb = stub.getCall(0).args[1];
 
       _cb(null);
@@ -289,11 +301,11 @@ describe('clienteRoutes', function() {
   describe('update', function() {
 
     afterEach(function() {
-      if (clienteService.update.restore) clienteService.update.restore();
+      if (userService.update.restore) userService.update.restore();
     });
 
-    it('should call clienteService to update the cliente with the id specified in the params', function() {
-      var mock = sinon.mock(clienteService);
+    it('should call userService to update the user with the id specified in the params', function() {
+      var mock = sinon.mock(userService);
       var req = {
         params: {
           id: '123'
@@ -304,13 +316,13 @@ describe('clienteRoutes', function() {
       };
       mock.expects('update').exactly(1).withArgs(req.params.id, req.body);
 
-      clienteRoutes.update(req, null, null);
+      userRoutes.update(req, null, null);
       mock.verify();
     });
 
-    it('should call next with the error given by the clienteService when there is an error in the update call', function() {
+    it('should call next with the error given by the userService when there is an error in the update call', function() {
       var _cb;
-      var stub = sinon.stub(clienteService, 'update');
+      var stub = sinon.stub(userService, 'update');
       var nextSpy = sinon.spy();
 
       var error = new Error('test error');
@@ -319,21 +331,21 @@ describe('clienteRoutes', function() {
           id: '123'
         },
         body: {
-          nombre:'santiago'
+          nombre: 'santiago'
         }
       };
 
-      clienteRoutes.update(req, null, nextSpy);
+      userRoutes.update(req, null, nextSpy);
       _cb = stub.getCall(0).args[2];
       _cb(error, null);
 
       expect(nextSpy.withArgs(error).calledOnce).to.be.true;
     });
 
-    it('should call res with status 200 and the cliente when the cliente was updated successfuly', function() {
+    it('should call res with status 200 and the user when the user was updated successfuly', function() {
 
       var _cb;
-      var stub = sinon.stub(clienteService, 'update');
+      var stub = sinon.stub(userService, 'update');
       var jsonObj = {
         json: function() {}
       }
@@ -349,10 +361,10 @@ describe('clienteRoutes', function() {
           id: '123'
         },
         body: {
-          nombre:'santiago'
+          nombre: 'santiago'
         }
       };
-      clienteRoutes.update(req, resObj, null);
+      userRoutes.update(req, resObj, null);
       _cb = stub.getCall(0).args[2];
       var item = {
         _id: '123'
@@ -364,4 +376,5 @@ describe('clienteRoutes', function() {
     });
 
   });
+
 });
