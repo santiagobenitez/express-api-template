@@ -29,6 +29,7 @@
       }).then(function() {
         $state.go('inicio');
       }, function(err) {
+        console.log(err);
         vm.errorMsg = err;
       });
     }

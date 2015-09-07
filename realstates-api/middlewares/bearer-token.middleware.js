@@ -1,10 +1,8 @@
-var jwt = require('jsonwebtoken');
-var config = require('../config');
+var tokenHelper = require('../helpers/token.helper');
 
 function bearerToken() {
 
   return function(req, res, next) {
-    debugger;
 
     var error;
 
@@ -15,11 +13,11 @@ function bearerToken() {
     }
 
     var token = req.headers.authorization.split(' ')[1];
-    jwt.verify(token, config.secret, function(err, decoded) {
+    tokenHelper.verify(token, function(err, decoded) {
 
       if (err) {
         error = new Error('invalid_token');
-        error.status = 400;
+        error.status = 401;
         return next(error);
       }
 

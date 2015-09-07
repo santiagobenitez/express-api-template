@@ -4,12 +4,12 @@ var sinon = require('sinon');
 var expect = require('chai').expect;
 
 var bearerToken = require('../../middlewares/bearer-token.middleware');
-var jwt = require('jsonwebtoken');
+var tokenHelper = require('../../helpers/token.helper');
 
 describe('bearerToken', function() {
 
   afterEach(function() {
-    if (jwt.verify.restore) jwt.verify.restore();
+    if (tokenHelper.verify.restore) tokenHelper.verify.restore();
   });
 
   it('should call next with an error when authorization header is not present', function() {
@@ -68,9 +68,9 @@ describe('bearerToken', function() {
     expect(nextSpy.getCall(0).args[0].status).to.eql(403);
   });
 
-  it('should call next with an error of invalid_token when jwt fails to verify the token', function() {
+  it('should call next with an error of invalid_token when tokenHelper fails to verify the token', function() {
 
-    var jwtStub = sinon.stub(jwt, 'verify');
+    var jwtStub = sinon.stub(tokenHelper, 'verify');
 
     var req = {
       headers: {
@@ -82,14 +82,14 @@ describe('bearerToken', function() {
 
     bearerToken()(req, null, nextSpy);
 
-    jwtStub.getCall(0).args[2](new Error('error while decoding'), null);
+    jwtStub.getCall(0).args[1](new Error('error while decoding'), null);
 
     expect(nextSpy.getCall(0).args[0]).to.not.be.empty;
   });
 
-  it('should call next with empty args when jwt verfied succesfully the token', function() {
+  it('should call next with empty args when tokenHelper verfied succesfully the token', function() {
 
-    var jwtStub = sinon.stub(jwt, 'verify');
+    var jwtStub = sinon.stub(tokenHelper, 'verify');
 
     var req = {
       headers: {
@@ -101,14 +101,14 @@ describe('bearerToken', function() {
 
     bearerToken()(req, null, nextSpy);
 
-    jwtStub.getCall(0).args[2](null, {});
+    jwtStub.getCall(0).args[1](null, {});
 
     expect(nextSpy.getCall(0).args.length).to.eql(0);
   });
 
-  it('should add to the req object a user object with the decoded token when jwt verfied succesfully the token', function() {
+  it('should add to the req object a user object with the decoded token when tokenHelper verfied succesfully the token', function() {
 
-    var jwtStub = sinon.stub(jwt, 'verify');
+    var jwtStub = sinon.stub(tokenHelper, 'verify');
 
     var req = {
       headers: {
@@ -118,7 +118,7 @@ describe('bearerToken', function() {
 
     bearerToken()(req, null, function() {});
 
-    jwtStub.getCall(0).args[2](null, {userName: 'test'});
+    jwtStub.getCall(0).args[1](null, {userName: 'test'});
 
     expect(req.user.userName).to.eql('test');
   });

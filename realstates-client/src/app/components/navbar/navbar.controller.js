@@ -2,18 +2,16 @@
   'use strict';
   angular.module('app.navbar').controller('NavbarController', NavbarController);
 
-  NavbarController.$inject = ['authenticationService'];
+  NavbarController.$inject = ['authenticationService', '$state'];
 
-  function NavbarController(authenticationService) {
+  function NavbarController(authenticationService, $state) {
     var vm = this;
     vm.date = new Date();
-    vm.isUserAuthenticated = isUserAuthenticated;
+    vm.authentication = authenticationService.authentication;
+    vm.logOut = function() {
+      authenticationService.logOut();
+      $state.go('login');
+    };
 
-    /*
-      Function definitions
-    */
-    function isUserAuthenticated() {
-      return authenticationService.isAuthenticated();
-    }
   }
 }());

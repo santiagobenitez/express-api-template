@@ -49,6 +49,8 @@
         _authentication.isAuth = true;
         _authentication.userName = user.username;
         localStorageService.set('userName', user.username);
+      }, function(e){
+        return $q.reject(e.data.message);
       });
     }
 

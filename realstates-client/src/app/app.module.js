@@ -35,7 +35,7 @@
       blockUI.stop();
 
       // Refresh token when a `invalid_token` error occurs.
-      if ('invalid_token' === rejection.data.error) {
+      if ('invalid_token' === rejection.data.message) {
         return authenticationService.getRefreshToken();
       }
       //Redirect to Login

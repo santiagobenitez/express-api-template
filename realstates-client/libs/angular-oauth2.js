@@ -109,11 +109,11 @@
           return result;
         };
 
-        if (400 === rejection.status && rejection.data && ("invalid_request" === rejection.data.error || "invalid_grant" === rejection.data.error)) {
+        if (400 === rejection.status && rejection.data && ("invalid_request" === rejection.data.message || "invalid_grant" === rejection.data.message)) {
           OAuthToken.removeToken();
           return emitOAuthError(rejection);
         }
-        if (401 === rejection.status && (rejection.data && "invalid_token" === rejection.data.error)) {
+        if (401 === rejection.status && (rejection.data && "invalid_token" === rejection.data.message)) {
           return emitOAuthError(rejection);
         }
         if (401 === rejection.status && rejection.headers('WWW-Authenticate')) {
@@ -246,7 +246,7 @@
               var data = {
                 grant_type: "refresh_token",
                 refresh_token: OAuthToken.getRefreshToken(),
-                userScopes: OAuthToken.getUserScopes(),
+                //userScopes: OAuthToken.getUserScopes(),
               };
               var headers = {
                 "Content-Type": "application/x-www-form-urlencoded"

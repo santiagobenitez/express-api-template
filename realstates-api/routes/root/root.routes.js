@@ -1,8 +1,6 @@
 'use strict';
 
-var jwt = require('jsonwebtoken');
-
-var config = require('../../config');
+var tokenHelper = require('../../helpers/token.helper');
 var userService = require('../../services/user.service');
 
 
@@ -15,41 +13,74 @@ function getRootApi(req, res, next) {
 }
 
 function authenticate(req, res, next) {
+  var error;
 
-  userService.getByCredentials(req.body.userName, req.body.password, function(e, user) {
+  if (!req.body.grant_type || (req.body.grant_type === 'refresh_token' && !req.body.refresh_token)) {
+    error = new Error('Invalid request');
+    error.status = 400;
+    return next(error);
+  }
 
-    if(e){
-      return next(e);
-    }
+  if (req.body.grant_type !== 'password' && req.body.grant_type !== 'refresh_token') {
+    error = new Error('invalid_grant');
+    error.status = 400;
+    return next(error);
+  }
 
-    if(!user){
-      var error = new Error('Nombre de usuario o password invalido');
-      error.status = 400;
-      return next(error);
-    }
+  if (req.body.grant_type === 'refresh_token') {
+    tokenHelper.verify(req.body.refresh_token, function(err, decoded) {
 
-    var scopes = 'user:read user:write'
+      if (err) {
+        error = new Error('invalid_token');
+        error.status = 400;
+        return next(error);
+      }
 
-    var claims = {
-      userName: user.userName,
-      scopes: scopes
-    }
+      var token = tokenHelper.generateAccessToken(decoded);
+      var refreshToken = tokenHelper.generateRefreshToken(decoded);
 
-    var token = jwt.sign(claims, config.secret, {
-      expiresInMinutes: 15
+      res.status(200).json({
+        username: decoded.username,
+        scopes: decoded.scopes,
+        access_token: token,
+        refresh_token: refreshToken,
+        token_type: 'Bearer'
+      });
     });
+  } else {
+    //password grant
+    userService.getByCredentials(req.body.username, req.body.password, function(e, user) {
 
-    var refreshToken = jwt.sign(claims, config.secret, {
-      expiresInMinutes: 60
-    });
+      if (e) {
+        return next(e);
+      }
 
-    res.status(200).json({
-      userName: user.userName,
-      scopes: scopes,
-      access_token: token,
-      refresh_token: refreshToken,
+      if (!user) {
+        var error = new Error('Nombre de usuario o password invalido');
+        error.status = 400;
+        return next(error);
+      }
+
+      var scopes = 'user:read user:write'
+
+      var claims = {
+        username: user.username,
+        scopes: scopes
+      }
+
+      var token = tokenHelper.generateAccessToken(claims);
+
+      var refreshToken = tokenHelper.generateRefreshToken(claims);
+
+      res.status(200).json({
+        username: user.username,
+        scopes: scopes,
+        access_token: token,
+        refresh_token: refreshToken,
+        token_type: 'Bearer'
+      });
     });
-  });
+  }
 }
 
 module.exports = {
