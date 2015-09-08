@@ -275,9 +275,6 @@
                   refreshTokenPromise = null;
                   OAuthToken.token = response.data;
                   return response;
-                }).catch(function(err) {
-                  refreshTokenPromise = null;
-                  return $q.reject(err);
                 });
               }
 
@@ -320,10 +317,15 @@
             enumerable: true,
             configurable: true
           },
-          loginCancelled: function(data, reason) {
-            httpBuffer.rejectAll(reason);
-            $rootScope.$broadcast('event:auth-loginCancelled', data);
-          }
+          loginCancelled:{
+            value: function(data, reason) {
+              httpBuffer.rejectAll(reason);
+              $rootScope.$broadcast('event:auth-loginCancelled', data);
+            },
+            writable: true,
+            enumerable: true,
+            configurable: true
+          } 
         });
         return OAuth;
       }();

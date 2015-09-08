@@ -31,7 +31,7 @@ function authenticate(req, res, next) {
     tokenHelper.verify(req.body.refresh_token, function(err, decoded) {
 
       if (err) {
-        error = new Error('invalid_token');
+        error = new Error('invalid_grant');
         error.status = 400;
         return next(error);
       }

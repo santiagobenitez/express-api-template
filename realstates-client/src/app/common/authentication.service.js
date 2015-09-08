@@ -39,6 +39,8 @@
 
     function logOut() {
       oauthToken.removeToken();
+      oauth.loginCancelled();
+
       _authentication.isAuth = false;
       _authentication.username = '';
     }
@@ -46,8 +48,6 @@
     function authenticate(user) {
       return oauth.getAccessToken(user).then(function() {
         logIn();
-        _authentication.isAuth = true;
-        _authentication.userName = user.username;
         localStorageService.set('userName', user.username);
       }, function(e){
         return $q.reject(e.data.message);
