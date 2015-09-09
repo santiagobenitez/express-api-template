@@ -6,7 +6,10 @@
   PagoCrearController.$inject = ['pagoService', 'contrato', '$state', 'messageService', '$scope', 'alquilerHelper'];
 
   function PagoCrearController(pagoService, contrato, $state, messageService, $scope, alquilerHelper) {
-    var vm = this;
+    
+    var vm = this,
+        alquilerActual =  alquilerHelper.getAlquilerActual(new Date(contrato.fechaDesde), new Date(contrato.fechaHasta), contrato.tipoInteres, contrato.interes, contrato.alquiler);
+
     vm.pago = {
       fecha: (new Date()).toISOString()
     };
@@ -15,6 +18,7 @@
     vm.importeSugerido = '';
     vm.save = save;
     vm.open = open;
+
 
     $scope.$watch('vm.pago.fecha', calcularImporteSegurido);
 
@@ -35,7 +39,7 @@
     }
 
     function calcularImporteSegurido(newValue) {
-      vm.importeSugerido = alquilerHelper.calcularImporteSugerido(vm.contrato.diaDeVencimiento, new Date(), new Date(newValue), vm.contrato.alquiler, vm.contrato.multaDiaria);
+      vm.importeSugerido = alquilerHelper.calcularImporteSugerido(vm.contrato.diaDeVencimiento, new Date(), new Date(newValue), alquilerActual, vm.contrato.multaDiaria);
     }
 
     function open($event, fecha) {

@@ -22,24 +22,11 @@ describe('PagoCrearController', function() {
     $controller = pagoService = $state = null;
   });
 
- describe('functions/vars definition', function() {
-    beforeEach(function() {
-      pagoController = crearController();
-    });
-
-    afterEach(function() {
-      pagoController = null;
-    });
-
-    it('should have save defined', function() {
-      expect(pagoController.save).toBeDefined();
-    });
-  });
-
  describe('save', function() {
     beforeEach(function() {
 
       var contrato = {_id: 123};
+      spyOn(alquilerHelper, 'getAlquilerActual').and.returnValue(0);
 
       pagoController = crearController(contrato);
       pagoController.pago = {};
@@ -50,6 +37,8 @@ describe('PagoCrearController', function() {
     });
 
     it('should call create of the pagoService', function() {
+      
+
       spyOn(pagoService, 'create').and.returnValue({
         then: function() {}
       });

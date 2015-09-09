@@ -22,20 +22,6 @@ describe('PagoEditarController', function() {
     $controller = pagoService = $state = null;
   });
 
- describe('functions/vars definition', function() {
-    beforeEach(function() {
-      pagoController = crearController();
-    });
-
-    afterEach(function() {
-      pagoController = null;
-    });
-
-    it('should have save defined', function() {
-      expect(pagoController.save).toBeDefined();
-    });
-  });
-
  describe('save', function() {
     var $scope;
 
@@ -46,6 +32,7 @@ describe('PagoEditarController', function() {
         $setPristine: function() {}
       };
       var contrato = {_id: 123};
+      spyOn(alquilerHelper, 'getAlquilerActual').and.returnValue(0);
 
       pagoController = crearController(contrato, $scope);
       pagoController.pago = {};
@@ -56,6 +43,7 @@ describe('PagoEditarController', function() {
     });
 
     it('should call create of the pagoService', function() {
+
       spyOn(pagoService, 'update').and.returnValue({
         then: function() {}
       });
@@ -90,7 +78,7 @@ describe('PagoEditarController', function() {
 
     it('should show an error message when there was an while creating the pago', function() {
       var _errorFn;
-
+      
       spyOn(pagoService, 'update').and.returnValue({
         then: function(successFn, errorFn) {
           _errorFn = errorFn;
