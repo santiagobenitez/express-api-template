@@ -32,6 +32,10 @@ var app = express();
 var port = normalizePort(process.env.PORT || '3003');
 app.set('port', port);
 
+// view engine setup
+ app.set("view options", {layout: false});
+ app.engine('html', require('ejs').renderFile);
+
 app.use(function(req, res, next) {
   logger.info({req: req});
   next();
@@ -45,6 +49,12 @@ app.use(bodyParser.urlencoded({
   extended: false
 }));
 app.use(cookieParser());
+
+app.use(express.static(path.join(__dirname, 'public')));
+
+// app.use('/scripts', express.static(path.join(__dirname, '/scripts')));
+// app.use('/styles', express.static(path.join(__dirname, '/styles')));
+
 app.use(expressValidator());
 
 configureRoutes(app);

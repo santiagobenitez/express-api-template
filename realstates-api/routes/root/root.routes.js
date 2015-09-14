@@ -5,7 +5,7 @@ var userService = require('../../services/user.service');
 
 
 function getRoot(req, res, next) {
-  res.send('<h1>Hello World</h1>');
+  res.render('index.html');
 }
 
 function getRootApi(req, res, next) {
