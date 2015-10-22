@@ -8,6 +8,6 @@ function PagoRepository(model) {
 }
 
 PagoRepository.prototype = Object.create(GenericRepository.prototype);
-PagoRepository.prototype.constructor = PagoRepository;
+
 
 module.exports = new PagoRepository(Pago);

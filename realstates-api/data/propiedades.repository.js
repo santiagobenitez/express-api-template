@@ -8,7 +8,7 @@ function PropiedadRepository(model) {
 }
 
 PropiedadRepository.prototype = Object.create(GenericRepository.prototype);
-PropiedadRepository.prototype.constructor = PropiedadRepository;
+
 
 PropiedadRepository.prototype.create = function(newObj, cb) {
   var newPropiedad = mapFromPropiedad(newObj);

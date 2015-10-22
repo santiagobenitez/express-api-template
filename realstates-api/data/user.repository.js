@@ -8,7 +8,7 @@ function UserRepository(model) {
 }
 
 UserRepository.prototype = Object.create(GenericRepository.prototype);
-UserRepository.prototype.constructor = UserRepository;
+
 
 UserRepository.prototype.getByUserName = function(userName, cb) {
   User.findOne({

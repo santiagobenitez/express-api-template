@@ -8,7 +8,6 @@ function ClienteRepository(model) {
 }
 
 ClienteRepository.prototype = Object.create(GenericRepository.prototype);
-ClienteRepository.prototype.constructor = ClienteRepository;
 
 ClienteRepository.prototype.create = function(newObj, cb) {
   var newCliente = mapFromCliente(newObj);
