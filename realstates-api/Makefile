@@ -7,24 +7,19 @@ test:
 	./node_modules/mocha/bin/mocha \
 	--reporter $(REPORTER) \
 	$(MOCHA_OPTS) \
-	tests/**/*.js
+	tests/middlewares/*.js tests/services/*.js tests/routes/*.js 
 	echo Ending test *************
 
-test-w:
+test-data:
+	clear
+	echo Starting test ***********
 	./node_modules/mocha/bin/mocha \
 	--reporter $(REPORTER) \
-	--growl \
-	--watch \
 	$(MOCHA_OPTS) \
-	tests/**/*.js
+	tests/data/*.js
+	echo Ending test *************
 
-test-cliente-repo:
-	./node_modules/mocha/bin/mocha \
-	--reporter $(REPORTER) \
-	--growl \
-	$(MOCHA_OPTS) \
-	tests/data/cliente.repository.spec.js
-
+test-i: export NODE_ENV = test
 test-i:
 	clear
 	echo Starting test ***********
@@ -34,4 +29,4 @@ test-i:
 	integration-tests/*.js
 	echo Ending test *************
 
-.PHONY: test test-w test-cliente-repo test-i
+.PHONY: test test-i test-data
