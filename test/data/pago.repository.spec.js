@@ -9,26 +9,22 @@ var clienteRepository = require('../../data/cliente.repository');
 var contratoRepository = require('../../data/contrato.repository');
 var mockgoose = require('mockgoose');
 
+var direccion = {
+	codigoPostal: '8000',
+	direccion: 'test test',
+	ciudad: 'test city',
+	provincia: 'test',
+	pais: 'arg'
+};
+
 var newCliente = {
-  direccion: {
-    codigoPostal: '8000',
-    direccion: 'Charlone 650',
-    ciudad: 'bahia blanca',
-    provincia: 'buenos aires',
-    pais: 'argentina'
-  },
+  direccion: direccion,
   nombre: 'santiago',
   apellido: 'benitez',
 };
 
 var newPropiedad = {
-  direccion: {
-    codigoPostal: '8000',
-    direccion: 'Charlone 650',
-    ciudad: 'bahia blanca',
-    provincia: 'buenos aires',
-    pais: 'argentina'
-  },
+  direccion: direccion ,
   ambientes: 1,
   banios: 1,
   expensas: 1,
