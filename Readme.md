@@ -4,6 +4,7 @@ This is a project I started almost a year ago when I was willing to experiment w
 ## Run the app
 
 1- npm install
+
 2- node app
 
 ## Run the tests
