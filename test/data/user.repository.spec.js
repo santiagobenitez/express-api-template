@@ -4,6 +4,8 @@ var mongoose = require('mongoose');
 var expect = require('chai').expect;
 var userRepository = require('../../data/user.repository');
 var mockgoose = require('mockgoose');
+var Promisebb = require('bluebird');
+mongoose.Promise = Promisebb;
 
 var newUser = {
   userName: 'test',
@@ -94,19 +96,17 @@ describe('userRepository', function() {
   describe('getByUserName', function() {
     it('should return the recently created user as part of the result', function(done) {
 
-      userRepository.getByUserName(newUser.userName, function(e, obj) {
+      userRepository.getByUserName(newUser.userName).then(function(obj) {
         expect(obj._id).to.eql(newUser._id);
         done();
       });
     });
 
     it('should return null when the there is not a user with such a userName', function(done) {
-      // 556c217f3bb8bc6017a8f2e8
-      userRepository.getByUserName('santiago', function(e, obj) {
+      userRepository.getByUserName('test123').then(function(obj) {
         expect(obj).to.be.null;
         done();
       });
-
     });
   });
 

@@ -2,25 +2,24 @@
 
 var GenericRepository = require('./generic.repository');
 var User = require('./schemas/user.model');
+var util = require('util');
 
 function UserRepository(model) {
   GenericRepository.call(this, model);
 }
 
-UserRepository.prototype = Object.create(GenericRepository.prototype);
+util.inherits(UserRepository, GenericRepository);
 
-
-UserRepository.prototype.getByUserName = function(userName, cb) {
-  User.findOne({
+UserRepository.prototype.getByUserName = function(userName) {
+  return User.findOne({
     'userName': userName
-  }, function(e, doc) {
+  }).exec().then(function(doc){
+		if (!doc){
+			return null;
+		}
 
-    if (!doc) {
-      return cb(e, null);
-    }
-
-    cb(null, doc.toObject());
-  });
+		return doc.toObject();
+	});
 }
 
 module.exports = new UserRepository(User);
