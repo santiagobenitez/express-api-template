@@ -7,6 +7,7 @@ var GenericRepository = require('../../data/generic.repository');
 var clienteModel = require('../../data/schemas/cliente.model');
 var repository = new GenericRepository(clienteModel);
 var mockgoose = require('mockgoose');
+mongoose.Promise = require('bluebird');
 
 var newCliente = {
 	direccion: {
@@ -34,33 +35,14 @@ describe('generic repository functionality using cliente model', function() {
 		});
 	});
 
-	describe('function declaratios', function() {
-		it('should have create defined', function() {
-			expect(repository.create).to.exist;
-		});
-		it('should have getAll defined', function() {
-			expect(repository.getAll).to.exist;
-		});
-		it('should have remove defined', function() {
-			expect(repository.remove).to.exist;
-		});
-		it('should have update defined', function() {
-			expect(repository.update).to.exist;
-		});
-		it('should have get defined', function() {
-			expect(repository.get).to.exist;
-		});
-	});
-
 	describe('create', function() {
-		it('should create a new propiedad when it is a valid property', function(done) {
+		it('should create a new real estate  when it is a valid real estate', function(done) {
 
-			repository.create(newCliente, function(e, obj) {
-				expect(e).to.be.null;
+			repository.create(newCliente).then(function(obj) {
 				expect(obj).to.exist;
 				newCliente._id = obj._id;
 				done();
-			})
+			});
 		});
 
 		it('should return an error object when the nombre property is not specified', function(done) {
@@ -75,19 +57,18 @@ describe('generic repository functionality using cliente model', function() {
 				apellido: 'last name',
 			};
 
-			repository.create(newCliente, function(e, obj) {
+			repository.create(newCliente).catch(function(e) {
 				expect(e).not.to.be.null;
-				expect(e.nombre.message).to.exist;
+				expect(e.errors.nombre.message).to.exist;
 				done();
 			});
 		});
 	});
 
 	describe('getAll', function() {
-		it('should return the recently created propiedad as part of the result', function(done) {
+		it('should return the recently created real estate as part of the result', function(done) {
 
-			repository.getAll(function(e, objs) {
-				expect(e).to.be.null;
+			repository.getAll().then(function(objs) {
 				expect(objs).to.have.length.above(0);
 				expect(objs.map(function(item) {
 					return item._id
@@ -100,15 +81,14 @@ describe('generic repository functionality using cliente model', function() {
 	describe('get', function() {
 		it('should return the recently created propiedad as part of the result', function(done) {
 
-			repository.get(newCliente._id, function(e, obj) {
-				expect(e).to.be.null;
+			repository.get(newCliente._id).then(function(obj) {
 				expect(obj._id).to.eql(newCliente._id);
 				done();
 			});
 		});
 
 		it('should return an error when the id doesnt exist', function(done) {
-			repository.get(newCliente._id + "a", function(e, obj) {
+			repository.get(newCliente._id + "a").catch(function(e) {
 				expect(e).to.exist;
 				done();
 			});
@@ -118,20 +98,19 @@ describe('generic repository functionality using cliente model', function() {
 	describe('update', function() {
 		it('should update the cliente when the nombre is modified', function(done) {
 
-			newCliente.nombre = 'florencia';
+			newCliente.nombre = 'newname';
 
 
-			repository.update(newCliente._id, newCliente, function(e, obj) {
-				expect(e).to.be.null;
+			repository.update(newCliente._id, newCliente).then(function(obj) {
 				newCliente = obj;
-				expect(obj.nombre).to.eql('florencia');
+				expect(obj.nombre).to.eql('newname');
 				done();
 			});
 		});
 
 		it('should return an error when the id doest exist', function(done) {
 
-			repository.update(newCliente._id + 'a', newCliente, function(e, obj) {
+			repository.update(newCliente._id + 'a', newCliente).catch(function(e) {
 				expect(e).to.exist;
 				done();
 			});
@@ -141,7 +120,7 @@ describe('generic repository functionality using cliente model', function() {
 
 	describe('remove', function() {
 		it('should return an error when the object was not removed', function(done) {
-			repository.remove(newCliente._id + "a", function(e) {
+			repository.remove(newCliente._id + "a").catch(function(e) {
 				expect(e).to.exist;
 				done();
 			});
@@ -149,7 +128,7 @@ describe('generic repository functionality using cliente model', function() {
 
 		it('should return a null error when the recently created propiedad was removed successfuly', function(done) {
 
-			repository.remove(newCliente._id, function(e) {
+			repository.remove(newCliente._id).then(function(e) {
 				expect(e).to.be.null;
 				done();
 			});

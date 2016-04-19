@@ -1,65 +1,39 @@
 'use strict';
 
 function GenericRepository(model) {
-  this.model = model;
+	this.model = model;
 }
 
-GenericRepository.prototype.create = function(newObj, cb) {
-  this.model.create(newObj, function(e, doc) {
-    if (e) {
-      return cb(e.errors, null);
-    }
-
-    //return a plain js object
-    cb(null, doc.toObject());
-  });
+GenericRepository.prototype.create = function(newObj) {
+	return this.model.create(newObj).then(function(doc){
+		return doc.toObject();
+	});
 };
 
-GenericRepository.prototype.get = function(id, cb) {
-  this.model.findById(id, function(e, doc) {
-    if (e) {
-      return cb(e, null);
-    }
-    cb(null, doc ? doc.toObject() : null);
-  });
+GenericRepository.prototype.get = function(id) {
+	return this.model.findById(id).exec().then(function(doc) {
+		return doc.toObject();
+	});
 };
 
-GenericRepository.prototype.getAll = function(cb) {
-  this.model.find().lean().exec(function(e, objs) {
-    if (e) {
-      return cb(e, null);
-    }
-
-    cb(null, objs);
-  });
+GenericRepository.prototype.getAll = function() {
+	return this.model.find().lean().exec().then(function(objs) {
+		return objs;
+	});
 };
 
-GenericRepository.prototype.remove = function remove(id, cb) {
-  this.model.findByIdAndRemove(id, function(e) {
-    if (e) {
-      return cb(e);
-    }
-    return cb(null);
-  });
+GenericRepository.prototype.remove = function(id) {
+	return this.model.findByIdAndRemove(id).exec();
 };
 
-GenericRepository.prototype.update = function(id, obj, cb) {
-
-  delete obj._id;
-  this.model.findById(id, function(e, doc) {
-    if (e) {
-      return cb(e, null);
-    }
-    doc.set(obj);
-    doc.save(function(err) {
-      if (e) {
-        return cb(err, null);
-      }
-
-      //return a plain js object
-      cb(null, doc.toObject());
-    });
-  });
+GenericRepository.prototype.update = function(id, obj) {
+	delete obj._id;
+	return this.model.findById(id).then(function(doc) {
+		doc.set(obj);
+		return  doc.save().then(function(updated_doc) {
+			return updated_doc.toObject();
+		});
+	});
 };
 
 module.exports = GenericRepository;

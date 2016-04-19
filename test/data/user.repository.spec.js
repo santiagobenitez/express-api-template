@@ -4,8 +4,7 @@ var mongoose = require('mongoose');
 var expect = require('chai').expect;
 var userRepository = require('../../data/user.repository');
 var mockgoose = require('mockgoose');
-var Promisebb = require('bluebird');
-mongoose.Promise = Promisebb;
+mongoose.Promise = require('bluebird');
 
 var newUser = {
   userName: 'test',
