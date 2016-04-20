@@ -30,8 +30,7 @@ describe('userRepository', function() {
   describe('create', function() {
     it('should create a new user when it is a valid user', function(done) {
 
-      userRepository.create(newUser, function(e, obj) {
-        expect(e).to.be.null;
+      userRepository.create(newUser).then(function(obj) {
         expect(obj).to.exist;
         newUser._id = obj._id;
         done();
@@ -44,9 +43,9 @@ describe('userRepository', function() {
         activo: true
       };
 
-      userRepository.create(newUser, function(e, obj) {
+      userRepository.create(newUser).catch(function(e) {
         expect(e).not.to.be.null;
-        expect(e.passwordHash.message).to.exist;
+        expect(e.errors.passwordHash.message).to.exist;
         done();
       });
     });
@@ -55,8 +54,7 @@ describe('userRepository', function() {
   describe('getAll', function() {
     it('should return the recently created user as part of the result', function(done) {
 
-      userRepository.getAll(function(e, objs) {
-        expect(e).to.be.null;
+      userRepository.getAll().then(function(objs) {
         expect(objs).to.have.length.above(0);
         expect(objs.map(function(item) {
           return item._id
@@ -69,14 +67,14 @@ describe('userRepository', function() {
   describe('get', function() {
     it('should return the recently created user as part of the result', function(done) {
 
-      userRepository.get(newUser._id, function(e, obj) {
+      userRepository.get(newUser._id).then(function(obj) {
         expect(obj._id).to.eql(newUser._id);
         done();
       });
     });
 
     it('should return an error when the id is invalid', function(done) {
-      userRepository.get(newUser._id + "a", function(e, obj) {
+      userRepository.get(newUser._id + "a").catch(function(e) {
         expect(e).to.exist;
         done();
       });
@@ -84,7 +82,7 @@ describe('userRepository', function() {
 
     it('should return null when the id is valid but the object was not found', function(done) {
       // 556c217f3bb8bc6017a8f2e8
-      userRepository.get('556c217f3bb8bc6017a8f2e5', function(e, obj) {
+      userRepository.get('556c217f3bb8bc6017a8f2e5').then(function(obj) {
         expect(obj).to.be.null;
         done();
       });
@@ -114,8 +112,7 @@ describe('userRepository', function() {
       newUser.passwordHash = 'testEdit'
       newUser.userName = 'userNameEdit';
 
-      userRepository.update(newUser._id, newUser, function(e, obj) {
-        expect(e).to.be.null;
+      userRepository.update(newUser._id, newUser).then(function(obj) {
         newUser = obj;
         expect(newUser.passwordHash).to.eql('testEdit');
         expect(newUser.userName).to.eql('userNameEdit');
@@ -124,7 +121,7 @@ describe('userRepository', function() {
     });
 
     it('should return an error when the id doest exist', function(done) {
-      userRepository.update(newUser._id + 'a', newUser, function(e, obj) {
+      userRepository.update(newUser._id + 'a', newUser).catch(function(e) {
         expect(e).to.exist;
         done();
       });
@@ -134,20 +131,17 @@ describe('userRepository', function() {
 
   describe('remove', function() {
     it('should return an error when the object was not removed', function(done) {
-      userRepository.remove(newUser._id + "a", function(e) {
+      userRepository.remove(newUser._id + "a").catch(function(e) {
         expect(e).to.exist;
         done();
       });
     })
 
     it('should return a null error when the recently created user was removed successfuly', function(done) {
-      userRepository.remove(newUser._id, function(e) {
-        expect(e).to.be.null;
+      userRepository.remove(newUser._id).then(function(e) {
+        expect(e).not.to.exist;
         done();
       });
     });
   });
-
-
-
 });

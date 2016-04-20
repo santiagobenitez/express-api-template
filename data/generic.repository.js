@@ -12,6 +12,9 @@ GenericRepository.prototype.create = function(newObj) {
 
 GenericRepository.prototype.get = function(id) {
 	return this.model.findById(id).exec().then(function(doc) {
+		if (!doc){
+			return null;
+		}
 		return doc.toObject();
 	});
 };
