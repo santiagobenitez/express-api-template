@@ -2,60 +2,45 @@
 
 var GenericRepository = require('./generic.repository');
 var Propiedad =  require('./schemas/propiedad.model');
+var util = require('util');
 
 function PropiedadRepository(model) {
   GenericRepository.call(this, model);
 }
 
-PropiedadRepository.prototype = Object.create(GenericRepository.prototype);
+util.inherits(PropiedadRepository, GenericRepository);
 
-
-PropiedadRepository.prototype.create = function(newObj, cb) {
+PropiedadRepository.prototype.create = function(newObj) {
   var newPropiedad = mapFromPropiedad(newObj);
-  this.model.create(newPropiedad, function(e, obj) {
-    if (e) {
-      return cb(e.errors, null);
-    }
-
+  return this.model.create(newPropiedad).then(function(obj) {
     //return a plain js object
-    cb(null, mapToPropiedad(obj.toObject()));
+    return mapToPropiedad(obj.toObject());
   });
 };
 
-PropiedadRepository.prototype.get = function(id, cb) {
-  this.model.findById(id, function(e, doc) {
-    if (e) {
-      return cb(e, null);
-    }
-    cb(null, doc ? mapToPropiedad(doc.toObject()) : null);
+PropiedadRepository.prototype.get = function(id) {
+  return this.model.findById(id).exec().then(function(doc) {
+    if (!doc){
+			return null;
+		}
+		return mapToPropiedad(doc.toObject());
   });
 };
 
-PropiedadRepository.prototype.getAll = function(cb) {
-  this.model.find().populate('propietario').lean().exec(function(e, objs) {
-    if (e) {
-      return cb(e, null);
-    }
-
-    cb(null, objs.map(mapToPropiedad));
+PropiedadRepository.prototype.getAll = function() {
+  return this.model.find().populate('propietario').lean().exec().then(function(objs) {
+    return objs.map(mapToPropiedad);
   });
 };
 
-PropiedadRepository.prototype.update = function(id, obj, cb) {
+PropiedadRepository.prototype.update = function(id, obj) {
   var propiedadToUpdate = mapFromPropiedad(obj);
   delete obj._id;
-  this.model.findById(id, function(e, doc) {
-    if (e) {
-      return cb(e, null);
-    }
+  return this.model.findById(id).exec().then(function(doc) {
     doc.set(propiedadToUpdate);
-    doc.save(function(err) {
-      if (e) {
-        return cb(err, null);
-      }
-
+    return doc.save().then(function(updated_doc) {
       //return a plain js object
-      cb(null, mapToPropiedad(doc.toObject()));
+      return mapToPropiedad(updated_doc.toObject());
     });
   });
 };
@@ -74,6 +59,5 @@ function mapFromPropiedad(item) {
 
   return item;
 }
-
 
 module.exports = new PropiedadRepository(Propiedad);

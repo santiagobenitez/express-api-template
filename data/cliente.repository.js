@@ -2,60 +2,45 @@
 
 var GenericRepository = require('./generic.repository');
 var Cliente = require('./schemas/cliente.model');
+var util = require('util');
 
 function ClienteRepository(model) {
   GenericRepository.call(this, model);
 }
 
-ClienteRepository.prototype = Object.create(GenericRepository.prototype);
+util.inherits(ClienteRepository, GenericRepository);
 
-ClienteRepository.prototype.create = function(newObj, cb) {
+ClienteRepository.prototype.create = function(newObj) {
   var newCliente = mapFromCliente(newObj);
-  this.model.create(newCliente, function(e, obj) {
-    if (e) {
-      return cb(e.errors, null);
-    }
-
+  return this.model.create(newCliente).then(function(obj) {
     //return a plain js object
-    cb(null, mapToCliente(obj.toObject()));
+    return mapToCliente(obj.toObject());
   });
 };
 
-ClienteRepository.prototype.get = function(id, cb) {
-  this.model.findById(id, function(e, doc) {
-
-    if (e) {
-      return cb(e, null);
-    }
-    cb(null, doc ? mapToCliente(doc.toObject()) : null);
+ClienteRepository.prototype.get = function(id) {
+  return this.model.findById(id).exec().then(function(doc) {
+		if (!doc){
+			return null;
+		}
+		return mapToCliente(doc.toObject());
   });
 };
 
-ClienteRepository.prototype.getAll = function(cb) {
-  this.model.find().lean().exec(function(e, objs) {
-    if (e) {
-      return cb(e, null);
-    }
-
-    cb(null, objs.map(mapToCliente));
+ClienteRepository.prototype.getAll = function() {
+  return this.model.find().lean().exec().then(function(objs) {
+    return objs.map(mapToCliente);
   });
 };
 
-ClienteRepository.prototype.update = function(id, obj, cb) {
+ClienteRepository.prototype.update = function(id, obj) {
   var clienteToUpdate = mapFromCliente(obj);
   delete obj._id;
-  this.model.findById(id, function(e, doc) {
-    if (e) {
-      return cb(e, null);
-    }
+  return this.model.findById(id).then(function(doc) {
     doc.set(clienteToUpdate);
-    doc.save(function(err) {
-      if (e) {
-        return cb(err, null);
-      }
-
+    return doc.save().then(function(updated_doc) {
       //return a plain js object
-      cb(null, mapToCliente(doc.toObject()));
+      return mapToCliente(updated_doc.toObject());
     });
   });
 };
@@ -74,6 +59,5 @@ function mapFromCliente(item) {
 
   return item;
 }
-
 
 module.exports = new ClienteRepository(Cliente);

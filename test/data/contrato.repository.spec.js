@@ -7,6 +7,7 @@ var repository = require('../../data/contrato.repository');
 var propiedadRepository = require('../../data/propiedades.repository');
 var clienteRepository = require('../../data/cliente.repository')
 var mockgoose = require('mockgoose');
+mongoose.Promise = require('bluebird');
 
 var direccion = {
 	codigoPostal: '8000',
@@ -55,12 +56,12 @@ describe('contratoRepository', function() {
 		});
 	});
 	function init_data(done) {
-		clienteRepository.create(newCliente, function(e, obj) {
+		clienteRepository.create(newCliente).then(function(obj) {
 			newCliente._id = obj._id;
 			newPropiedad.propietario = obj._id;
 			newContrato.inquilino = obj._id;
 			newContrato.garante = obj._id;
-			propiedadRepository.create(newPropiedad, function(e, prop) {
+			propiedadRepository.create(newPropiedad).then(function(prop) {
 				newPropiedad._id = prop._id;
 				newContrato.propiedad = prop._id;
 				done();
@@ -68,36 +69,17 @@ describe('contratoRepository', function() {
 		});
 	}
 
-	describe('function declaratios', function() {
-		it('should have create defined', function() {
-			expect(repository.create).to.exist;
-		});
-		it('should have getAll defined', function() {
-			expect(repository.getAll).to.exist;
-		});
-		it('should have remove defined', function() {
-			expect(repository.remove).to.exist;
-		});
-		it('should have update defined', function() {
-			expect(repository.update).to.exist;
-		});
-		it('should have get defined', function() {
-			expect(repository.get).to.exist;
-		});
-	});
-
 	describe('create', function() {
-		it('should create a new contrato when it is a valid property', function(done) {
+		it('should create a new contract when it is a valid contract', function(done) {
 
-			repository.create(newContrato, function(e, obj) {
-				expect(e).to.be.null;
+			repository.create(newContrato).then(function(obj) {
 				expect(obj).to.exist;
 				newContrato._id = obj._id;
 				done();
 			})
 		});
 
-		it('should return an error object when the inquilino property is not specified', function(done) {
+		it('should return an error object when the tenant is not specified', function(done) {
 			var newContrato2 = {
 				fechaHasta: new Date(2015, 6, 18),
 				fechaDesde: new Date(2013, 8, 18),
@@ -108,9 +90,9 @@ describe('contratoRepository', function() {
 				multaDiaria: 100
 			};
 
-			repository.create(newContrato2, function(e, obj) {
+			repository.create(newContrato2).catch(function(e) {
 				expect(e).not.to.be.null;
-				expect(e.inquilino.message).to.exist;
+				expect(e.errors.inquilino.message).to.exist;
 				done();
 			});
 		});
@@ -119,8 +101,7 @@ describe('contratoRepository', function() {
 	describe('getAll', function() {
 		it('should return the recently created contrato as part of the result', function(done) {
 
-			repository.getAll(function(e, objs) {
-				expect(e).to.be.null;
+			repository.getAll().then(function(objs) {
 				expect(objs).to.have.length.above(0);
 				expect(objs.map(function(item) {
 					return item._id
@@ -133,15 +114,14 @@ describe('contratoRepository', function() {
 	describe('get', function() {
 		it('should return the recently created contrato as part of the result', function(done) {
 
-			repository.get(newContrato._id, function(e, obj) {
-				expect(e).to.be.null;
+			repository.get(newContrato._id).then(function(obj) {
 				expect(obj._id).to.eql(newContrato._id);
 				done();
 			});
 		});
 
 		it('should return an error when the id doesnt exist', function(done) {
-			repository.get(newContrato._id + "a", function(e, obj) {
+			repository.get(newContrato._id + "a").catch(function(e) {
 				expect(e).to.exist;
 				done();
 			});
@@ -150,12 +130,8 @@ describe('contratoRepository', function() {
 
 	describe('update', function() {
 		it('should update the contrato when the alquiler is modified', function(done) {
-
 			newContrato.alquiler = 2000;
-
-
-			repository.update(newContrato._id, newContrato, function(e, obj) {
-				expect(e).to.be.null;
+			repository.update(newContrato._id, newContrato).then(function(obj) {
 				newContrato = obj;
 				expect(obj.alquiler).to.eql(2000);
 				done();
@@ -163,27 +139,24 @@ describe('contratoRepository', function() {
 		});
 
 		it('should return an error when the id doest exist', function(done) {
-
-			repository.update(newContrato._id + 'a', newContrato, function(e, obj) {
+			repository.update(newContrato._id + 'a', newContrato).catch(function(e) {
 				expect(e).to.exist;
 				done();
 			});
 		});
 	});
 
-
 	describe('remove', function() {
 		it('should return an error when the object was not removed', function(done) {
-			repository.remove(newContrato._id + "a", function(e) {
+			repository.remove(newContrato._id + "a").catch(function(e) {
 				expect(e).to.exist;
 				done();
 			});
 		})
 
-		it('should return a null error when the recently created contrato was removed successfuly', function(done) {
-
-			repository.remove(newContrato._id, function(e) {
-				expect(e).to.be.null;
+		it('should return a null error when the recently created contract was removed successfuly', function(done) {
+			repository.remove(newContrato._id).then(function(e) {
+				expect(e).not.to.exist;
 				done();
 			});
 		});

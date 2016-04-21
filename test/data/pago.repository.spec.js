@@ -8,6 +8,7 @@ var propiedadRepository = require('../../data/propiedades.repository');
 var clienteRepository = require('../../data/cliente.repository');
 var contratoRepository = require('../../data/contrato.repository');
 var mockgoose = require('mockgoose');
+mongoose.Promise = require('bluebird');
 
 var direccion = {
 	codigoPostal: '8000',
@@ -44,7 +45,7 @@ var newContrato = {
 
 var pago = {
   fecha: new Date(2015, 6, 18),
-  realizadoPor: 'Santiago',
+  realizadoPor: 'new tenant',
   importe: 1000
 }
 
@@ -63,15 +64,15 @@ describe('pagoRepository', function() {
 	});
 
   function init_data(done) {
-    clienteRepository.create(newCliente, function(e, obj) {
+    clienteRepository.create(newCliente).then(function(obj) {
       newCliente._id = obj._id;
       newPropiedad.propietario = obj._id;
       newContrato.inquilino = obj._id;
       newContrato.garante = obj._id;
-      propiedadRepository.create(newPropiedad, function(e, prop) {
+      propiedadRepository.create(newPropiedad).then(function(prop) {
         newPropiedad._id = prop._id;
         newContrato.propiedad = prop._id;
-        contratoRepository.create(newContrato, function(e, cont) {
+        contratoRepository.create(newContrato).then(function(cont) {
           newContrato._id = cont._id;
           pago.contrato = cont._id;
           done();
@@ -80,55 +81,33 @@ describe('pagoRepository', function() {
     });
   }
 
-  describe('function declaratios', function() {
-    it('should have create defined', function() {
-      expect(repository.create).to.exist;
-    });
-    it('should have getAll defined', function() {
-      expect(repository.getAll).to.exist;
-    });
-    it('should have remove defined', function() {
-      expect(repository.remove).to.exist;
-    });
-    it('should have update defined', function() {
-      expect(repository.update).to.exist;
-    });
-    it('should have get defined', function() {
-      expect(repository.get).to.exist;
-    });
-  });
-
   describe('create', function() {
-    it('should create a new pago when it is a valid property', function(done) {
-
-      repository.create(pago, function(e, obj) {
-        expect(e).to.be.null;
+    it('should create a new payment when it is a valid property', function(done) {
+      repository.create(pago).then(function(obj) {
         expect(obj).to.exist;
         pago._id = obj._id;
         done();
       })
     });
 
-    it('should return an error object when the contato property is not specified', function(done) {
+    it('should return an error object when the contactis not specified', function(done) {
       var pago2 = {
         fecha: new Date(2015, 6, 18),
-        realizadoPor: 'Santiago',
+        realizadoPor: 'test',
         importe: 1000
       }
 
-      repository.create(pago2, function(e, obj) {
-        expect(e).not.to.be.null;
-        expect(e.contrato.message).to.exist;
+      repository.create(pago2).catch(function(e) {
+				expect(e).not.to.be.null;
+        expect(e.errors.contrato.message).to.exist;
         done();
       });
     });
   });
 
   describe('getAll', function() {
-    it('should return the recently created pago as part of the result', function(done) {
-
-      repository.getAll(function(e, objs) {
-        expect(e).to.be.null;
+    it('should return the recently created payment as part of the result', function(done) {
+      repository.getAll().then(function(objs) {
         expect(objs).to.have.length.above(0);
         expect(objs.map(function(item) {
           return item._id
@@ -140,16 +119,14 @@ describe('pagoRepository', function() {
 
   describe('get', function() {
     it('should return the recently created pago as part of the result', function(done) {
-
-      repository.get(pago._id, function(e, obj) {
-        expect(e).to.be.null;
+      repository.get(pago._id).then(function(obj) {
         expect(obj._id).to.eql(pago._id);
         done();
       });
     });
 
     it('should return an error when the id doesnt exist', function(done) {
-      repository.get(pago._id + "a", function(e, obj) {
+      repository.get(pago._id + "a").catch(function(e) {
         expect(e).to.exist;
         done();
       });
@@ -157,13 +134,9 @@ describe('pagoRepository', function() {
   });
 
   describe('update', function() {
-    it('should update the pago when the importe is modified', function(done) {
-
+    it('should update the payment when the value is modified', function(done) {
       pago.importe = 2000;
-
-
-      repository.update(pago._id, pago, function(e, obj) {
-        expect(e).to.be.null;
+      repository.update(pago._id, pago).then(function(obj) {
         pago = obj;
         expect(obj.importe).to.eql(2000);
         done();
@@ -171,27 +144,24 @@ describe('pagoRepository', function() {
     });
 
     it('should return an error when the id doest exist', function(done) {
-
-      repository.update(pago._id + 'a', pago, function(e, obj) {
+      repository.update(pago._id + 'a', pago).catch(function(e) {
         expect(e).to.exist;
         done();
       });
     });
   });
 
-
   describe('remove', function() {
     it('should return an error when the object was not removed', function(done) {
-      repository.remove(pago._id + "a", function(e) {
+      repository.remove(pago._id + "a").catch(function(e) {
         expect(e).to.exist;
         done();
       });
     })
 
     it('should return a null error when the recently created pago was removed successfuly', function(done) {
-
-      repository.remove(pago._id, function(e) {
-        expect(e).to.be.null;
+      repository.remove(pago._id).then(function(e) {
+        expect(e).not.to.exist;
         done();
       });
     });

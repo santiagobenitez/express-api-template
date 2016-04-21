@@ -2,12 +2,12 @@
 
 var GenericRepository = require('./generic.repository');
 var Pago =  require('./schemas/pago.model');
+var util = require('util');
 
 function PagoRepository(model) {
   GenericRepository.call(this, model);
 }
 
-PagoRepository.prototype = Object.create(GenericRepository.prototype);
-
+util.inherits(PagoRepository, GenericRepository);
 
 module.exports = new PagoRepository(Pago);

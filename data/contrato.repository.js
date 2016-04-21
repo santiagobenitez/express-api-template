@@ -2,12 +2,12 @@
 
 var GenericRepository = require('./generic.repository');
 var Contrato =  require('./schemas/contrato.model');
+var util = require('util');
 
 function ContratoRepository(model) {
   GenericRepository.call(this, model);
 }
 
-ContratoRepository.prototype = Object.create(GenericRepository.prototype);
-
+util.inherits(ContratoRepository, GenericRepository);
 
 module.exports = new ContratoRepository(Contrato);
