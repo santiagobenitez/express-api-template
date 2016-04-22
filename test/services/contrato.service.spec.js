@@ -4,39 +4,19 @@ var contratoRepository = require('../../data/contrato.repository');
 var contratoService = require('../../services/contrato.service');
 var expect = require('chai').expect;
 var sinon = require('sinon');
+var Promise = require('bluebird');
 
 describe('contratoService', function() {
-
-  describe('function declaration/definition', function() {
-    it('should have create defined', function() {
-      expect(contratoService.create).to.exist;
-    });
-    it('should have getAll defined', function() {
-      expect(contratoService.getAll).to.exist;
-    });
-    it('should have get defined', function() {
-      expect(contratoService.get).to.exist;
-    });
-    it('should have remove defined', function() {
-      expect(contratoService.remove).to.exist;
-    });
-    it('shoud have update defined', function() {
-      expect(contratoService.update).to.exist;
-    });
-  });
-
   describe('create', function() {
-
-    it('should call create of the contratoRepository with a contrato of alquiler 1000 when it is called with such a contrato', function() {
+    it('should call create of the contratoRepository with a contract of 1000 per month  when it is called with such a contract', function() {
       var contrato = {
         alquiler: 1000
       };
       var mock = sinon.mock(contratoRepository);
       mock.expects('create').withArgs(contrato).exactly(1);
 
-      contratoService.create(contrato, function(e, obj) {});
-
-      mock.verify();
+      contratoService.create(contrato);
+			mock.verify();
     });
   });
 
@@ -50,35 +30,35 @@ describe('contratoService', function() {
       var mock = sinon.mock(contratoRepository);
       mock.expects('getAll').exactly(1);
 
-      contratoService.getAll(function(e, obj) {});
+      contratoService.getAll();
 
       mock.verify();
     });
 
-    it('should call the cb function with an error when getAll returns an error', function() {
-
+    it('should return a rejected promise when getAll returns an error', function(done) {
       var stub = sinon.stub(contratoRepository, 'getAll');
       var error = new Error('unexpected error');
-      var inputCallbackSpy = sinon.spy();
-
-      contratoService.getAll(inputCallbackSpy);
+      stub.returns(Promise.reject(error));
+      var promise = contratoService.getAll();
       //call the function gave to our repository stub
-      stub.getCall(0).args[0](error, null);
-      expect(inputCallbackSpy.getCall(0).args[0]).to.eql(error);
+			promise.catch(function(e){
+				expect(e).to.eql(error);
+				done();
+			});
     });
 
-    it('should call the cb function with the results returned by the repository when there are no errors', function() {
-
+    it('should return a fulfilled promise with the results returned by the repository when there are no errors', function(done) {
       var stub = sinon.stub(contratoRepository, 'getAll');
       var objs = [{
         _id: '123'
       }];
-      var inputCallbackSpy = sinon.spy();
-
-      contratoService.getAll(inputCallbackSpy);
+      stub.returns(Promise.resolve(objs));
+      var promise = contratoService.getAll();
       //call the function gave to our repository stub
-      stub.getCall(0).args[0](null, objs);
-      expect(inputCallbackSpy.getCall(0).args[1]).to.eql(objs);
+			promise.then(function(result){
+      	expect(result).to.eql(objs);
+				done();
+			});
     });
   });
 
@@ -92,37 +72,39 @@ describe('contratoService', function() {
       var mock = sinon.mock(contratoRepository);
       mock.expects('get').exactly(1).withArgs(id);
 
-      contratoService.get(id, function(e, obj) {});
-
+      contratoService.get(id);
       mock.verify();
     });
 
-    it('should call the cb function with an error when get returns an error', function() {
+    it('should return a rejected promise  with an error when get returns an error', function(done) {
       var id = 1;
 
       var stub = sinon.stub(contratoRepository, 'get');
       var error = new Error('unexpected error');
-      var inputCallbackSpy = sinon.spy();
+      stub.returns(Promise.reject(error));
 
-      contratoService.get(id, inputCallbackSpy);
+      var promise = contratoService.get(id);
       //call the function gave to our repository stub
-      stub.getCall(0).args[1](error, null);
-      expect(inputCallbackSpy.getCall(0).args[0]).to.eql(error);
+			promise.catch(function(e){
+      	expect(e).to.eql(error);
+				done();
+			});
     });
 
-    it('should call the cb function with the results returned by the repository when there are no errors', function() {
+    it('should a fulfilled promise with the results returned by the repository when there are no errors', function(done) {
       var id = 1;
 
       var stub = sinon.stub(contratoRepository, 'get');
       var obj = {
         _id: '123'
       };
-      var inputCallbackSpy = sinon.spy();
-
-      contratoService.get(id, inputCallbackSpy);
+      stub.returns(Promise.resolve(obj));
+      var promise = contratoService.get(id);
       //call the function gave to our repository stub
-      stub.getCall(0).args[1](null, obj);
-      expect(inputCallbackSpy.getCall(0).args[1]).to.eql(obj);
+			promise.then(function(o){
+      	expect(o).to.eql(obj);
+				done();
+			});
     });
   });
 
@@ -136,37 +118,40 @@ describe('contratoService', function() {
       var mock = sinon.mock(contratoRepository);
       mock.expects('remove').exactly(1).withArgs(id);
 
-      contratoService.remove(id, function(e, obj) {});
+      contratoService.remove(id);
 
       mock.verify();
     });
 
-    it('should call the cb function with an error when remove returns an error', function() {
+    it('should return a rejected promise with an error when remove returns an error', function(done) {
       var id = 1;
 
       var stub = sinon.stub(contratoRepository, 'remove');
       var error = new Error('unexpected error');
-      var inputCallbackSpy = sinon.spy();
+      stub.returns(Promise.reject(error));
 
-      contratoService.remove(id, inputCallbackSpy);
+      var promise = contratoService.remove(id);
       //call the function gave to our repository stub
-      stub.getCall(0).args[1](error, null);
-      expect(inputCallbackSpy.getCall(0).args[0]).to.eql(error);
+			promise.catch(function(e){
+      	expect(e).to.eql(error);
+				done();
+			});
     });
 
-    it('should call the cb function with a null error when there are no errors while removing the contrato', function() {
+    it('should return a fulfilled promise without data  when there are no errors while removing the contrato', function(done) {
       var id = 1;
 
       var stub = sinon.stub(contratoRepository, 'remove');
       var obj = {
         _id: '123'
       };
-      var inputCallbackSpy = sinon.spy();
-
-      contratoService.remove(id, inputCallbackSpy);
+      stub.returns(Promise.resolve());
+      var promise = contratoService.remove(id);
       //call the function gave to our repository stub
-      stub.getCall(0).args[1](null, obj);
-      expect(inputCallbackSpy.getCall(0).args[0]).to.be.null;
+			promise.then(function(e){
+      	expect(e).not.to.exist;
+				done();
+			})
     });
   });
 
@@ -183,28 +168,28 @@ describe('contratoService', function() {
       var mock = sinon.mock(contratoRepository);
       mock.expects('update').exactly(1).withArgs(id, updatecontrato);
 
-      contratoService.update(id, updatecontrato, function(e, obj) {});
+      contratoService.update(id, updatecontrato);
 
       mock.verify();
     });
 
-    it('should call the cb function with an error when update returns an error', function() {
+    it('should return a rejected promise with an error when update returns an error', function(done) {
       var id = 1;
       var updatecontrato = {
         apellido: 'test'
       };
-
       var stub = sinon.stub(contratoRepository, 'update');
       var error = new Error('unexpected error');
-      var inputCallbackSpy = sinon.spy();
-
-      contratoService.update(id, updatecontrato, inputCallbackSpy);
+      stub.returns(Promise.reject(error));
+      var promise = contratoService.update(id, updatecontrato);
       //call the function gave to our repository stub
-      stub.getCall(0).args[2](error, null);
-      expect(inputCallbackSpy.getCall(0).args[0]).to.eql(error);
+			promise.catch(function(e){
+				expect(e).to.eql(error);
+				done();
+			});
     });
 
-    it('should call the cb function with the results returned by the repository when there are no errors', function() {
+    it('should return a fulfilled promise with the results returned by the repository when there are no errors', function(done) {
       var id = 1;
       var updatecontrato = {
         apellido: 'test'
@@ -215,12 +200,14 @@ describe('contratoService', function() {
         apellido: 'test',
         _id: 1
       };
-      var inputCallbackSpy = sinon.spy();
+      stub.returns(Promise.resolve(updatedcontrato));
 
-      contratoService.update(id, updatecontrato, inputCallbackSpy);
+      var promise = contratoService.update(id, updatecontrato);
       //call the function gave to our repository stub
-      stub.getCall(0).args[2](null, updatedcontrato);
-      expect(inputCallbackSpy.getCall(0).args[1]).to.eql(updatedcontrato);
+			promise.then(function(o){
+				expect(o).to.eql(updatedcontrato);
+				done();
+			})
     });
   });
 });

@@ -2,57 +2,24 @@
 
 var contratoRepository = require('../data/contrato.repository');
 
-function create(newObj, cb) {
-  contratoRepository.create(newObj, function(e, obj) {
-    if (e) {
-      return cb(e, null);
-    }
-
-    cb(null, obj);
-  });
+function create(newObj) {
+  return contratoRepository.create(newObj);
 }
 
-function getAll(cb) {
-  contratoRepository.getAll(function(e, objs) {
-
-    if (e) {
-      return cb(e, null);
-    }
-
-    cb(null, objs);
-  });
+function getAll() {
+  return contratoRepository.getAll();
 }
 
-function get(id, cb) {
-  contratoRepository.get(id, function(e, obj) {
-
-    if (e) {
-      return cb(e, null);
-    }
-    cb(null, obj);
-  });
+function get(id) {
+  return contratoRepository.get(id);
 }
 
-function remove(id, cb) {
-  contratoRepository.remove(id, function(e) {
-
-    if (e) {
-      return cb(e);
-    }
-
-    cb(null);
-  });
+function remove(id) {
+  return contratoRepository.remove(id);
 }
 
-function update(id, objToUpdate, cb) {
-  contratoRepository.update(id, objToUpdate, function(e, obj) {
-
-    if (e) {
-      return cb(e, null);
-    }
-
-    cb(null, obj);
-  });
+function update(id, objToUpdate) {
+  return contratoRepository.update(id, objToUpdate);
 }
 
 
