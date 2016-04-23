@@ -2,57 +2,24 @@
 
 var pagoRepository = require('../data/pago.repository');
 
-function create(newObj, cb) {
-  pagoRepository.create(newObj, function(e, obj) {
-    if (e) {
-      return cb(e, null);
-    }
-
-    cb(null, obj);
-  });
+function create(newObj) {
+  return pagoRepository.create(newObj);
 }
 
-function getAll(cb) {
-  pagoRepository.getAll(function(e, objs) {
-
-    if (e) {
-      return cb(e, null);
-    }
-
-    cb(null, objs);
-  });
+function getAll() {
+  return pagoRepository.getAll();
 }
 
-function get(id, cb) {
-  pagoRepository.get(id, function(e, obj) {
-
-    if (e) {
-      return cb(e, null);
-    }
-    cb(null, obj);
-  });
+function get(id) {
+  return pagoRepository.get(id);
 }
 
-function remove(id, cb) {
-  pagoRepository.remove(id, function(e) {
-
-    if (e) {
-      return cb(e);
-    }
-
-    cb(null);
-  });
+function remove(id){
+  return pagoRepository.remove(id);
 }
 
-function update(id, objToUpdate, cb) {
-  pagoRepository.update(id, objToUpdate, function(e, obj) {
-
-    if (e) {
-      return cb(e, null);
-    }
-
-    cb(null, obj);
-  });
+function update(id, objToUpdate) {
+  return pagoRepository.update(id, objToUpdate);
 }
 
 
