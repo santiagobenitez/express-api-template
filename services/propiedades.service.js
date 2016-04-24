@@ -2,58 +2,24 @@
 
 var propiedadesRepository = require('../data/propiedades.repository');
 
-function create(newPropiedad, cb) {
-  propiedadesRepository.create(newPropiedad, function(e, obj) {
-    if (e) {
-      return cb(e, null);
-    }
-
-    cb(null, obj);
-  });
+function create(newPropiedad) {
+  return propiedadesRepository.create(newPropiedad);
 }
 
-function getAll(cb) {
-  propiedadesRepository.getAll(function(e, objs) {
-
-    if (e) {
-      return cb(e, null);
-    }
-
-    cb(null, objs);
-  });
+function getAll() {
+  return propiedadesRepository.getAll();
 }
 
-function get(id, cb) {
-  propiedadesRepository.get(id, function(e, obj) {
-
-    if (e) {
-      return cb(e, null);
-    }
-
-    cb(null, obj);
-  });
+function get(id) {
+  return propiedadesRepository.get(id);
 }
 
-function remove(id, cb) {
-  propiedadesRepository.remove(id, function(e) {
-
-    if (e) {
-      return cb(e);
-    }
-
-    cb(null);
-  });
+function remove(id) {
+  return propiedadesRepository.remove(id);
 }
 
-function update(id, objToUpdate, cb) {
-  propiedadesRepository.update(id, objToUpdate, function(e, obj) {
-
-    if (e) {
-      return cb(e, null);
-    }
-
-    cb(null, obj);
-  });
+function update(id, objToUpdate) {
+  return propiedadesRepository.update(id, objToUpdate);
 }
 
 

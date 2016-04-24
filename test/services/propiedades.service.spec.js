@@ -4,28 +4,20 @@ var propiedadesRepository = require('../../data/propiedades.repository');
 var propiedadesService = require('../../services/propiedades.service');
 var expect = require('chai').expect;
 var sinon = require('sinon');
+var Promise = require('bluebird');
 
 describe('propiedadesService', function() {
 
-  describe('function declaration/definition', function() {
-    it('should have create defined', function() {
-      expect(propiedadesService.create).to.exist;
-    });
-    it('should have getAll defined', function() {
-      expect(propiedadesService.getAll).to.exist;
-    });
-  });
-
   describe('create', function() {
 
-    it('should call create of the propiedadesRepository with a propiedad of two ambientes when it is called with such a propiedad', function() {
+    it('should call create of the propiedadesRepository with a real estate of two rooms  when it is called', function() {
       var propiedad = {
         ambientes: 2
       };
       var mock = sinon.mock(propiedadesRepository);
       mock.expects('create').withArgs(propiedad).exactly(1);
 
-      propiedadesService.create(propiedad, function(e, obj) {});
+      propiedadesService.create(propiedad);
 
       mock.verify();
     });
@@ -41,35 +33,37 @@ describe('propiedadesService', function() {
       var mock = sinon.mock(propiedadesRepository);
       mock.expects('getAll').exactly(1);
 
-      propiedadesService.getAll(function(e, obj) {});
+      propiedadesService.getAll();
 
       mock.verify();
     });
 
-    it('should call the cb function with an error when getAll returns an error', function() {
+    it('should return a rejected promise with an error when getAll returns an error', function(done) {
 
       var stub = sinon.stub(propiedadesRepository, 'getAll');
       var error = new Error('unexpected error');
-      var inputCallbackSpy = sinon.spy();
+      stub.returns(Promise.reject(error));
 
-      propiedadesService.getAll(inputCallbackSpy);
-      //call the function gave to our repository stub
-      stub.getCall(0).args[0](error, null);
-      expect(inputCallbackSpy.getCall(0).args[0]).to.eql(error);
+      var promise = propiedadesService.getAll();
+			promise.catch(function(e){
+				expect(e).to.eql(error);
+				done();
+			});
     });
 
-    it('should call the cb function with the results returned by the repository when there are no errors', function() {
+    it('should return a fulfilled promise with the results returned by the repository when there are no errors', function(done) {
 
       var stub = sinon.stub(propiedadesRepository, 'getAll');
       var objs = [{
         _id: '123'
       }];
-      var inputCallbackSpy = sinon.spy();
 
-      propiedadesService.getAll(inputCallbackSpy);
-      //call the function gave to our repository stub
-      stub.getCall(0).args[0](null, objs);
-      expect(inputCallbackSpy.getCall(0).args[1]).to.eql(objs);
+      stub.returns(Promise.resolve(objs));
+      var promise = propiedadesService.getAll();
+      promise.then(function(o){
+				expect(o).to.eql(objs);
+				done();
+			});
     });
   });
 
@@ -83,37 +77,39 @@ describe('propiedadesService', function() {
       var mock = sinon.mock(propiedadesRepository);
       mock.expects('get').exactly(1).withArgs(id);
 
-      propiedadesService.get(id, function(e, obj) {});
+      propiedadesService.get(id);
 
       mock.verify();
     });
 
-    it('should call the cb function with an error when get returns an error', function() {
+    it('should return a rejected promise with an error when get returns an error', function(done) {
       var id = 1;
 
       var stub = sinon.stub(propiedadesRepository, 'get');
       var error = new Error('unexpected error');
-      var inputCallbackSpy = sinon.spy();
+      stub.returns(Promise.reject(error));
 
-      propiedadesService.get(id, inputCallbackSpy);
-      //call the function gave to our repository stub
-      stub.getCall(0).args[1](error, null);
-      expect(inputCallbackSpy.getCall(0).args[0]).to.eql(error);
+      var promise = propiedadesService.get(id);
+			promise.catch(function(e){
+				expect(e).to.eql(error);
+				done();
+			});	
     });
 
-    it('should call the cb function with the results returned by the repository when there are no errors', function() {
+    it('should return a fulfilled promise  with the results returned by the repository when there are no errors', function(done) {
       var id = 1;
 
       var stub = sinon.stub(propiedadesRepository, 'get');
       var obj = {
         _id: '123'
       };
-      var inputCallbackSpy = sinon.spy();
+      stub.returns(Promise.resolve(obj));
 
-      propiedadesService.get(id, inputCallbackSpy);
-      //call the function gave to our repository stub
-      stub.getCall(0).args[1](null, obj);
-      expect(inputCallbackSpy.getCall(0).args[1]).to.eql(obj);
+      var promise = propiedadesService.get(id);
+			promise.then(function(o){
+				expect(o).to.eql(obj);
+				done();
+			});
     });
   });
 
@@ -130,12 +126,12 @@ describe('propiedadesService', function() {
       var mock = sinon.mock(propiedadesRepository);
       mock.expects('update').exactly(1).withArgs(id, updatePropiedad);
 
-      propiedadesService.update(id, updatePropiedad, function(e, obj) {});
+      propiedadesService.update(id, updatePropiedad);
 
       mock.verify();
     });
 
-    it('should call the cb function with an error when update returns an error', function() {
+    it('should return a rejected promise with an error when update returns an error', function(done) {
       var id = 1;
       var updatePropiedad = {
         ambientes: 1
@@ -143,15 +139,15 @@ describe('propiedadesService', function() {
 
       var stub = sinon.stub(propiedadesRepository, 'update');
       var error = new Error('unexpected error');
-      var inputCallbackSpy = sinon.spy();
-
-      propiedadesService.update(id, updatePropiedad, inputCallbackSpy);
-      //call the function gave to our repository stub
-      stub.getCall(0).args[2](error, null);
-      expect(inputCallbackSpy.getCall(0).args[0]).to.eql(error);
+      stub.returns(Promise.reject(error));
+      var promise = propiedadesService.update(id, updatePropiedad);
+			promise.catch(function(e){
+				expect(e).to.eql(error);
+				done();
+			});
     });
 
-    it('should call the cb function with the results returned by the repository when there are no errors', function() {
+    it('should return a fulfilled promise with the results returned by the repository when there are no errors', function(done) {
       var id = 1;
       var updatePropiedad = {
         ambientes: 1
@@ -162,12 +158,13 @@ describe('propiedadesService', function() {
         ambientes: 1,
         _id: 1
       };
-      var inputCallbackSpy = sinon.spy();
+      stub.returns(Promise.resolve(updatedPropiedad));
 
-      propiedadesService.update(id, updatePropiedad, inputCallbackSpy);
-      //call the function gave to our repository stub
-      stub.getCall(0).args[2](null, updatedPropiedad);
-      expect(inputCallbackSpy.getCall(0).args[1]).to.eql(updatedPropiedad);
+      var promise = propiedadesService.update(id, updatePropiedad);
+			promise.then(function(prop){
+				expect(prop).to.eql(updatedPropiedad);
+				done();
+			});
     });
   });
 
@@ -181,37 +178,39 @@ describe('propiedadesService', function() {
       var mock = sinon.mock(propiedadesRepository);
       mock.expects('remove').exactly(1).withArgs(id);
 
-      propiedadesService.remove(id, function(e, obj) {});
+      propiedadesService.remove(id);
 
       mock.verify();
     });
 
-    it('should call the cb function with an error when remove returns an error', function() {
+    it('should return a rejected promise with an error when remove returns an error', function(done) {
       var id = 1;
 
       var stub = sinon.stub(propiedadesRepository, 'remove');
       var error = new Error('unexpected error');
-      var inputCallbackSpy = sinon.spy();
+      stub.returns(Promise.reject(error));
 
-      propiedadesService.remove(id, inputCallbackSpy);
-      //call the function gave to our repository stub
-      stub.getCall(0).args[1](error, null);
-      expect(inputCallbackSpy.getCall(0).args[0]).to.eql(error);
+      var promise = propiedadesService.remove(id);
+			promise.catch(function(e){
+				expect(e).to.eql(error);
+				done();
+			});
     });
 
-    it('should call the cb function with a null error when there are no errors while removing the propiedada', function() {
+    it('should return a fulfilled promise when there are no errors while removing the real estate', function(done) {
       var id = 1;
 
       var stub = sinon.stub(propiedadesRepository, 'remove');
       var obj = {
         _id: '123'
       };
-      var inputCallbackSpy = sinon.spy();
+      stub.returns(Promise.resolve());
 
-      propiedadesService.remove(id, inputCallbackSpy);
-      //call the function gave to our repository stub
-      stub.getCall(0).args[1](null, obj);
-      expect(inputCallbackSpy.getCall(0).args[0]).to.be.null;
+      var promise = propiedadesService.remove(id);
+			promise.then(function(){
+				expect(true).to.be.ok;
+				done();
+			});
     });
   });
 });
