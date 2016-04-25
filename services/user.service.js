@@ -2,104 +2,78 @@
 
 var userRepository = require('../data/user.repository');
 var bcrypt = require('bcryptjs');
+var Promise = require('bluebird'); //jshint ignore:line
 
-function create(newObj, cb) {
-  bcrypt.hash(newObj.password, 8, function(err, hash) {
-    if (err) {
-      return cb(err, null);
-    }
-    newObj.passwordHash = hash;
-    userRepository.create(newObj, function(e, obj) {
-      if (e) {
-        return cb(e, null);
-      }
-
-      cb(null, obj);
-    });
-  });
+function create(newObj) {
+	return hashAsync(newObj.password).then(function(hash){
+		newObj.passwordHash = hash;
+		return userRepository.create(newObj);
+	});
 }
 
-function getAll(cb) {
-  userRepository.getAll(function(e, objs) {
-
-    if (e) {
-      return cb(e, null);
-    }
-
-    cb(null, objs);
-  });
+function getAll() {
+	return userRepository.getAll();
 }
 
-function get(id, cb) {
-  userRepository.get(id, function(e, obj) {
-
-    if (e) {
-      return cb(e, null);
-    }
-    cb(null, obj);
-  });
+function get(id) {
+	return userRepository.get(id); 
 }
 
-function remove(id, cb) {
-  userRepository.remove(id, function(e) {
-
-    if (e) {
-      return cb(e);
-    }
-
-    cb(null);
-  });
+function remove(id) {
+	return userRepository.remove(id);
 }
 
-function update(id, objToUpdate, cb) {
-  bcrypt.hash(objToUpdate.password, 8, function(err, hash) {
-    if (err) {
-      return cb(err, null);
-    }
-    objToUpdate.passwordHash = hash;
-    userRepository.update(id, objToUpdate, function(e, obj) {
-
-      if (e) {
-        return cb(e, null);
-      }
-
-      cb(null, obj);
-    });
-  });
+function update(id, objToUpdate) {
+	return hashAsync(objToUpdate.password).then(function(hash){
+		objToUpdate.passwordHash = hash;
+		return userRepository.update(id, objToUpdate);
+	});
 }
 
-function getByCredentials(userName, password, cb) {
+function getByCredentials(userName, password) {
+	return userRepository.getByUserName(userName).then(function(user){
+		if (!user){
+			return null;
+		}
 
-  userRepository.getByUserName(userName, function(e, user) {
-
-    if(e){
-      return cb(e, null);
-    }
-
-    if(!user){
-      return cb(null, null);
-    }
-
-    bcrypt.compare(password, user.passwordHash, function (e, result) {
-
-      if(result){
-        return cb(null, user);
-      }
-
-      cb(null, null);
-    });
-
-  })
+		return compareAsync(password, user.passwordHash).then(function(result){
+			if(!result){
+				return null;
+			}
+			return user;
+		});
+	});
 }
 
+function hashAsync(pass){
+	return new Promise(function(resolve, reject){
+		bcrypt.hash(pass, 8, function(err, hash) {
+			if (err) {
+				return reject(err);
+			}
+			resolve(hash);
+		});
+	});
+}
+
+function compareAsync(password, passwordHash){
+	return new Promise(function(resolve, reject){
+		bcrypt.compare(password, passwordHash, function (e, result) {
+			if(e){
+				return reject(e);
+			}
+			resolve(result);
+		});
+	});
+}
 
 module.exports = {
-  create: create,
-  getAll: getAll,
-  get: get,
-  remove: remove,
-  update: update,
-  getByCredentials: getByCredentials
+	create: create,
+	getAll: getAll,
+	get: get,
+	remove: remove,
+	update: update,
+	getByCredentials: getByCredentials
 }
 
 
