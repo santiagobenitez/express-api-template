@@ -5,27 +5,21 @@ var propiedadesRoutes = require('../../routes/propiedades/propiedades.routes');
 var sinon = require('sinon');
 var expect = require('chai').expect;
 var logger = require('../../helpers/logger');
+var Promise = require('bluebird');
 
 describe('propiedadesRoutes', function() {
-  before(function() {
-    sinon.stub(logger, 'info');
-    sinon.stub(logger, 'error');
-  });
-
-  after(function() {
-    logger.error.restore();
-    logger.info.restore();
-  });
-
-
-	describe('function declarations', function() {
-		it('should have post defined', function() {
-			expect(propiedadesRoutes.post).to.exist;
-		})
+	before(function() {
+		sinon.stub(logger, 'info');
+		sinon.stub(logger, 'error');
 	});
 
-	describe('post', function() {
+	after(function() {
+		logger.error.restore();
+		logger.info.restore();
+	});
 
+
+	describe('post', function() {
 		afterEach(function() {
 			if (propiedadesService.create.restore) {
 				propiedadesService.create.restore();
@@ -37,13 +31,15 @@ describe('propiedadesRoutes', function() {
 			var req = {
 				body: {}
 			};
-			mock.expects('create').exactly(1).withArgs(req.body);
+			mock.expects('create').withArgs(req.body).exactly(1).returns({
+				then: function(){return {catch: function(){}};}
+			});
 
 			propiedadesRoutes.post(req, null, null);
 			mock.verify();
 		});
 
-		it('should call next with the error given by the propiedadesService when there is an error in the creation of a propiedad', function() {
+		it('should call next with the error given by the propiedadesService when there is an error in the creation of a propiedad', function(done) {
 			var _cb;
 			var stub = sinon.stub(propiedadesService, 'create');
 			var nextSpy = sinon.spy();
@@ -52,15 +48,16 @@ describe('propiedadesRoutes', function() {
 			var req = {
 				body: {}
 			};
-
+			var rejectedPromise = Promise.reject(error);
+			stub.returns(rejectedPromise);
 			propiedadesRoutes.post(req, null, nextSpy);
-			_cb = stub.getCall(0).args[1];
-			_cb(error, null);
-
-			expect(nextSpy.withArgs(error).calledOnce).to.be.true;
+			setTimeout(function(){
+				expect(nextSpy.withArgs(error).calledOnce).to.be.true;
+				done();
+			});
 		});
 
-		it('should call res with status 200 and the id provided when the propiedad was successfuly created', function() {
+		it('should call res with status 200 and the id provided when the propiedad was successfuly created', function(done) {
 			var _cb;
 			var stub = sinon.stub(propiedadesService, 'create');
 			var jsonObj = {
@@ -74,14 +71,13 @@ describe('propiedadesRoutes', function() {
 
 			statusStub.onFirstCall().returns(jsonObj);
 			var req = {};
+			stub.returns(Promise.resolve({_id: '123'}));
 			propiedadesRoutes.post(req, resObj, null);
-			_cb = stub.getCall(0).args[1];
-			_cb(null, {
-				_id: '123'
+			setTimeout(function(){
+				expect(resObj.status.getCall(0).args[0]).to.eql(200);
+				expect(jsonSpy.getCall(0).args[0]._id).to.eql("123");
+				done();
 			});
-
-			expect(resObj.status.getCall(0).args[0]).to.eql(200);
-			expect(jsonSpy.getCall(0).args[0]._id).to.eql("123");
 		});
 
 	});
@@ -92,18 +88,7 @@ describe('propiedadesRoutes', function() {
 			if (propiedadesService.getAll.restore) propiedadesService.getAll.restore();
 		});
 
-		it('should call propiedadesService to get all the propiedades when it is called', function() {
-			var mock = sinon.mock(propiedadesService);
-			var req = {
-				body: {}
-			};
-			mock.expects('getAll').exactly(1);
-
-			propiedadesRoutes.getAll(req, null, null);
-			mock.verify();
-		});
-
-		it('should call next with the error given by the propiedadesService when there is an error in the getAll call', function() {
+		it('should call next with the error given by the propiedadesService when there is an error in the getAll call', function(done) {
 			var _cb;
 			var stub = sinon.stub(propiedadesService, 'getAll');
 			var nextSpy = sinon.spy();
@@ -113,14 +98,15 @@ describe('propiedadesRoutes', function() {
 				body: {}
 			};
 
+			stub.returns(Promise.reject(error));
 			propiedadesRoutes.getAll(req, null, nextSpy);
-			_cb = stub.getCall(0).args[0];
-			_cb(error, null);
-
-			expect(nextSpy.withArgs(error).calledOnce).to.be.true;
+			setTimeout(function(){
+				expect(nextSpy.withArgs(error).calledOnce).to.be.true;
+				done();
+			});
 		});
 
-		it('should call res with status 200 and the items provided when the propidades were returned successfuly', function() {
+		it('should call res with status 200 and the items provided when the propidades were returned successfuly', function(done) {
 			var _cb;
 			var stub = sinon.stub(propiedadesService, 'getAll');
 			var jsonObj = {
@@ -134,18 +120,15 @@ describe('propiedadesRoutes', function() {
 
 			statusStub.onFirstCall().returns(jsonObj);
 			var req = {};
+			var items = [{_id: '123'}];
+			stub.returns(Promise.resolve(items));
 			propiedadesRoutes.getAll(req, resObj, null);
-			_cb = stub.getCall(0).args[0];
-			var items = [{
-				_id: '123'
-			}];
-			_cb(null, items);
-
-			expect(resObj.status.getCall(0).args[0]).to.eql(200);
-			expect(jsonSpy.getCall(0).args[0].items).to.eql(items);
-
+			setTimeout(function(){
+				expect(resObj.status.getCall(0).args[0]).to.eql(200);
+				expect(jsonSpy.getCall(0).args[0].items).to.eql(items);
+				done();
+			});
 		});
-
 	});
 
 	describe('get', function() {
@@ -154,20 +137,7 @@ describe('propiedadesRoutes', function() {
 			if (propiedadesService.get.restore) propiedadesService.get.restore();
 		});
 
-		it('should call propiedadesService to get the propiedad with the id specified in the params', function() {
-			var mock = sinon.mock(propiedadesService);
-			var req = {
-				params: {
-					id: '123'
-				}
-			};
-			mock.expects('get').exactly(1).withArgs(req.params.id);
-
-			propiedadesRoutes.get(req, null, null);
-			mock.verify();
-		});
-
-		it('should call next with the error given by the propiedadesService when there is an error in the get call', function() {
+		it('should call next with the error given by the propiedadesService when there is an error in the get call', function(done) {
 			var _cb;
 			var stub = sinon.stub(propiedadesService, 'get');
 			var nextSpy = sinon.spy();
@@ -178,15 +148,15 @@ describe('propiedadesRoutes', function() {
 					id: '123'
 				}
 			};
-
+			stub.returns(Promise.reject(error));
 			propiedadesRoutes.get(req, null, nextSpy);
-			_cb = stub.getCall(0).args[1];
-			_cb(error, null);
-
-			expect(nextSpy.withArgs(error).calledOnce).to.be.true;
+			setTimeout(function(){
+				expect(nextSpy.withArgs(error).calledOnce).to.be.true;
+				done();
+			});
 		});
 
-		it('should call next with the error of not found 404 when the object return by the propiedadService is null', function() {
+		it('should call next with the error of not found 404 when the object return by the propiedadService is null', function(done) {
 			var _cb;
 			var stub = sinon.stub(propiedadesService, 'get');
 			var nextSpy = sinon.spy();
@@ -196,15 +166,15 @@ describe('propiedadesRoutes', function() {
 					id: '123'
 				}
 			};
-
+			stub.returns(Promise.resolve(null));
 			propiedadesRoutes.get(req, null, nextSpy);
-			_cb = stub.getCall(0).args[1];
-			_cb(null, null);
-
-			expect(nextSpy.getCall(0).args[0].status).to.eql(404);
+			setTimeout(function(){
+				expect(nextSpy.getCall(0).args[0].status).to.eql(404);
+				done();
+			});
 		});
 
-		it('should call res with status 200 and the propiedad when the propidad was returned successfuly', function() {
+		it('should call res with status 200 and the propiedad when the real estate was returned successfuly', function(done) {
 
 			var _cb;
 			var stub = sinon.stub(propiedadesService, 'get');
@@ -217,23 +187,21 @@ describe('propiedadesRoutes', function() {
 			var jsonSpy = sinon.spy(jsonObj, 'json');
 			var statusStub = sinon.stub(resObj, 'status');
 
-			statusStub.onFirstCall().returns(jsonObj);
+			statusStub.returns(jsonObj);
 			var req = {
 				params: {
 					id: '123'
 				}
 			};
+			var item = {_id: '123'};
+			stub.returns(Promise.resolve(item));
 			propiedadesRoutes.get(req, resObj, null);
-			_cb = stub.getCall(0).args[1];
-			var item = {
-				_id: '123'
-			};
-			_cb(null, item);
-
-			expect(resObj.status.getCall(0).args[0]).to.eql(200);
-			expect(jsonSpy.getCall(0).args[0]._id).to.eql(item._id);
+			setTimeout(function(){
+				expect(resObj.status.getCall(0).args[0]).to.eql(200);
+				expect(jsonSpy.getCall(0).args[0]._id).to.eql(item._id);
+				done();
+			});
 		});
-
 	});
 
 	describe('remove', function() {
@@ -242,20 +210,7 @@ describe('propiedadesRoutes', function() {
 			if (propiedadesService.remove.restore) propiedadesService.remove.restore();
 		});
 
-		it('should call propiedadesService to remove the propiedad with the id specified in the params', function() {
-			var mock = sinon.mock(propiedadesService);
-			var req = {
-				params: {
-					id: '123'
-				}
-			};
-			mock.expects('remove').exactly(1).withArgs(req.params.id);
-
-			propiedadesRoutes.remove(req, null, null);
-			mock.verify();
-		});
-
-		it('should call next with the error given by the propiedadesService when there is an error in the remove call', function() {
+		it('should call next with the error given by the propiedadesService when there is an error in the remove call', function(done) {
 			var _cb;
 			var stub = sinon.stub(propiedadesService, 'remove');
 			var nextSpy = sinon.spy();
@@ -266,16 +221,16 @@ describe('propiedadesRoutes', function() {
 					id: '123'
 				}
 			};
+			stub.returns(Promise.reject(error));
 
 			propiedadesRoutes.remove(req, null, nextSpy);
-			_cb = stub.getCall(0).args[1];
-			_cb(error, null);
-
-			expect(nextSpy.withArgs(error).calledOnce).to.be.true;
+			setTimeout(function(){
+				expect(nextSpy.withArgs(error).calledOnce).to.be.true;
+				done();
+			});
 		});
 
-		it('should call res with status 200 when the propidad was removed successfuly', function() {
-
+		it('should call res with status 200 when the real estate was removed successfuly', function(done) {
 			var _cb;
 			var stub = sinon.stub(propiedadesService, 'remove');
 			var endfn = {
@@ -293,15 +248,14 @@ describe('propiedadesRoutes', function() {
 					id: '123'
 				}
 			};
+			stub.returns(Promise.resolve());
 			propiedadesRoutes.remove(req, resObj, null);
-			_cb = stub.getCall(0).args[1];
-
-			_cb(null);
-
-			expect(resObj.status.getCall(0).args[0]).to.eql(200);
-			expect(endSpy.calledOnce).to.be.true;
+			setTimeout(function(){
+				expect(resObj.status.getCall(0).args[0]).to.eql(200);
+				expect(endSpy.calledOnce).to.be.true;
+				done();
+			});
 		});
-
 	});
 
 	describe('update', function() {
@@ -310,7 +264,7 @@ describe('propiedadesRoutes', function() {
 			if (propiedadesService.update.restore) propiedadesService.update.restore();
 		});
 
-		it('should call propiedadesService to update the propiedad with the id specified in the params', function() {
+		it('should call propiedadesService to update the real estate with the id specified in the params', function() {
 			var mock = sinon.mock(propiedadesService);
 			var req = {
 				params: {
@@ -321,13 +275,17 @@ describe('propiedadesRoutes', function() {
 				}
 			};
 
-			mock.expects('update').exactly(1).withArgs(req.params.id, req.body);
+			mock.expects('update').exactly(1).withArgs(req.params.id, req.body).returns(
+				{
+					then: function(){ return {catch: function(){}};}
+				}
+			);
 
 			propiedadesRoutes.update(req, null, null);
 			mock.verify();
 		});
 
-		it('should call next with the error given by the propiedadesService when there is an error in the update call', function() {
+		it('should call next with the error given by the propiedadesService when there is an error in the update call', function(done) {
 			var _cb;
 			var stub = sinon.stub(propiedadesService, 'update');
 			var nextSpy = sinon.spy();
@@ -341,15 +299,16 @@ describe('propiedadesRoutes', function() {
 					ambientes: 1
 				}
 			};
+			stub.returns(Promise.reject(error));
 
 			propiedadesRoutes.update(req, null, nextSpy);
-			_cb = stub.getCall(0).args[2];
-			_cb(error, null);
-
-			expect(nextSpy.withArgs(error).calledOnce).to.be.true;
+			setTimeout(function(){
+				expect(nextSpy.withArgs(error).calledOnce).to.be.true;
+				done();
+			});
 		});
 
-		it('should call res with status 200 and the propiedad when the propiedad was updated successfuly', function() {
+		it('should call res with status 200 and the propiedad when the real estate was updated successfuly', function(done) {
 
 			var _cb;
 			var stub = sinon.stub(propiedadesService, 'update');
@@ -371,15 +330,16 @@ describe('propiedadesRoutes', function() {
 					ambientes: 1
 				}
 			};
-			propiedadesRoutes.update(req, resObj, null);
-			_cb = stub.getCall(0).args[2];
 			var item = {
 				_id: '123'
 			};
-			_cb(null, item);
-
-			expect(resObj.status.getCall(0).args[0]).to.eql(200);
-			expect(jsonSpy.getCall(0).args[0]._id).to.eql(item._id);
+			stub.returns(Promise.resolve(item));
+			propiedadesRoutes.update(req, resObj, null);
+			setTimeout(function(){
+				expect(resObj.status.getCall(0).args[0]).to.eql(200);
+				expect(jsonSpy.getCall(0).args[0]._id).to.eql(item._id);
+				done();
+			});
 		});
 	});
 });
