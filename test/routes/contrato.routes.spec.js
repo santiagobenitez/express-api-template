@@ -5,6 +5,7 @@ var contratoRoutes = require('../../routes/contratos/contrato.routes');
 var sinon = require('sinon');
 var expect = require('chai').expect;
 var logger = require('../../helpers/logger');
+var Promise = require('Bluebird');
 
 describe('contratoRoutes', function() {
   before(function() {
@@ -17,25 +18,6 @@ describe('contratoRoutes', function() {
     logger.info.restore();
   });
 
-
-  describe('function declarations', function() {
-    it('should have post defined', function() {
-      expect(contratoRoutes.post).to.exist;
-    });
-    it('should have get defined', function() {
-      expect(contratoRoutes.get).to.exist;
-    });
-    it('should have getAll defined', function() {
-      expect(contratoRoutes.getAll).to.exist;
-    });
-    it('should have remove defined', function() {
-      expect(contratoRoutes.remove).to.exist;
-    });
-    it('should have update defined', function() {
-      expect(contratoRoutes.update).to.exist;
-    });
-  });
-
   describe('post', function() {
 
     afterEach(function() {
@@ -44,18 +26,7 @@ describe('contratoRoutes', function() {
       }
     });
 
-    it('should call contratoService create when is called with the information provided', function() {
-      var mock = sinon.mock(contratoService);
-      var req = {
-        body: {}
-      };
-      mock.expects('create').exactly(1).withArgs(req.body);
-
-      contratoRoutes.post(req, null, null);
-      mock.verify();
-    });
-
-    it('should call next with the error given by the contratoService when there is an error in the creation of a contrato', function() {
+    it('should call next with the error given by the contratoService when there is an error in the creation of a contract', function(done) {
       var _cb;
       var stub = sinon.stub(contratoService, 'create');
       var nextSpy = sinon.spy();
@@ -64,15 +35,16 @@ describe('contratoRoutes', function() {
       var req = {
         body: {}
       };
+			stub.returns(Promise.reject(error));
 
       contratoRoutes.post(req, null, nextSpy);
-      _cb = stub.getCall(0).args[1];
-      _cb(error, null);
-
-      expect(nextSpy.withArgs(error).calledOnce).to.be.true;
+			setTimeout(function(){
+				expect(nextSpy.withArgs(error).calledOnce).to.be.true;
+				done();
+			});
     });
 
-    it('should call res with status 200 and the id provided when the contrato was successfuly created', function() {
+    it('should call res with status 200 and the id provided when the contract was successfuly created', function(done) {
       var _cb;
       var stub = sinon.stub(contratoService, 'create');
       var jsonObj = {
@@ -84,16 +56,15 @@ describe('contratoRoutes', function() {
       var jsonSpy = sinon.spy(jsonObj, 'json');
       var statusStub = sinon.stub(resObj, 'status');
 
-      statusStub.onFirstCall().returns(jsonObj);
+      statusStub.returns(jsonObj);
+			stub.returns(Promise.resolve({_id: '123'}));
       var req = {};
       contratoRoutes.post(req, resObj, null);
-      _cb = stub.getCall(0).args[1];
-      _cb(null, {
-        _id: '123'
-      });
-
-      expect(resObj.status.getCall(0).args[0]).to.eql(200);
-      expect(jsonSpy.getCall(0).args[0]._id).to.eql("123");
+			setTimeout(function(){
+				expect(resObj.status.getCall(0).args[0]).to.eql(200);
+				expect(jsonSpy.getCall(0).args[0]._id).to.eql("123");
+				done();
+			});
     });
 
   });
@@ -104,18 +75,7 @@ describe('contratoRoutes', function() {
       if (contratoService.getAll.restore) contratoService.getAll.restore();
     });
 
-    it('should call contratoService to get all the contratos when it is called', function() {
-      var mock = sinon.mock(contratoService);
-      var req = {
-        body: {}
-      };
-      mock.expects('getAll').exactly(1);
-
-      contratoRoutes.getAll(req, null, null);
-      mock.verify();
-    });
-
-    it('should call next with the error given by the contratoService when there is an error in the getAll call', function() {
+		it('should call next with the error given by the contratoService when there is an error in the getAll call', function(done) {
       var _cb;
       var stub = sinon.stub(contratoService, 'getAll');
       var nextSpy = sinon.spy();
@@ -124,15 +84,16 @@ describe('contratoRoutes', function() {
       var req = {
         body: {}
       };
+			stub.returns(Promise.reject(error));
 
       contratoRoutes.getAll(req, null, nextSpy);
-      _cb = stub.getCall(0).args[0];
-      _cb(error, null);
-
-      expect(nextSpy.withArgs(error).calledOnce).to.be.true;
+			setTimeout(function(){
+      	expect(nextSpy.withArgs(error).calledOnce).to.be.true;
+				done();
+			});
     });
 
-    it('should call res with status 200 and the items provided when the contratos were returned successfuly', function() {
+    it('should call res with status 200 and the items provided when the contracts were returned successfuly', function(done) {
       var _cb;
       var stub = sinon.stub(contratoService, 'getAll');
       var jsonObj = {
@@ -144,42 +105,29 @@ describe('contratoRoutes', function() {
       var jsonSpy = sinon.spy(jsonObj, 'json');
       var statusStub = sinon.stub(resObj, 'status');
 
-      statusStub.onFirstCall().returns(jsonObj);
       var req = {};
-      contratoRoutes.getAll(req, resObj, null);
-      _cb = stub.getCall(0).args[0];
       var items = [{
         _id: '123'
       }];
-      _cb(null, items);
-
-      expect(resObj.status.getCall(0).args[0]).to.eql(200);
-      expect(jsonSpy.getCall(0).args[0].items).to.eql(items);
-
-    });
+      
+			statusStub.returns(jsonObj);
+			stub.returns(Promise.resolve(items));
+      contratoRoutes.getAll(req, resObj, null);
+			setTimeout(function(){
+				expect(resObj.status.getCall(0).args[0]).to.eql(200);
+				expect(jsonSpy.getCall(0).args[0].items).to.eql(items);
+				done();
+			});
+		});
 
   });
 
   describe('get', function() {
-
     afterEach(function() {
       if (contratoService.get.restore) contratoService.get.restore();
     });
 
-    it('should call contratoService to get the contrato with the id specified in the params', function() {
-      var mock = sinon.mock(contratoService);
-      var req = {
-        params: {
-          id: '123'
-        }
-      };
-      mock.expects('get').exactly(1).withArgs(req.params.id);
-
-      contratoRoutes.get(req, null, null);
-      mock.verify();
-    });
-
-    it('should call next with the error given by the contratoService when there is an error in the get call', function() {
+		it('should call next with the error given by the contratoService when there is an error in the get call', function(done) {
       var _cb;
       var stub = sinon.stub(contratoService, 'get');
       var nextSpy = sinon.spy();
@@ -190,34 +138,32 @@ describe('contratoRoutes', function() {
           id: '123'
         }
       };
-
+			stub.returns(Promise.reject(error));
       contratoRoutes.get(req, null, nextSpy);
-      _cb = stub.getCall(0).args[1];
-      _cb(error, null);
-
-      expect(nextSpy.withArgs(error).calledOnce).to.be.true;
+			setTimeout(function(){
+				expect(nextSpy.withArgs(error).calledOnce).to.be.true;
+				done();
+			});
     });
 
-    it('should call next with the error of not found 404 when the object return by the contratoService is null', function() {
+    it('should call next with the error of not found 404 when the object return by the contratoService is null', function(done) {
       var _cb;
       var stub = sinon.stub(contratoService, 'get');
       var nextSpy = sinon.spy();
-
       var req = {
         params: {
           id: '123'
         }
       };
+			stub.returns(Promise.resolve(null));
+			contratoRoutes.get(req, null, nextSpy);
+			setTimeout(function(){
+				expect(nextSpy.getCall(0).args[0].status).to.eql(404);
+				done();
+			});
+		});
 
-      contratoRoutes.get(req, null, nextSpy);
-      _cb = stub.getCall(0).args[1];
-      _cb(null, null);
-
-      expect(nextSpy.getCall(0).args[0].status).to.eql(404);
-    });
-
-    it('should call res with status 200 and the propiedad when the contrato was returned successfuly', function() {
-
+    it('should call res with status 200 and the contract when the contract was returned successfuly', function(done) {
       var _cb;
       var stub = sinon.stub(contratoService, 'get');
       var jsonObj = {
@@ -234,17 +180,18 @@ describe('contratoRoutes', function() {
         params: {
           id: '123'
         }
-      };
-      contratoRoutes.get(req, resObj, null);
-      _cb = stub.getCall(0).args[1];
-      var item = {
+      }
+			var item = {
         _id: '123'
       };
-      _cb(null, item);
-
-      expect(resObj.status.getCall(0).args[0]).to.eql(200);
-      expect(jsonSpy.getCall(0).args[0]._id).to.eql(item._id);
-    });
+		  stub.returns(Promise.resolve(item));
+			contratoRoutes.get(req, resObj, null);
+			setTimeout(function(){
+				expect(resObj.status.getCall(0).args[0]).to.eql(200);
+				expect(jsonSpy.getCall(0).args[0]._id).to.eql(item._id);
+				done();
+			});
+		});
 
   });
 
@@ -254,20 +201,7 @@ describe('contratoRoutes', function() {
       if (contratoService.remove.restore) contratoService.remove.restore();
     });
 
-    it('should call contratoService to remove the contrato with the id specified in the params', function() {
-      var mock = sinon.mock(contratoService);
-      var req = {
-        params: {
-          id: '123'
-        }
-      };
-      mock.expects('remove').exactly(1).withArgs(req.params.id);
-
-      contratoRoutes.remove(req, null, null);
-      mock.verify();
-    });
-
-    it('should call next with the error given by the contratoService when there is an error in the remove call', function() {
+		it('should call next with the error given by the contratoService when there is an error in the remove call', function(done) {
       var _cb;
       var stub = sinon.stub(contratoService, 'remove');
       var nextSpy = sinon.spy();
@@ -278,15 +212,17 @@ describe('contratoRoutes', function() {
           id: '123'
         }
       };
+			stub.returns(Promise.reject(error));
 
       contratoRoutes.remove(req, null, nextSpy);
-      _cb = stub.getCall(0).args[1];
-      _cb(error, null);
 
-      expect(nextSpy.withArgs(error).calledOnce).to.be.true;
-    });
+			setTimeout(function(){
+				expect(nextSpy.withArgs(error).calledOnce).to.be.true;
+				done();
+			});
+		});
 
-    it('should call res with status 200 when the contrato was removed successfuly', function() {
+    it('should call res with status 200 when the contract was removed successfuly', function(done) {
 
       var _cb;
       var stub = sinon.stub(contratoService, 'remove');
@@ -299,45 +235,27 @@ describe('contratoRoutes', function() {
       var endSpy = sinon.spy(endfn, 'end');
       var statusStub = sinon.stub(resObj, 'status');
 
-      statusStub.onFirstCall().returns(endfn);
+      statusStub.returns(endfn);
       var req = {
         params: {
           id: '123'
         }
       };
-      contratoRoutes.remove(req, resObj, null);
-      _cb = stub.getCall(0).args[1];
-
-      _cb(null);
-
-      expect(resObj.status.getCall(0).args[0]).to.eql(200);
-      expect(endSpy.calledOnce).to.be.true;
-    });
-
+			stub.returns(Promise.resolve());
+			contratoRoutes.remove(req, resObj, null);
+			setTimeout(function(){
+				expect(resObj.status.getCall(0).args[0]).to.eql(200);
+				expect(endSpy.calledOnce).to.be.true;
+				done();
+			});
+		});
   });
   describe('update', function() {
-
     afterEach(function() {
       if (contratoService.update.restore) contratoService.update.restore();
     });
 
-    it('should call contratoService to update the contrato with the id specified in the params', function() {
-      var mock = sinon.mock(contratoService);
-      var req = {
-        params: {
-          id: '123'
-        },
-        body: {
-          nombre: 'santiago'
-        }
-      };
-      mock.expects('update').exactly(1).withArgs(req.params.id, req.body);
-
-      contratoRoutes.update(req, null, null);
-      mock.verify();
-    });
-
-    it('should call next with the error given by the contratoService when there is an error in the update call', function() {
+		it('should call next with the error given by the contratoService when there is an error in the update call', function(done) {
       var _cb;
       var stub = sinon.stub(contratoService, 'update');
       var nextSpy = sinon.spy();
@@ -351,15 +269,15 @@ describe('contratoRoutes', function() {
           nombre:'santiago'
         }
       };
+			stub.returns(Promise.reject(error));
+			contratoRoutes.update(req, null, nextSpy);
+			setTimeout(function(){
+				expect(nextSpy.withArgs(error).calledOnce).to.be.true;
+				done();
+			});
+		});
 
-      contratoRoutes.update(req, null, nextSpy);
-      _cb = stub.getCall(0).args[2];
-      _cb(error, null);
-
-      expect(nextSpy.withArgs(error).calledOnce).to.be.true;
-    });
-
-    it('should call res with status 200 and the contrato when the contrato was updated successfuly', function() {
+    it('should call res with status 200 and the contract when the contrato was updated successfuly', function(done) {
 
       var _cb;
       var stub = sinon.stub(contratoService, 'update');
@@ -372,7 +290,7 @@ describe('contratoRoutes', function() {
       var jsonSpy = sinon.spy(jsonObj, 'json');
       var statusStub = sinon.stub(resObj, 'status');
 
-      statusStub.onFirstCall().returns(jsonObj);
+      statusStub.returns(jsonObj);
       var req = {
         params: {
           id: '123'
@@ -381,16 +299,16 @@ describe('contratoRoutes', function() {
           nombre:'santiago'
         }
       };
-      contratoRoutes.update(req, resObj, null);
-      _cb = stub.getCall(0).args[2];
       var item = {
         _id: '123'
       };
-      _cb(null, item);
-
-      expect(resObj.status.getCall(0).args[0]).to.eql(200);
-      expect(jsonSpy.getCall(0).args[0]._id).to.eql(item._id);
-    });
-
+			stub.returns(Promise.resolve(item));
+			contratoRoutes.update(req, resObj, null);
+			setTimeout(function(){
+				expect(resObj.status.getCall(0).args[0]).to.eql(200);
+				expect(jsonSpy.getCall(0).args[0]._id).to.eql(item._id);
+				done();
+			});
+		});
   });
 });
