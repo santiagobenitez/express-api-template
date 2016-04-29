@@ -5,6 +5,7 @@ var pagoRoutes = require('../../routes/pagos/pago.routes');
 var sinon = require('sinon');
 var expect = require('chai').expect;
 var logger = require('../../helpers/logger');
+var Promise = require('bluebird');
 
 describe('pagoRoutes', function() {
  before(function() {
@@ -17,25 +18,6 @@ describe('pagoRoutes', function() {
     logger.info.restore();
   });
 
-
-  describe('function declarations', function() {
-    it('should have post defined', function() {
-      expect(pagoRoutes.post).to.exist;
-    });
-    it('should have get defined', function() {
-      expect(pagoRoutes.get).to.exist;
-    });
-    it('should have getAll defined', function() {
-      expect(pagoRoutes.getAll).to.exist;
-    });
-    it('should have remove defined', function() {
-      expect(pagoRoutes.remove).to.exist;
-    });
-    it('should have update defined', function() {
-      expect(pagoRoutes.update).to.exist;
-    });
-  });
-
   describe('post', function() {
 
     afterEach(function() {
@@ -44,18 +26,7 @@ describe('pagoRoutes', function() {
       }
     });
 
-    it('should call pagoService with the body of the request', function() {
-      var mock = sinon.mock(pagoService);
-      var req = {
-        body: {}
-      };
-      mock.expects('create').exactly(1).withArgs(req.body);
-
-      pagoRoutes.post(req, null, null);
-      mock.verify();
-    });
-
-    it('should call next with the error given by the pagoService when there is an error in the creation of a pago', function() {
+		it('should call next with the error given by the pagoService when there is an error in the creation of a payment', function(done) {
       var _cb;
       var stub = sinon.stub(pagoService, 'create');
       var nextSpy = sinon.spy();
@@ -64,15 +35,16 @@ describe('pagoRoutes', function() {
       var req = {
         body: {}
       };
+			stub.returns(Promise.reject(error));
 
-      pagoRoutes.post(req, null, nextSpy);
-      _cb = stub.getCall(0).args[1];
-      _cb(error, null);
-
-      expect(nextSpy.withArgs(error).calledOnce).to.be.true;
+			pagoRoutes.post(req, null, nextSpy);
+			setTimeout(function(){
+				expect(nextSpy.withArgs(error).calledOnce).to.be.true;
+				done();
+			});
     });
 
-    it('should call res with status 200 and the id provided when the pago was successfuly created', function() {
+    it('should call res with status 200 and the id provided when the pago was successfuly created', function(done) {
       var _cb;
       var stub = sinon.stub(pagoService, 'create');
       var jsonObj = {
@@ -84,18 +56,16 @@ describe('pagoRoutes', function() {
       var jsonSpy = sinon.spy(jsonObj, 'json');
       var statusStub = sinon.stub(resObj, 'status');
 
-      statusStub.onFirstCall().returns(jsonObj);
+      statusStub.returns(jsonObj);
       var req = {};
-      pagoRoutes.post(req, resObj, null);
-      _cb = stub.getCall(0).args[1];
-      _cb(null, {
-        _id: '123'
-      });
-
-      expect(resObj.status.getCall(0).args[0]).to.eql(200);
-      expect(jsonSpy.getCall(0).args[0]._id).to.eql("123");
+			stub.returns(Promise.resolve({_id: '123'}))
+			pagoRoutes.post(req, resObj, null);
+			setTimeout(function(){
+				expect(resObj.status.getCall(0).args[0]).to.eql(200);
+				expect(jsonSpy.getCall(0).args[0]._id).to.eql("123");
+				done();
+			});
     });
-
   });
 
   describe('getAll', function() {
@@ -104,18 +74,7 @@ describe('pagoRoutes', function() {
       if (pagoService.getAll.restore) pagoService.getAll.restore();
     });
 
-    it('should call pagoService to get all the pagos when it is called', function() {
-      var mock = sinon.mock(pagoService);
-      var req = {
-        body: {}
-      };
-      mock.expects('getAll').exactly(1);
-
-      pagoRoutes.getAll(req, null, null);
-      mock.verify();
-    });
-
-    it('should call next with the error given by the pagoService when there is an error in the getAll call', function() {
+		it('should call next with the error given by the pagoService when there is an error in the getAll call', function(done) {
       var _cb;
       var stub = sinon.stub(pagoService, 'getAll');
       var nextSpy = sinon.spy();
@@ -124,15 +83,16 @@ describe('pagoRoutes', function() {
       var req = {
         body: {}
       };
+			stub.returns(Promise.reject(error));
 
       pagoRoutes.getAll(req, null, nextSpy);
-      _cb = stub.getCall(0).args[0];
-      _cb(error, null);
-
-      expect(nextSpy.withArgs(error).calledOnce).to.be.true;
+			setTimeout(function(){
+				expect(nextSpy.withArgs(error).calledOnce).to.be.true;
+				done();
+			});
     });
 
-    it('should call res with status 200 and the items provided when the pagos were returned successfuly', function() {
+    it('should call res with status 200 and the items provided when the payments were returned successfuly', function(done) {
       var _cb;
       var stub = sinon.stub(pagoService, 'getAll');
       var jsonObj = {
@@ -144,26 +104,26 @@ describe('pagoRoutes', function() {
       var jsonSpy = sinon.spy(jsonObj, 'json');
       var statusStub = sinon.stub(resObj, 'status');
 
-      statusStub.onFirstCall().returns(jsonObj);
+      statusStub.returns(jsonObj);
       var req = {
         params: {
           contratoid: '1'
         }
       };
-      pagoRoutes.getAll(req, resObj, null);
-      _cb = stub.getCall(0).args[0];
       var items = [{
         _id: '123',
         contrato: '1'
       }];
-      _cb(null, items);
-
-      expect(resObj.status.getCall(0).args[0]).to.eql(200);
-      expect(jsonSpy.getCall(0).args[0].items).to.eql(items);
-
+			stub.returns(Promise.resolve(items));
+      pagoRoutes.getAll(req, resObj, null);
+			setTimeout(function(){
+				expect(resObj.status.getCall(0).args[0]).to.eql(200);
+				expect(jsonSpy.getCall(0).args[0].items).to.eql(items);
+				done();
+			});
     });
-
-    it('should only returns the pagos associated with the contrato that is part of the request', function() {
+    
+		it('should only returns the payments associated with the contrato that is part of the request', function(done) {
       var _cb;
       var stub = sinon.stub(pagoService, 'getAll');
       var jsonObj = {
@@ -181,9 +141,6 @@ describe('pagoRoutes', function() {
           contratoid: '1'
         }
       };
-      pagoRoutes.getAll(req, resObj, null);
-      _cb = stub.getCall(0).args[0];
-
       var items = [{
         _id: '123',
         contrato: '2'
@@ -191,34 +148,22 @@ describe('pagoRoutes', function() {
         _id: '124',
         contrato: '1'
       }];
-
-      _cb(null, items);
-
-      expect(jsonSpy.getCall(0).args[0].items.length).to.eql(1);
-      expect(jsonSpy.getCall(0).args[0].items[0]._id).to.eql('124');
-    });
-  });
+			stub.returns(Promise.resolve(items));
+			pagoRoutes.getAll(req, resObj, null);
+			setTimeout(function(){
+				expect(jsonSpy.getCall(0).args[0].items.length).to.eql(1);
+				expect(jsonSpy.getCall(0).args[0].items[0]._id).to.eql('124');
+				done();
+			});
+		});
+	});
 
   describe('get', function() {
-
     afterEach(function() {
       if (pagoService.get.restore) pagoService.get.restore();
     });
 
-    it('should call pagoService to get the pago with the id specified in the params', function() {
-      var mock = sinon.mock(pagoService);
-      var req = {
-        params: {
-          id: '123'
-        }
-      };
-      mock.expects('get').exactly(1).withArgs(req.params.id);
-
-      pagoRoutes.get(req, null, null);
-      mock.verify();
-    });
-
-    it('should call next with the error given by the pagoService when there is an error in the get call', function() {
+		it('should call next with the error given by the pagoService when there is an error in the get call', function(done) {
       var _cb;
       var stub = sinon.stub(pagoService, 'get');
       var nextSpy = sinon.spy();
@@ -229,15 +174,16 @@ describe('pagoRoutes', function() {
           id: '123'
         }
       };
-
+			
+			stub.returns(Promise.reject(error));
       pagoRoutes.get(req, null, nextSpy);
-      _cb = stub.getCall(0).args[1];
-      _cb(error, null);
-
-      expect(nextSpy.withArgs(error).calledOnce).to.be.true;
+			setTimeout(function(){
+				expect(nextSpy.withArgs(error).calledOnce).to.be.true;
+				done();
+			});
     });
 
-    it('should call next with the error of not found 404 when the object return by the pagoService is null', function() {
+    it('should call next with the error of not found 404 when the object return by the pagoService is null', function(done) {
       var _cb;
       var stub = sinon.stub(pagoService, 'get');
       var nextSpy = sinon.spy();
@@ -248,14 +194,15 @@ describe('pagoRoutes', function() {
         }
       };
 
-      pagoRoutes.get(req, null, nextSpy);
-      _cb = stub.getCall(0).args[1];
-      _cb(null, null);
+			stub.returns(Promise.resolve(null));
+			pagoRoutes.get(req, null, nextSpy);
+			setTimeout(function(){
+				expect(nextSpy.getCall(0).args[0].status).to.eql(404);
+				done();
+			});
+		});
 
-      expect(nextSpy.getCall(0).args[0].status).to.eql(404);
-    });
-
-    it('should call res with status 200 and the propiedad when the pago was returned successfuly', function() {
+    it('should call res with status 200 and the payment  when the pago was returned successfuly', function(done) {
 
       var _cb;
       var stub = sinon.stub(pagoService, 'get');
@@ -268,45 +215,31 @@ describe('pagoRoutes', function() {
       var jsonSpy = sinon.spy(jsonObj, 'json');
       var statusStub = sinon.stub(resObj, 'status');
 
-      statusStub.onFirstCall().returns(jsonObj);
+      statusStub.returns(jsonObj);
       var req = {
         params: {
           id: '123'
         }
       };
-      pagoRoutes.get(req, resObj, null);
-      _cb = stub.getCall(0).args[1];
       var item = {
         _id: '123'
       };
-      _cb(null, item);
-
-      expect(resObj.status.getCall(0).args[0]).to.eql(200);
-      expect(jsonSpy.getCall(0).args[0]._id).to.eql(item._id);
-    });
-
+			stub.returns(Promise.resolve(item));
+      pagoRoutes.get(req, resObj, null);
+			setTimeout(function(){
+				expect(resObj.status.getCall(0).args[0]).to.eql(200);
+				expect(jsonSpy.getCall(0).args[0]._id).to.eql(item._id);
+				done();
+			});
+		});
   });
 
   describe('remove', function() {
-
     afterEach(function() {
       if (pagoService.remove.restore) pagoService.remove.restore();
     });
 
-    it('should call pagoService to remove the pago with the id specified in the params', function() {
-      var mock = sinon.mock(pagoService);
-      var req = {
-        params: {
-          id: '123'
-        }
-      };
-      mock.expects('remove').exactly(1).withArgs(req.params.id);
-
-      pagoRoutes.remove(req, null, null);
-      mock.verify();
-    });
-
-    it('should call next with the error given by the pagoService when there is an error in the remove call', function() {
+		it('should call next with the error given by the pagoService when there is an error in the remove call', function(done) {
       var _cb;
       var stub = sinon.stub(pagoService, 'remove');
       var nextSpy = sinon.spy();
@@ -317,16 +250,15 @@ describe('pagoRoutes', function() {
           id: '123'
         }
       };
-
-      pagoRoutes.remove(req, null, nextSpy);
-      _cb = stub.getCall(0).args[1];
-      _cb(error, null);
-
-      expect(nextSpy.withArgs(error).calledOnce).to.be.true;
+			stub.returns(Promise.reject(error));
+			pagoRoutes.remove(req, null, nextSpy);
+			setTimeout(function(){
+				expect(nextSpy.withArgs(error).calledOnce).to.be.true;
+				done();
+			});
     });
 
-    it('should call res with status 200 when the pago was removed successfuly', function() {
-
+    it('should call res with status 200 when the pago was removed successfuly', function(done) {
       var _cb;
       var stub = sinon.stub(pagoService, 'remove');
       var endfn = {
@@ -344,39 +276,21 @@ describe('pagoRoutes', function() {
           id: '123'
         }
       };
+			stub.returns(Promise.resolve());
       pagoRoutes.remove(req, resObj, null);
-      _cb = stub.getCall(0).args[1];
-
-      _cb(null);
-
-      expect(resObj.status.getCall(0).args[0]).to.eql(200);
-      expect(endSpy.calledOnce).to.be.true;
+			setTimeout(function(){
+				expect(resObj.status.getCall(0).args[0]).to.eql(200);
+				expect(endSpy.calledOnce).to.be.true;
+				done();
+			});
     });
 
   });
   describe('update', function() {
-
     afterEach(function() {
       if (pagoService.update.restore) pagoService.update.restore();
     });
-
-    it('should call pagoService to update the pago with the id specified in the params', function() {
-      var mock = sinon.mock(pagoService);
-      var req = {
-        params: {
-          id: '123'
-        },
-        body: {
-          importe: 123
-        }
-      };
-      mock.expects('update').exactly(1).withArgs(req.params.id, req.body);
-
-      pagoRoutes.update(req, null, null);
-      mock.verify();
-    });
-
-    it('should call next with the error given by the pagoService when there is an error in the update call', function() {
+		it('should call next with the error given by the pagoService when there is an error in the update call', function(done) {
       var _cb;
       var stub = sinon.stub(pagoService, 'update');
       var nextSpy = sinon.spy();
@@ -389,17 +303,17 @@ describe('pagoRoutes', function() {
         body: {
           importe: 123
         }
-      };
+			};
 
-      pagoRoutes.update(req, null, nextSpy);
-      _cb = stub.getCall(0).args[2];
-      _cb(error, null);
+			stub.returns(Promise.reject(error));
+			pagoRoutes.update(req, null, nextSpy);
+			setTimeout(function(){
+				expect(nextSpy.withArgs(error).calledOnce).to.be.true;
+				done();
+			}); 
+		});
 
-      expect(nextSpy.withArgs(error).calledOnce).to.be.true;
-    });
-
-    it('should call res with status 200 and the pago when the pago was updated successfuly', function() {
-
+    it('should call res with status 200 and the pago when the pago was updated successfuly', function(done) {
       var _cb;
       var stub = sinon.stub(pagoService, 'update');
       var jsonObj = {
@@ -420,16 +334,16 @@ describe('pagoRoutes', function() {
           importe: 123
         }
       };
-      pagoRoutes.update(req, resObj, null);
-      _cb = stub.getCall(0).args[2];
       var item = {
         _id: '123'
       };
-      _cb(null, item);
-
-      expect(resObj.status.getCall(0).args[0]).to.eql(200);
-      expect(jsonSpy.getCall(0).args[0]._id).to.eql(item._id);
-    });
-
+			stub.returns(Promise.resolve(item));
+      pagoRoutes.update(req, resObj, null);
+			setTimeout(function(){
+				expect(resObj.status.getCall(0).args[0]).to.eql(200);
+				expect(jsonSpy.getCall(0).args[0]._id).to.eql(item._id);
+				done();
+			});
+		});
   });
 });
