@@ -49,11 +49,7 @@ function authenticate(req, res, next) {
     });
   } else {
     //password grant
-    userService.getByCredentials(req.body.username, req.body.password, function(e, user) {
-
-      if (e) {
-        return next(e);
-      }
+    userService.getByCredentials(req.body.username, req.body.password).then(function(user) {
 
       if (!user) {
         var error = new Error('Nombre de usuario o password invalido');
@@ -61,12 +57,12 @@ function authenticate(req, res, next) {
         return next(error);
       }
 
-      var scopes = 'user:read user:write'
+      var scopes = 'user:read user:write';
 
       var claims = {
         username: user.username,
         scopes: scopes
-      }
+      };
 
       var token = tokenHelper.generateAccessToken(claims);
 
@@ -79,7 +75,9 @@ function authenticate(req, res, next) {
         refresh_token: refreshToken,
         token_type: 'Bearer'
       });
-    });
+    }).catch(function(e){
+			next(e);
+		});
   }
 }
 

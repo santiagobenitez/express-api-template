@@ -1,9 +1,9 @@
+// jshint ignore: start
 var userService = require('../../services/user.service');
 var rootRoutes = require('../../routes/root/root.routes');
 var logger = require('../../helpers/logger');
 var tokenHelper = require('../../helpers/token.helper');
-
-
+var Promise = require('bluebird');
 var sinon = require('sinon');
 var expect = require('chai').expect;
 
@@ -74,23 +74,7 @@ describe('rootRoutes', function() {
       expect(nextSpy.calledOnce).to.be.true;
     });
 
-    it('should call userService to get the user with the username specified in the params', function() {
-      var mock = sinon.mock(userService);
-      var req = {
-        body: {
-          username: 'santiago',
-          password: 'password',
-          grant_type: 'password'
-        }
-      };
-
-      mock.expects('getByCredentials').exactly(1).withArgs(req.body.username, req.body.password);
-
-      rootRoutes.authenticate(req, null, null);
-      mock.verify();
-    });
-
-    it('should call next with the error given by the userService when there is an error in the get call', function() {
+		it('should call next with the error given by the userService when there is an error in the get call', function(done) {
 
       var _cb;
       var stub = sinon.stub(userService, 'getByCredentials');
@@ -99,38 +83,40 @@ describe('rootRoutes', function() {
       var error = new Error('test error');
       var req = {
         body: {
-          username: 'santiago',
+          username: 'test',
           password: 'password',
           grant_type: 'password'
         }
       };
-
-      rootRoutes.authenticate(req, null, nextSpy);
-      stub.getCall(0).args[2](error, null);
-
-      expect(nextSpy.withArgs(error).calledOnce).to.be.true;
+			stub.returns(Promise.reject(error));
+			rootRoutes.authenticate(req, null, nextSpy);
+			setTimeout(function(){
+				expect(nextSpy.withArgs(error).calledOnce).to.be.true;
+				done();
+			})
     });
 
-    it('should call next with the error of not found 400 when the object return by the userService is null', function() {
+    it('should call next with the error of not found 400 when the object return by the userService is null', function(done) {
       var _cb;
       var stub = sinon.stub(userService, 'getByCredentials');
       var nextSpy = sinon.spy();
 
       var req = {
         body: {
-          username: 'santiago',
+          username: 'test',
           password: 'password',
           grant_type: 'password'
         }
       };
-
+			stub.returns(Promise.resolve(null));
       rootRoutes.authenticate(req, null, nextSpy);
-      _cb = stub.getCall(0).args[2](null, null);
-
-      expect(nextSpy.getCall(0).args[0].status).to.eql(400);
+			setTimeout(function(){
+				expect(nextSpy.getCall(0).args[0].status).to.eql(400);
+				done();
+			});
     });
 
-    it('should return a json with an access_token in the body when the user was returned successfuly', function() {
+    it('should return a json with an access_token in the body when the user was returned successfuly', function(done) {
 
       var _cb;
       var stub = sinon.stub(userService, 'getByCredentials');
@@ -147,22 +133,23 @@ describe('rootRoutes', function() {
       statusStub.onFirstCall().returns(jsonObj);
       var req = {
         body: {
-          username: 'santiago',
+          username: 'test',
           password: 'password',
           grant_type: 'password'
         }
       };
-
-      rootRoutes.authenticate(req, resObj, null);
-      _cb = stub.getCall(0).args[2](null, {
+			stub.returns(Promise.resolve({
         _id: '123',
-        username: 'santiago'
-      });
+        username: 'test'
+			}));
+			rootRoutes.authenticate(req, resObj, null);
+			setTimeout(function(){
+				expect(jsonSpy.getCall(0).args[0].access_token).to.not.be.empty;
+				done();
+			});
+		});
 
-      expect(jsonSpy.getCall(0).args[0].access_token).to.not.be.empty;
-    });
-
-    it('should return a json with an refresh_token in the body when the user was returned successfuly', function() {
+    it('should return a json with an refresh_token in the body when the user was returned successfuly', function(done) {
 
       var _cb;
       var stub = sinon.stub(userService, 'getByCredentials');
@@ -179,22 +166,23 @@ describe('rootRoutes', function() {
       statusStub.onFirstCall().returns(jsonObj);
       var req = {
         body: {
-          username: 'santiago',
+          username: 'test',
           password: 'password',
           grant_type: 'password'
         }
       };
-
-      rootRoutes.authenticate(req, resObj, null);
-      _cb = stub.getCall(0).args[2](null, {
+			stub.returns(Promise.resolve({
         _id: '123',
-        username: 'santiago'
-      });
-
-      expect(jsonSpy.getCall(0).args[0].refresh_token).to.not.be.empty;
+        username: 'test'
+      }));
+      rootRoutes.authenticate(req, resObj, null);
+			setTimeout(function(){
+				expect(jsonSpy.getCall(0).args[0].refresh_token).to.not.be.empty;
+				done();
+			});
     });
 
-    it('should return a json with with the scopes of the user in the body when the user was returned successfuly', function() {
+    it('should return a json with with the scopes of the user in the body when the user was returned successfuly', function(done) {
 
       var _cb;
       var stub = sinon.stub(userService, 'getByCredentials');
@@ -211,19 +199,22 @@ describe('rootRoutes', function() {
       statusStub.onFirstCall().returns(jsonObj);
       var req = {
         body: {
-          username: 'santiago',
+          username: 'test',
           password: 'password',
           grant_type: 'password'
         }
       };
 
-      rootRoutes.authenticate(req, resObj, null);
-      _cb = stub.getCall(0).args[2](null, {
+			stub.returns(Promise.resolve({
         _id: '123',
         username: 'santiago'
-      });
+      }));
 
-      expect(jsonSpy.getCall(0).args[0].scopes).to.not.be.empty;
+			rootRoutes.authenticate(req, resObj, null);
+			setTimeout(function(){
+				expect(jsonSpy.getCall(0).args[0].scopes).to.not.be.empty;
+				done();
+			});
     });
 
     it('should call next with an error of invalid_token when tokenHelper fails to verify the token', function() {
