@@ -5,7 +5,7 @@ var logger = require('../../helpers/logger');
 
 function getAll(req, res, next) {
 
-  pagoService.getAll().then(function(objs) {
+  return pagoService.getAll().then(function(objs) {
     var pagosDelContrato = objs.filter(function(item) {
       return item.contrato.toString() === req.params.contratoid;
     });
@@ -20,7 +20,7 @@ function getAll(req, res, next) {
 }
 
 function post(req, res, next) {
-  pagoService.create(req.body).then(function(obj) {
+  return pagoService.create(req.body).then(function(obj) {
     res.status(200).json({
       _id: obj._id
     });
@@ -31,7 +31,7 @@ function post(req, res, next) {
 }
 
 function get(req, res, next) {
-  pagoService.get(req.params.id).then(function(obj) {
+  return pagoService.get(req.params.id).then(function(obj) {
     if (!obj) {
       var error = new Error('not found');
       error.status = 404;
@@ -45,7 +45,7 @@ function get(req, res, next) {
 }
 
 function remove(req, res, next) {
-  pagoService.remove(req.params.id).then(function() {
+  return pagoService.remove(req.params.id).then(function() {
     res.status(200).end();
     logger.info({res: res}, 'Eliminacion exitosa del pago: %s', req.params.id);
   }).catch(function(e){
@@ -55,7 +55,7 @@ function remove(req, res, next) {
 
 function update(req, res, next) {
   delete req.body._id;
-  pagoService.update(req.params.id, req.body).then(function(obj) {
+  return pagoService.update(req.params.id, req.body).then(function(obj) {
     res.status(200).json(obj);
     logger.info({res: res, updatedObj: obj}, 'Actualizacion exitosa del pago: %s', obj._id);
   }).catch(function(e){

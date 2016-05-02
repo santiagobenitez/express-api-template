@@ -37,8 +37,8 @@ describe('pagoRoutes', function() {
       };
 			stub.returns(Promise.reject(error));
 
-			pagoRoutes.post(req, null, nextSpy);
-			setTimeout(function(){
+			var result = pagoRoutes.post(req, null, nextSpy);
+			result.then(function(){
 				expect(nextSpy.withArgs(error).calledOnce).to.be.true;
 				done();
 			});
@@ -59,8 +59,8 @@ describe('pagoRoutes', function() {
       statusStub.returns(jsonObj);
       var req = {};
 			stub.returns(Promise.resolve({_id: '123'}))
-			pagoRoutes.post(req, resObj, null);
-			setTimeout(function(){
+			var result = pagoRoutes.post(req, resObj, null);
+			result.then(function(){
 				expect(resObj.status.getCall(0).args[0]).to.eql(200);
 				expect(jsonSpy.getCall(0).args[0]._id).to.eql("123");
 				done();
@@ -85,8 +85,8 @@ describe('pagoRoutes', function() {
       };
 			stub.returns(Promise.reject(error));
 
-      pagoRoutes.getAll(req, null, nextSpy);
-			setTimeout(function(){
+      var result = pagoRoutes.getAll(req, null, nextSpy);
+			result.then(function(){
 				expect(nextSpy.withArgs(error).calledOnce).to.be.true;
 				done();
 			});
@@ -115,8 +115,8 @@ describe('pagoRoutes', function() {
         contrato: '1'
       }];
 			stub.returns(Promise.resolve(items));
-      pagoRoutes.getAll(req, resObj, null);
-			setTimeout(function(){
+      var result = pagoRoutes.getAll(req, resObj, null);
+			result.then(function(){
 				expect(resObj.status.getCall(0).args[0]).to.eql(200);
 				expect(jsonSpy.getCall(0).args[0].items).to.eql(items);
 				done();
@@ -149,8 +149,8 @@ describe('pagoRoutes', function() {
         contrato: '1'
       }];
 			stub.returns(Promise.resolve(items));
-			pagoRoutes.getAll(req, resObj, null);
-			setTimeout(function(){
+			var result = pagoRoutes.getAll(req, resObj, null);
+			result.then(function(){
 				expect(jsonSpy.getCall(0).args[0].items.length).to.eql(1);
 				expect(jsonSpy.getCall(0).args[0].items[0]._id).to.eql('124');
 				done();
@@ -176,8 +176,8 @@ describe('pagoRoutes', function() {
       };
 			
 			stub.returns(Promise.reject(error));
-      pagoRoutes.get(req, null, nextSpy);
-			setTimeout(function(){
+      var result = pagoRoutes.get(req, null, nextSpy);
+			result.then(function(){
 				expect(nextSpy.withArgs(error).calledOnce).to.be.true;
 				done();
 			});
@@ -195,8 +195,8 @@ describe('pagoRoutes', function() {
       };
 
 			stub.returns(Promise.resolve(null));
-			pagoRoutes.get(req, null, nextSpy);
-			setTimeout(function(){
+			var result = pagoRoutes.get(req, null, nextSpy);
+			result.then(function(){
 				expect(nextSpy.getCall(0).args[0].status).to.eql(404);
 				done();
 			});
@@ -225,8 +225,8 @@ describe('pagoRoutes', function() {
         _id: '123'
       };
 			stub.returns(Promise.resolve(item));
-      pagoRoutes.get(req, resObj, null);
-			setTimeout(function(){
+      var result = pagoRoutes.get(req, resObj, null);
+			result.then(function(){
 				expect(resObj.status.getCall(0).args[0]).to.eql(200);
 				expect(jsonSpy.getCall(0).args[0]._id).to.eql(item._id);
 				done();
@@ -251,8 +251,8 @@ describe('pagoRoutes', function() {
         }
       };
 			stub.returns(Promise.reject(error));
-			pagoRoutes.remove(req, null, nextSpy);
-			setTimeout(function(){
+			var result = pagoRoutes.remove(req, null, nextSpy);
+			result.then(function(){
 				expect(nextSpy.withArgs(error).calledOnce).to.be.true;
 				done();
 			});
@@ -277,8 +277,8 @@ describe('pagoRoutes', function() {
         }
       };
 			stub.returns(Promise.resolve());
-      pagoRoutes.remove(req, resObj, null);
-			setTimeout(function(){
+      var result = pagoRoutes.remove(req, resObj, null);
+			result.then(function(){
 				expect(resObj.status.getCall(0).args[0]).to.eql(200);
 				expect(endSpy.calledOnce).to.be.true;
 				done();
@@ -306,8 +306,8 @@ describe('pagoRoutes', function() {
 			};
 
 			stub.returns(Promise.reject(error));
-			pagoRoutes.update(req, null, nextSpy);
-			setTimeout(function(){
+			var result = pagoRoutes.update(req, null, nextSpy);
+			result.then(function(){
 				expect(nextSpy.withArgs(error).calledOnce).to.be.true;
 				done();
 			}); 
@@ -338,8 +338,8 @@ describe('pagoRoutes', function() {
         _id: '123'
       };
 			stub.returns(Promise.resolve(item));
-      pagoRoutes.update(req, resObj, null);
-			setTimeout(function(){
+      var result = pagoRoutes.update(req, resObj, null);
+			result.then(function(){
 				expect(resObj.status.getCall(0).args[0]).to.eql(200);
 				expect(jsonSpy.getCall(0).args[0]._id).to.eql(item._id);
 				done();
