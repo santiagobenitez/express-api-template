@@ -37,8 +37,8 @@ describe('contratoRoutes', function() {
       };
 			stub.returns(Promise.reject(error));
 
-      contratoRoutes.post(req, null, nextSpy);
-			setTimeout(function(){
+      var result = contratoRoutes.post(req, null, nextSpy);
+			result.then(function(){
 				expect(nextSpy.withArgs(error).calledOnce).to.be.true;
 				done();
 			});
@@ -59,8 +59,8 @@ describe('contratoRoutes', function() {
       statusStub.returns(jsonObj);
 			stub.returns(Promise.resolve({_id: '123'}));
       var req = {};
-      contratoRoutes.post(req, resObj, null);
-			setTimeout(function(){
+      var result = contratoRoutes.post(req, resObj, null);
+			result.then(function(){
 				expect(resObj.status.getCall(0).args[0]).to.eql(200);
 				expect(jsonSpy.getCall(0).args[0]._id).to.eql("123");
 				done();
@@ -86,8 +86,8 @@ describe('contratoRoutes', function() {
       };
 			stub.returns(Promise.reject(error));
 
-      contratoRoutes.getAll(req, null, nextSpy);
-			setTimeout(function(){
+      var result = contratoRoutes.getAll(req, null, nextSpy);
+			result.then(function(){
       	expect(nextSpy.withArgs(error).calledOnce).to.be.true;
 				done();
 			});
@@ -112,8 +112,8 @@ describe('contratoRoutes', function() {
       
 			statusStub.returns(jsonObj);
 			stub.returns(Promise.resolve(items));
-      contratoRoutes.getAll(req, resObj, null);
-			setTimeout(function(){
+      var result = contratoRoutes.getAll(req, resObj, null);
+			result.then(function(){
 				expect(resObj.status.getCall(0).args[0]).to.eql(200);
 				expect(jsonSpy.getCall(0).args[0].items).to.eql(items);
 				done();
@@ -139,8 +139,8 @@ describe('contratoRoutes', function() {
         }
       };
 			stub.returns(Promise.reject(error));
-      contratoRoutes.get(req, null, nextSpy);
-			setTimeout(function(){
+      var result = contratoRoutes.get(req, null, nextSpy);
+			result.then(function(){
 				expect(nextSpy.withArgs(error).calledOnce).to.be.true;
 				done();
 			});
@@ -156,8 +156,8 @@ describe('contratoRoutes', function() {
         }
       };
 			stub.returns(Promise.resolve(null));
-			contratoRoutes.get(req, null, nextSpy);
-			setTimeout(function(){
+			var result = contratoRoutes.get(req, null, nextSpy);
+			result.then(function(){
 				expect(nextSpy.getCall(0).args[0].status).to.eql(404);
 				done();
 			});
@@ -185,8 +185,8 @@ describe('contratoRoutes', function() {
         _id: '123'
       };
 		  stub.returns(Promise.resolve(item));
-			contratoRoutes.get(req, resObj, null);
-			setTimeout(function(){
+			var result = contratoRoutes.get(req, resObj, null);
+			result.then(function(){
 				expect(resObj.status.getCall(0).args[0]).to.eql(200);
 				expect(jsonSpy.getCall(0).args[0]._id).to.eql(item._id);
 				done();
@@ -214,9 +214,9 @@ describe('contratoRoutes', function() {
       };
 			stub.returns(Promise.reject(error));
 
-      contratoRoutes.remove(req, null, nextSpy);
+      var result = contratoRoutes.remove(req, null, nextSpy);
 
-			setTimeout(function(){
+			result.then(function(){
 				expect(nextSpy.withArgs(error).calledOnce).to.be.true;
 				done();
 			});
@@ -242,8 +242,8 @@ describe('contratoRoutes', function() {
         }
       };
 			stub.returns(Promise.resolve());
-			contratoRoutes.remove(req, resObj, null);
-			setTimeout(function(){
+			var result = contratoRoutes.remove(req, resObj, null);
+			result.then(function(){
 				expect(resObj.status.getCall(0).args[0]).to.eql(200);
 				expect(endSpy.calledOnce).to.be.true;
 				done();
@@ -270,8 +270,8 @@ describe('contratoRoutes', function() {
         }
       };
 			stub.returns(Promise.reject(error));
-			contratoRoutes.update(req, null, nextSpy);
-			setTimeout(function(){
+			var result = contratoRoutes.update(req, null, nextSpy);
+			result.then(function(){
 				expect(nextSpy.withArgs(error).calledOnce).to.be.true;
 				done();
 			});
@@ -303,8 +303,8 @@ describe('contratoRoutes', function() {
         _id: '123'
       };
 			stub.returns(Promise.resolve(item));
-			contratoRoutes.update(req, resObj, null);
-			setTimeout(function(){
+			var result = contratoRoutes.update(req, resObj, null);
+			result.then(function(){
 				expect(resObj.status.getCall(0).args[0]).to.eql(200);
 				expect(jsonSpy.getCall(0).args[0]._id).to.eql(item._id);
 				done();

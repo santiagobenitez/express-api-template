@@ -4,7 +4,7 @@ var contratoService = require('../../services/contrato.service');
 var logger = require('../../helpers/logger');
 
 function getAll(req, res, next) {
-  contratoService.getAll().then(function(objs) {
+  return contratoService.getAll().then(function(objs) {
     res.status(200).json({
       items: objs
     });
@@ -14,7 +14,7 @@ function getAll(req, res, next) {
 }
 
 function post(req, res, next) {
-  contratoService.create(req.body).then(function(obj) {
+  return contratoService.create(req.body).then(function(obj) {
     res.status(200).json({
       _id: obj._id
     });
@@ -26,7 +26,7 @@ function post(req, res, next) {
 }
 
 function get(req, res, next) {
-  contratoService.get(req.params.id).then(function(obj) {
+  return contratoService.get(req.params.id).then(function(obj) {
     if (!obj) {
       var error = new Error('not found');
       error.status = 404;
@@ -39,7 +39,7 @@ function get(req, res, next) {
 }
 
 function remove(req, res, next) {
-  contratoService.remove(req.params.id).then(function() {
+  return contratoService.remove(req.params.id).then(function() {
     res.status(200).end();
 
     logger.info({res: res}, 'Eliminacion exitosa del contrato: %s', req.params.id);
@@ -50,7 +50,7 @@ function remove(req, res, next) {
 
 function update(req, res, next) {
   delete req.body._id;
-  contratoService.update(req.params.id, req.body).then(function(obj) {
+  return contratoService.update(req.params.id, req.body).then(function(obj) {
     res.status(200).json(obj);
     logger.info({res: res, updatedObj: obj}, 'Actualizacion exitosa del contrato: %s', obj._id);
   }).catch(function(e){
