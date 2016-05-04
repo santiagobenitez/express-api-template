@@ -26,19 +26,6 @@ describe('propiedadesRoutes', function() {
 			}
 		});
 
-		it('should call propiedadesService create when is called with the information provided', function() {
-			var mock = sinon.mock(propiedadesService);
-			var req = {
-				body: {}
-			};
-			mock.expects('create').withArgs(req.body).exactly(1).returns({
-				then: function(){return {catch: function(){}};}
-			});
-
-			propiedadesRoutes.post(req, null, null);
-			mock.verify();
-		});
-
 		it('should call next with the error given by the propiedadesService when there is an error in the creation of a propiedad', function(done) {
 			var _cb;
 			var stub = sinon.stub(propiedadesService, 'create');
@@ -50,8 +37,8 @@ describe('propiedadesRoutes', function() {
 			};
 			var rejectedPromise = Promise.reject(error);
 			stub.returns(rejectedPromise);
-			propiedadesRoutes.post(req, null, nextSpy);
-			setTimeout(function(){
+			var result = propiedadesRoutes.post(req, null, nextSpy);
+			result.then(function(){
 				expect(nextSpy.withArgs(error).calledOnce).to.be.true;
 				done();
 			});
@@ -72,8 +59,8 @@ describe('propiedadesRoutes', function() {
 			statusStub.onFirstCall().returns(jsonObj);
 			var req = {};
 			stub.returns(Promise.resolve({_id: '123'}));
-			propiedadesRoutes.post(req, resObj, null);
-			setTimeout(function(){
+			var result = propiedadesRoutes.post(req, resObj, null);
+			result.then(function(){
 				expect(resObj.status.getCall(0).args[0]).to.eql(200);
 				expect(jsonSpy.getCall(0).args[0]._id).to.eql("123");
 				done();
@@ -99,8 +86,8 @@ describe('propiedadesRoutes', function() {
 			};
 
 			stub.returns(Promise.reject(error));
-			propiedadesRoutes.getAll(req, null, nextSpy);
-			setTimeout(function(){
+			var result = propiedadesRoutes.getAll(req, null, nextSpy);
+			result.then(function(){
 				expect(nextSpy.withArgs(error).calledOnce).to.be.true;
 				done();
 			});
@@ -122,8 +109,8 @@ describe('propiedadesRoutes', function() {
 			var req = {};
 			var items = [{_id: '123'}];
 			stub.returns(Promise.resolve(items));
-			propiedadesRoutes.getAll(req, resObj, null);
-			setTimeout(function(){
+			var result = propiedadesRoutes.getAll(req, resObj, null);
+			result.then(function(){
 				expect(resObj.status.getCall(0).args[0]).to.eql(200);
 				expect(jsonSpy.getCall(0).args[0].items).to.eql(items);
 				done();
@@ -149,8 +136,8 @@ describe('propiedadesRoutes', function() {
 				}
 			};
 			stub.returns(Promise.reject(error));
-			propiedadesRoutes.get(req, null, nextSpy);
-			setTimeout(function(){
+			var result = propiedadesRoutes.get(req, null, nextSpy);
+			result.then(function(){
 				expect(nextSpy.withArgs(error).calledOnce).to.be.true;
 				done();
 			});
@@ -167,8 +154,8 @@ describe('propiedadesRoutes', function() {
 				}
 			};
 			stub.returns(Promise.resolve(null));
-			propiedadesRoutes.get(req, null, nextSpy);
-			setTimeout(function(){
+			var result = propiedadesRoutes.get(req, null, nextSpy);
+			result.then(function(){
 				expect(nextSpy.getCall(0).args[0].status).to.eql(404);
 				done();
 			});
@@ -195,8 +182,8 @@ describe('propiedadesRoutes', function() {
 			};
 			var item = {_id: '123'};
 			stub.returns(Promise.resolve(item));
-			propiedadesRoutes.get(req, resObj, null);
-			setTimeout(function(){
+			var result = propiedadesRoutes.get(req, resObj, null);
+			result.then(function(){
 				expect(resObj.status.getCall(0).args[0]).to.eql(200);
 				expect(jsonSpy.getCall(0).args[0]._id).to.eql(item._id);
 				done();
@@ -223,8 +210,8 @@ describe('propiedadesRoutes', function() {
 			};
 			stub.returns(Promise.reject(error));
 
-			propiedadesRoutes.remove(req, null, nextSpy);
-			setTimeout(function(){
+			var result = propiedadesRoutes.remove(req, null, nextSpy);
+			result.then(function(){
 				expect(nextSpy.withArgs(error).calledOnce).to.be.true;
 				done();
 			});
@@ -249,8 +236,8 @@ describe('propiedadesRoutes', function() {
 				}
 			};
 			stub.returns(Promise.resolve());
-			propiedadesRoutes.remove(req, resObj, null);
-			setTimeout(function(){
+			var result = propiedadesRoutes.remove(req, resObj, null);
+			result.then(function(){
 				expect(resObj.status.getCall(0).args[0]).to.eql(200);
 				expect(endSpy.calledOnce).to.be.true;
 				done();
@@ -262,27 +249,6 @@ describe('propiedadesRoutes', function() {
 
 		afterEach(function() {
 			if (propiedadesService.update.restore) propiedadesService.update.restore();
-		});
-
-		it('should call propiedadesService to update the real estate with the id specified in the params', function() {
-			var mock = sinon.mock(propiedadesService);
-			var req = {
-				params: {
-					id: '123'
-				},
-				body: {
-					ambientes: 1
-				}
-			};
-
-			mock.expects('update').exactly(1).withArgs(req.params.id, req.body).returns(
-				{
-					then: function(){ return {catch: function(){}};}
-				}
-			);
-
-			propiedadesRoutes.update(req, null, null);
-			mock.verify();
 		});
 
 		it('should call next with the error given by the propiedadesService when there is an error in the update call', function(done) {
@@ -301,8 +267,8 @@ describe('propiedadesRoutes', function() {
 			};
 			stub.returns(Promise.reject(error));
 
-			propiedadesRoutes.update(req, null, nextSpy);
-			setTimeout(function(){
+			var result = propiedadesRoutes.update(req, null, nextSpy);
+			result.then(function(){
 				expect(nextSpy.withArgs(error).calledOnce).to.be.true;
 				done();
 			});
@@ -334,8 +300,8 @@ describe('propiedadesRoutes', function() {
 				_id: '123'
 			};
 			stub.returns(Promise.resolve(item));
-			propiedadesRoutes.update(req, resObj, null);
-			setTimeout(function(){
+			var result = propiedadesRoutes.update(req, resObj, null);
+			result.then(function(){
 				expect(resObj.status.getCall(0).args[0]).to.eql(200);
 				expect(jsonSpy.getCall(0).args[0]._id).to.eql(item._id);
 				done();
