@@ -37,8 +37,8 @@ describe('clienteRoutes', function() {
       };
 			stub.returns(Promise.reject(error));
 
-      clienteRoutes.post(req, null, nextSpy);
-			setTimeout(function(){
+      var result = clienteRoutes.post(req, null, nextSpy);
+			result.then(function(){
 				expect(nextSpy.withArgs(error).calledOnce).to.be.true;
 				done();
 			});
@@ -59,8 +59,8 @@ describe('clienteRoutes', function() {
       statusStub.onFirstCall().returns(jsonObj);
       var req = {};
 			stub.returns(Promise.resolve({_id: '123'}));
-      clienteRoutes.post(req, resObj, null);
-			setTimeout(function(){
+      var result = clienteRoutes.post(req, resObj, null);
+			result.then(function(){
 				expect(resObj.status.getCall(0).args[0]).to.eql(200);
 				expect(jsonSpy.getCall(0).args[0]._id).to.eql("123");
 				done();
@@ -85,8 +85,8 @@ describe('clienteRoutes', function() {
       };
 			
 			stub.returns(Promise.reject(error));
-      clienteRoutes.getAll(req, null, nextSpy);
-			setTimeout(function(){
+      var result = clienteRoutes.getAll(req, null, nextSpy);
+			result.then(function(){
 				expect(nextSpy.withArgs(error).calledOnce).to.be.true;
 				done();
 			});
@@ -111,8 +111,8 @@ describe('clienteRoutes', function() {
       }];
 			stub.returns(Promise.resolve(items));
 
-			clienteRoutes.getAll(req, resObj, null);
-			setTimeout(function(){
+			var result = clienteRoutes.getAll(req, resObj, null);
+			result.then(function(){
 				expect(resObj.status.getCall(0).args[0]).to.eql(200);
 				expect(jsonSpy.getCall(0).args[0].items).to.eql(items);
 				done();
@@ -138,8 +138,8 @@ describe('clienteRoutes', function() {
       };
 			stub.returns(Promise.reject(error));
 
-      clienteRoutes.get(req, null, nextSpy);
-			setTimeout(function(){
+      var result = clienteRoutes.get(req, null, nextSpy);
+			result.then(function(){
 				expect(nextSpy.withArgs(error).calledOnce).to.be.true;
 				done();
 			});
@@ -157,8 +157,8 @@ describe('clienteRoutes', function() {
       };
 			stub.returns(Promise.resolve(null));
 
-      clienteRoutes.get(req, null, nextSpy);
-			setTimeout(function(){
+      var result = clienteRoutes.get(req, null, nextSpy);
+			result.then(function(){
 				expect(nextSpy.getCall(0).args[0].status).to.eql(404);
 				done();
 			});
@@ -187,9 +187,8 @@ describe('clienteRoutes', function() {
         _id: '123'
       };
 			stub.returns(Promise.resolve(item));
-			clienteRoutes.get(req, resObj, null);
-
-			setTimeout(function(){
+			var result = clienteRoutes.get(req, resObj, null);
+			result.then(function(){
 				expect(resObj.status.getCall(0).args[0]).to.eql(200);
 				expect(jsonSpy.getCall(0).args[0]._id).to.eql(item._id);
 				done();
@@ -216,8 +215,8 @@ describe('clienteRoutes', function() {
       };
 			stub.returns(Promise.reject(error));
 
-      clienteRoutes.remove(req, null, nextSpy);
-			setTimeout(function(){
+      var result = clienteRoutes.remove(req, null, nextSpy);
+			result.then(function(){
 				expect(nextSpy.withArgs(error).calledOnce).to.be.true;
 				done();
 			});
@@ -243,8 +242,8 @@ describe('clienteRoutes', function() {
         }
       };
 			stub.returns(Promise.resolve());
-      clienteRoutes.remove(req, resObj, null);
-			setTimeout(function(){
+      var result = clienteRoutes.remove(req, resObj, null);
+			result.then(function(){
 				expect(resObj.status.getCall(0).args[0]).to.eql(200);
 				expect(endSpy.calledOnce).to.be.true;
 				done();
@@ -272,8 +271,8 @@ describe('clienteRoutes', function() {
         }
       };
 			stub.returns(Promise.reject(error));
-      clienteRoutes.update(req, null, nextSpy);
-			setTimeout(function(){
+      var result = clienteRoutes.update(req, null, nextSpy);
+			result.then(function(){
 				expect(nextSpy.withArgs(error).calledOnce).to.be.true;
 				done();
 			});
@@ -304,8 +303,8 @@ describe('clienteRoutes', function() {
         _id: '123'
       };
 			stub.returns(Promise.resolve(item));
-      clienteRoutes.update(req, resObj, null);
-			setTimeout(function(){
+      var result = clienteRoutes.update(req, resObj, null);
+			result.then(function(){
 				expect(resObj.status.getCall(0).args[0]).to.eql(200);
 				expect(jsonSpy.getCall(0).args[0]._id).to.eql(item._id);
 				done();

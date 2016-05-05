@@ -4,7 +4,7 @@ var clienteService = require('../../services/cliente.service');
 var logger = require('../../helpers/logger');
 
 function getAll(req, res, next) {
-  clienteService.getAll().then(function(objs) {
+  return clienteService.getAll().then(function(objs) {
     res.status(200).json({
       items: objs
     });
@@ -15,7 +15,7 @@ function getAll(req, res, next) {
 
 function post(req, res, next) {
 
-  clienteService.create(req.body).then(function(obj) {
+  return clienteService.create(req.body).then(function(obj) {
     res.status(200).json({
       _id: obj._id
     });
@@ -27,7 +27,7 @@ function post(req, res, next) {
 
 function get(req, res, next) {
 
-  clienteService.get(req.params.id).then(function(obj) {
+  return clienteService.get(req.params.id).then(function(obj) {
     if (!obj) {
       var error = new Error('not found');
       error.status = 404;
@@ -40,7 +40,7 @@ function get(req, res, next) {
 }
 
 function remove(req, res, next) {
-  clienteService.remove(req.params.id).then(function() {
+  return clienteService.remove(req.params.id).then(function() {
     res.status(200).end();
     logger.info({res: res}, 'Eliminacion exitosa de un cliente: %s', req.params.id);
   }).catch(function(e){
@@ -50,7 +50,7 @@ function remove(req, res, next) {
 
 function update(req, res, next) {
   delete req.body._id;
-  clienteService.update(req.params.id, req.body).then(function(obj) {
+  return clienteService.update(req.params.id, req.body).then(function(obj) {
     res.status(200).json(obj);
     logger.info({res: res, updatedObj: obj}, 'Actualizacion exitosa del cliente: %s', obj._id);
   }).catch(function(e){
