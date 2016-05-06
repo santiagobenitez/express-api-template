@@ -38,8 +38,8 @@ describe('userRoutes', function() {
       };
 			stub.returns(Promise.reject(error));
 
-			userRoutes.post(req, null, nextSpy);
-			setTimeout(function(){
+			var result = userRoutes.post(req, null, nextSpy);
+			result.then(function(){
 				expect(nextSpy.withArgs(error).calledOnce).to.be.true;
 				done();
 			});
@@ -60,8 +60,8 @@ describe('userRoutes', function() {
       statusStub.onFirstCall().returns(jsonObj);
       var req = {};
 			stub.returns(Promise.resolve({_id: '123'}));
-      userRoutes.post(req, resObj, null);
-			setTimeout(function(){
+      var result = userRoutes.post(req, resObj, null);
+			result.then(function(){
 				expect(resObj.status.getCall(0).args[0]).to.eql(200);
 				expect(jsonSpy.getCall(0).args[0]._id).to.eql("123");
 				done();
@@ -86,8 +86,8 @@ describe('userRoutes', function() {
       };
 			stub.returns(Promise.reject(error));
 
-      userRoutes.getAll(req, null, nextSpy);
-			setTimeout(function(){
+      var result = userRoutes.getAll(req, null, nextSpy);
+			result.then(function(){
 				expect(nextSpy.withArgs(error).calledOnce).to.be.true;
 				done();
 			});
@@ -111,8 +111,8 @@ describe('userRoutes', function() {
         _id: '123'
       }];
 			stub.returns(Promise.resolve(items));
-      userRoutes.getAll(req, resObj, null);
-			setTimeout(function(){
+      var result = userRoutes.getAll(req, resObj, null);
+			result.then(function(){
 				expect(resObj.status.getCall(0).args[0]).to.eql(200);
 				expect(jsonSpy.getCall(0).args[0].items).to.eql(items);
 				done();
@@ -137,8 +137,8 @@ describe('userRoutes', function() {
 			};
 			stub.returns(Promise.reject(error));
 
-			userRoutes.get(req, null, nextSpy);
-			setTimeout(function(){
+			var result = userRoutes.get(req, null, nextSpy);
+			result.then(function(){
 				expect(nextSpy.withArgs(error).calledOnce).to.be.true;
 				done();
 			});
@@ -156,8 +156,8 @@ describe('userRoutes', function() {
       };
 			stub.returns(Promise.resolve(null));
 
-      userRoutes.get(req, null, nextSpy);
-			setTimeout(function(){
+      var result = userRoutes.get(req, null, nextSpy);
+			result.then(function(){
 				expect(nextSpy.getCall(0).args[0].status).to.eql(404);
 				done();
 			});
@@ -183,8 +183,8 @@ describe('userRoutes', function() {
         }
       };
 			stub.returns(Promise.resolve({_id: '123'}));
-			userRoutes.get(req, resObj, null);
-			setTimeout(function(){
+			var result = userRoutes.get(req, resObj, null);
+			result.then(function(){
 				expect(resObj.status.getCall(0).args[0]).to.eql(200);
 				expect(jsonSpy.getCall(0).args[0]._id).to.eql('123');
 				done();
@@ -212,8 +212,8 @@ describe('userRoutes', function() {
       };
 			
 			stub.returns(Promise.reject(error));
-			userRoutes.remove(req, null, nextSpy);
-			setTimeout(function(){
+			var result = userRoutes.remove(req, null, nextSpy);
+			result.then(function(){
 				expect(nextSpy.withArgs(error).calledOnce).to.be.true;
 				done();
 			});
@@ -239,8 +239,8 @@ describe('userRoutes', function() {
         }
       };
 			stub.returns(Promise.resolve());
-      userRoutes.remove(req, resObj, null);
-			setTimeout(function(){
+      var result = userRoutes.remove(req, resObj, null);
+			result.then(function(){
 				expect(resObj.status.getCall(0).args[0]).to.eql(200);
 				expect(endSpy.calledOnce).to.be.true;
 				done();
@@ -269,8 +269,8 @@ describe('userRoutes', function() {
         }
       };
 			stub.returns(Promise.reject(error));
-			userRoutes.update(req, null, nextSpy);
-			setTimeout(function(){
+			var result = userRoutes.update(req, null, nextSpy);
+			result.then(function(){
 				expect(nextSpy.withArgs(error).calledOnce).to.be.true;
 				done();
 			});
@@ -301,8 +301,8 @@ describe('userRoutes', function() {
         _id: '123'
       };
 			stub.returns(Promise.resolve(item));
-      userRoutes.update(req, resObj, null);
-			setTimeout(function(){
+      var result = userRoutes.update(req, resObj, null);
+			result.then(function(){
 				expect(resObj.status.getCall(0).args[0]).to.eql(200);
 				expect(jsonSpy.getCall(0).args[0]._id).to.eql(item._id);
 				done();
