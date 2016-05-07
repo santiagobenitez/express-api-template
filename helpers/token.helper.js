@@ -1,16 +1,18 @@
 var jwt = require('jsonwebtoken');
 var config = require('../config');
+var Promise = require('bluebird'); //jshint ignore:line
 
-function verify(token, cb) {
+function verify(token) {
+	return new Promise(function(resolve, reject) {
+		jwt.verify(token, config.secret, function(err, decoded) {
 
-  jwt.verify(token, config.secret, function(err, decoded) {
+			if (err) {
+				return reject(err);
+			}
 
-    if (err) {
-      return cb(err, null);
-    }
-
-    cb(null, decoded);
-  });
+			resolve(decoded);
+		});
+	});
 }
 
 function generateAccessToken(claims) {

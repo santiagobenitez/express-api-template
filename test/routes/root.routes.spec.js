@@ -25,7 +25,7 @@ describe('rootRoutes', function() {
       if (tokenHelper.verify.restore) tokenHelper.verify.restore();
     });
 
-    it('should call next with the error when the grant_type is null/undefined', function() {
+    it('should call next with the error when the grant_type is null/undefined', function(done) {
 
       var _cb;
       var nextSpy = sinon.spy();
@@ -37,12 +37,15 @@ describe('rootRoutes', function() {
         }
       };
 
-      rootRoutes.authenticate(req, null, nextSpy);
+      var result = rootRoutes.authenticate(req, null, nextSpy);
 
-      expect(nextSpy.calledOnce).to.be.true;
+			result.then(function(){
+				expect(nextSpy.calledOnce).to.be.true;
+				done();
+			});
     });
 
-    it('should call next with the error when the grant_type is refresh_token but the refresh token is not present in the request', function() {
+    it('should call next with the error when the grant_type is refresh_token but the refresh token is not present in the request', function(done) {
 
       var _cb;
       var nextSpy = sinon.spy();
@@ -53,13 +56,14 @@ describe('rootRoutes', function() {
         }
       };
 
-      rootRoutes.authenticate(req, null, nextSpy);
+			var result = rootRoutes.authenticate(req, null, nextSpy);
+			result.then(function(){
+				expect(nextSpy.calledOnce).to.be.true;
+				done();
+			});
+		});
 
-      expect(nextSpy.calledOnce).to.be.true;
-    });
-
-    it('should call next with the error when the grant_type is not password nor refresh_token', function() {
-
+    it('should call next with the error when the grant_type is not password nor refresh_token', function(done) {
       var _cb;
       var nextSpy = sinon.spy();
 
@@ -69,10 +73,12 @@ describe('rootRoutes', function() {
         }
       };
 
-      rootRoutes.authenticate(req, null, nextSpy);
-
-      expect(nextSpy.calledOnce).to.be.true;
-    });
+			var result = rootRoutes.authenticate(req, null, nextSpy);
+			result.then(function(){
+				expect(nextSpy.calledOnce).to.be.true;
+				done();
+			});
+		});
 
 		it('should call next with the error given by the userService when there is an error in the get call', function(done) {
 
@@ -88,12 +94,13 @@ describe('rootRoutes', function() {
           grant_type: 'password'
         }
       };
+			
 			stub.returns(Promise.reject(error));
-			rootRoutes.authenticate(req, null, nextSpy);
-			setTimeout(function(){
+			var result = rootRoutes.authenticate(req, null, nextSpy);
+			result.then(function(){
 				expect(nextSpy.withArgs(error).calledOnce).to.be.true;
 				done();
-			})
+			});
     });
 
     it('should call next with the error of not found 400 when the object return by the userService is null', function(done) {
@@ -109,8 +116,8 @@ describe('rootRoutes', function() {
         }
       };
 			stub.returns(Promise.resolve(null));
-      rootRoutes.authenticate(req, null, nextSpy);
-			setTimeout(function(){
+      var result = rootRoutes.authenticate(req, null, nextSpy);
+			result.then(function(){
 				expect(nextSpy.getCall(0).args[0].status).to.eql(400);
 				done();
 			});
@@ -142,8 +149,8 @@ describe('rootRoutes', function() {
         _id: '123',
         username: 'test'
 			}));
-			rootRoutes.authenticate(req, resObj, null);
-			setTimeout(function(){
+			var result = rootRoutes.authenticate(req, resObj, null);
+			result.then(function(){
 				expect(jsonSpy.getCall(0).args[0].access_token).to.not.be.empty;
 				done();
 			});
@@ -175,8 +182,8 @@ describe('rootRoutes', function() {
         _id: '123',
         username: 'test'
       }));
-      rootRoutes.authenticate(req, resObj, null);
-			setTimeout(function(){
+      var result = rootRoutes.authenticate(req, resObj, null);
+			result.then(function(){
 				expect(jsonSpy.getCall(0).args[0].refresh_token).to.not.be.empty;
 				done();
 			});
@@ -210,14 +217,14 @@ describe('rootRoutes', function() {
         username: 'santiago'
       }));
 
-			rootRoutes.authenticate(req, resObj, null);
-			setTimeout(function(){
+			var result = rootRoutes.authenticate(req, resObj, null);
+			result.then(function(){
 				expect(jsonSpy.getCall(0).args[0].scopes).to.not.be.empty;
 				done();
 			});
     });
 
-    it('should call next with an error of invalid_token when tokenHelper fails to verify the token', function() {
+    it('should call next with an error of invalid_token when tokenHelper fails to verify the token', function(done) {
 
       var tokenHelperStub = sinon.stub(tokenHelper, 'verify');
 
@@ -229,15 +236,15 @@ describe('rootRoutes', function() {
       };
 
       var nextSpy = sinon.spy();
+			tokenHelperStub.returns(Promise.reject(new Error('error while decoding')));
+      var result = rootRoutes.authenticate(req, null, nextSpy);
+			result.then(function(){
+				expect(nextSpy.getCall(0).args[0].message).to.not.be.empty;
+				done();
+			});
+		});
 
-      rootRoutes.authenticate(req, null, nextSpy);
-
-      tokenHelperStub.getCall(0).args[1](new Error('error while decoding'), null);
-
-      expect(nextSpy.getCall(0).args[0]).to.not.be.empty;
-    });
-
-    it('should return a json with an access_token in the body when the token was refreshed successfuly', function() {
+    it('should return a json with an access_token in the body when the token was refreshed successfuly', function(done) {
 
       var _cb;
 
@@ -253,7 +260,7 @@ describe('rootRoutes', function() {
       var jsonSpy = sinon.spy(jsonObj, 'json');
       var statusStub = sinon.stub(resObj, 'status');
 
-      statusStub.onFirstCall().returns(jsonObj);
+      statusStub.returns(jsonObj);
 
       var req = {
         body: {
@@ -261,12 +268,13 @@ describe('rootRoutes', function() {
           grant_type: 'refresh_token'
         }
       };
+			tokenHelperStub.returns(Promise.resolve({username: 'test'}));
 
-      rootRoutes.authenticate(req, resObj, null);
-
-      tokenHelperStub.getCall(0).args[1](null, {username: 'test'});
-
-      expect(jsonSpy.getCall(0).args[0].access_token).to.not.be.empty;
+			var result = rootRoutes.authenticate(req, resObj, null);
+			result.then(function(){
+				expect(jsonSpy.getCall(0).args[0].access_token).to.not.be.empty;
+				done();
+			});
     });
 
   });
