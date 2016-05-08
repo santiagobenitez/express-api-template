@@ -2,57 +2,24 @@
 
 var clienteRepository = require('../data/cliente.repository');
 
-function create(newObj, cb) {
-  clienteRepository.create(newObj, function(e, obj) {
-    if (e) {
-      return cb(e, null);
-    }
-
-    cb(null, obj);
-  });
+function create(newObj) {
+  return clienteRepository.create(newObj);
 }
 
-function getAll(cb) {
-  clienteRepository.getAll(function(e, objs) {
-
-    if (e) {
-      return cb(e, null);
-    }
-
-    cb(null, objs);
-  });
+function getAll() {
+  return clienteRepository.getAll();
 }
 
-function get(id, cb) {
-  clienteRepository.get(id, function(e, obj) {
-
-    if (e) {
-      return cb(e, null);
-    }
-    cb(null, obj);
-  });
+function get(id) {
+  return clienteRepository.get(id);
 }
 
-function remove(id, cb) {
-  clienteRepository.remove(id, function(e) {
-
-    if (e) {
-      return cb(e);
-    }
-
-    cb(null);
-  });
+function remove(id) {
+  return clienteRepository.remove(id);
 }
 
-function update(id, objToUpdate, cb) {
-  clienteRepository.update(id, objToUpdate, function(e, obj) {
-
-    if (e) {
-      return cb(e, null);
-    }
-
-    cb(null, obj);
-  });
+function update(id, objToUpdate) {
+  return clienteRepository.update(id, objToUpdate);
 }
 
 
