@@ -31,7 +31,7 @@ GenericRepository.prototype.remove = function(id) {
 
 GenericRepository.prototype.update = function(id, obj) {
 	delete obj._id;
-	return this.model.findById(id).then(function(doc) {
+	return this.model.findById(id).exec().then(function(doc) {
 		doc.set(obj);
 		return  doc.save().then(function(updated_doc) {
 			return updated_doc.toObject();
