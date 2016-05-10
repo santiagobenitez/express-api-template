@@ -1,6 +1,4 @@
 /*jshint ignore: start */
-var dbUrl = 'mongodb://@127.0.0.1:27017/test';
-var mongoose = require('mongoose');
 var expect = require('chai').expect;
 var userRepository = require('../../data/user.repository');
 var userModel = require('../../data/schemas/user.model');

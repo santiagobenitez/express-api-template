@@ -36,7 +36,7 @@ ClienteRepository.prototype.getAll = function() {
 ClienteRepository.prototype.update = function(id, obj) {
   var clienteToUpdate = mapFromCliente(obj);
   delete obj._id;
-  return this.model.findById(id).then(function(doc) {
+  return this.model.findById(id).exec().then(function(doc) {
     doc.set(clienteToUpdate);
     return doc.save().then(function(updated_doc) {
       //return a plain js object

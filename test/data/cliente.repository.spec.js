@@ -1,10 +1,10 @@
 /*jshint ignore: start */
-var dbUrl = 'mongodb://@127.0.0.1:27017/test';
-var mongoose = require('mongoose');
 var expect = require('chai').expect;
 var clienteRepository = require('../../data/cliente.repository');
-var mockgoose = require('mockgoose');
-mongoose.Promise = require('bluebird');
+var Promise = require('bluebird');
+var mongooseMockHelper = require('./mongoose-mock.helper');
+var clientModel = require('../../data/schemas/cliente.model');
+var sinon = require('sinon');
 
 var newCliente = {
   direccion: {
@@ -19,78 +19,79 @@ var newCliente = {
 };
 
 describe('clienteRepository', function() {
-	before(function(done) {
-		mockgoose(mongoose).then(function(){
-			mongoose.connect(dbUrl, function(err){
-				done();
-			});
-		});
-	});
-	after(function(done) {
-		mockgoose.reset(function(){
-			done();
-		});
-	});
-
   describe('create', function() {
+		afterEach(function(){
+			if (clientModel.create.restore) clientModel.create.restore();
+		});
     it('should create a new client when it is a valid client', function(done) {
-
-      clienteRepository.create(newCliente).then(function(obj) {
+			var clientModelStub = sinon.stub(clientModel, 'create');
+			var clientMock = mongooseMockHelper.getDocMock(newCliente); 
+			clientModelStub.returns(Promise.resolve(clientMock));
+ 
+ 			clienteRepository.create(newCliente).then(function(obj) {
         expect(obj).to.exist;
-        newCliente._id = obj._id;
         done();
       })
     });
 
-    it('should return an error object when the last name is not specified', function(done) {
-      var newCliente = {
-        direccion: {
-          codigoPostal: '8000',
-          direccion: 'new address',
-          ciudad: 'new city',
-          provincia: 'new province',
-          pais: 'new country'
-        },
-        nombre: 'new name',
-      };
+    it('should return an error object when there was an error while creating the user', function(done) {
+ 			var clientModelStub = sinon.stub(clientModel, 'create');
+			clientModelStub.returns(Promise.reject(new Error('error')));
 
       clienteRepository.create(newCliente).catch(function(e) {
         expect(e).not.to.be.null;
-        expect(e.errors.apellido.message).to.exist;
         done();
       });
     });
   });
 
   describe('getAll', function() {
-    it('should return the recently created client as part of the result', function(done) {
+    afterEach(function(){
+			if (clientModel.find.restore) clientModel.find.restore();
+		});
+		it('should return a fulfilled promise with all of the clients when there are no errors', function(done) {
+			var clientModelStub = sinon.stub(clientModel, 'find');
+			var queryMock = mongooseMockHelper.getLeanQueryMock(Promise.resolve([{_id: '123'}]));
+			clientModelStub.returns(queryMock);
+
       clienteRepository.getAll().then(function(objs) {
         expect(objs).to.have.length.above(0);
-        expect(objs.map(function(item) {
-          return item._id
-        })).to.contain(newCliente._id);
         done();
       });
     });
   });
 
   describe('get', function() {
-    it('should return the recently created client as part of the result', function(done) {
-      clienteRepository.get(newCliente._id).then(function(obj) {
-        expect(obj._id).to.eql(newCliente._id);
+		afterEach(function(){
+			if (clientModel.findById.restore) clientModel.findById.restore();
+		});
+    it('should return a fulfilled promise with the client when there are no errors while getting the client', function(done) {
+			var clientDoc = mongooseMockHelper.getDocMock({_id: '123'});
+      var queryMock = mongooseMockHelper.getQueryMock(Promise.resolve(clientDoc));
+			var clientStub = sinon.stub(clientModel, 'findById');
+			clientStub.returns(queryMock);
+			clienteRepository.get('123').then(function(obj) {
+        expect(obj._id).to.eql('123');
         done();
       });
     });
-    it('should return an error when the id is invalid', function(done) {
-      clienteRepository.get(newCliente._id + "a").catch(function(e) {
+    it('should return an error when there was an error while getting the client', function(done) {
+      var queryMock = mongooseMockHelper.getQueryMock(Promise.reject(new Error('123')));
+			var clientStub = sinon.stub(clientModel, 'findById');
+			clientStub.returns(queryMock);
+ 
+			clienteRepository.get('123').catch(function(e) {
         expect(e).to.exist;
         done();
       });
     });
 
     it('should return null when the id is valid but the object was not found', function(done) {
-      // 556c217f3bb8bc6017a8f2e8
-      clienteRepository.get('556c217f3bb8bc6017a8f2e5').then(function(obj) {
+      var queryMock = mongooseMockHelper.getQueryMock(Promise.resolve(null));
+			var clientStub = sinon.stub(clientModel, 'findById');
+			clientStub.returns(queryMock);
+      
+			clienteRepository.get('123').then(function(obj) {
         expect(obj).to.be.null;
         done();
       });
@@ -98,27 +99,29 @@ describe('clienteRepository', function() {
   });
 
   describe('update', function() {
-    it('should update the cliente when the postal code, address and last name  are modified', function(done) {
-      newCliente.direccion = {
-        codigoPostal: '9000',
-        direccion: 'updated address',
-        ciudad: 'updated city',
-        provincia: 'updated province',
-        pais: 'updated country'
-      };
-      newCliente.apellido = 'updated last name';
-
-      clienteRepository.update(newCliente._id, newCliente).then(function(obj) {
-        newCliente = obj;
-        expect(newCliente.direccion.direccion).to.eql('updated address');
-        expect(newCliente.direccion.codigoPostal).to.eql('9000');
-        expect(newCliente.apellido).to.eql('updated last name');
+		afterEach(function(){
+			if (clientModel.findById.restore) clientModel.findById.restore();
+		});
+		it('should return the updated client when the client is updated successfully', function(done) {
+  		var clientDoc = mongooseMockHelper.getDocMock({apellido: 'testEdit'});
+      var queryMock = mongooseMockHelper.getQueryMock(Promise.resolve(clientDoc));
+			var clientStub = sinon.stub(clientModel, 'findById');
+			clientStub.returns(queryMock);
+			var clientDocStub = sinon.stub(clientDoc, "save");
+			clientDocStub.returns(Promise.resolve(clientDoc));
+ 
+			clienteRepository.update(newCliente._id, newCliente).then(function(obj) {
+        expect(obj.apellido).to.eql('testEdit');
         done();
       });
     });
 
-    it('should return an error when the id doest exist', function(done) {
-      clienteRepository.update(newCliente._id + 'a', newCliente).catch(function(e) {
+    it('should return an error when there was an error while updating the user', function(done) {
+      var queryMock = mongooseMockHelper.getQueryMock(Promise.reject(new Error('error')));
+			var clientStub = sinon.stub(clientModel, 'findById');
+			clientStub.returns(queryMock);
+		
+			clienteRepository.update('123', newCliente).catch(function(e) {
         expect(e).to.exist;
         done();
       });
@@ -126,15 +129,27 @@ describe('clienteRepository', function() {
   });
 
   describe('remove', function() {
-    it('should return an error when the object was not removed', function(done) {
-      clienteRepository.remove(newCliente._id + "a").catch(function(e) {
+		afterEach(function(){
+			if (clientModel.findByIdAndRemove.restore) clientModel.findByIdAndRemove.restore();
+		});
+
+    it('should return an error when there was an error while removing the client', function(done) {
+      var queryMock = mongooseMockHelper.getQueryMock(Promise.reject(new Error('error')));
+			var clientStub = sinon.stub(clientModel, 'findByIdAndRemove');
+			clientStub.returns(queryMock);
+			
+			clienteRepository.remove('123').catch(function(e) {
         expect(e).to.exist;
         done();
       });
     })
 
     it('should return a null error when the recently created cliente was removed successfuly', function(done) {
-      clienteRepository.remove(newCliente._id).then(function(e) {
+			var queryMock = mongooseMockHelper.getQueryMock(Promise.resolve(null));
+			var clientStub = sinon.stub(clientModel, 'findByIdAndRemove');
+			clientStub.returns(queryMock);
+			
+			clienteRepository.remove('123').then(function(e) {
         expect(e).not.to.exist;
         done();
       });

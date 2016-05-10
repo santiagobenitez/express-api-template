@@ -6,7 +6,15 @@ function getQueryMock(promise){
 	}
 }
 
-function getDocMock(obj, promise){
+function getLeanQueryMock(promise){
+	return {
+		lean: function(){
+			return getQueryMock(promise);
+		} 	
+	};
+}
+
+function getDocMock(obj){
 	return {
 		toObject: function(){
 			return obj;
@@ -19,5 +27,6 @@ function getDocMock(obj, promise){
 
 module.exports = {
 	getQueryMock: getQueryMock,
-	getDocMock: getDocMock
+	getDocMock: getDocMock,
+	getLeanQueryMock: getLeanQueryMock
 };
