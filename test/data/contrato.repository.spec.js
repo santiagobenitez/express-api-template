@@ -1,37 +1,16 @@
 /*jshint ignore: start */
-
 var dbUrl = 'mongodb://@127.0.0.1:27017/test';
 var mongoose = require('mongoose');
 var expect = require('chai').expect;
 var repository = require('../../data/contrato.repository');
 var propiedadRepository = require('../../data/propiedades.repository');
-var clienteRepository = require('../../data/cliente.repository')
 var mockgoose = require('mockgoose');
-mongoose.Promise = require('bluebird');
+var Promise = require('bluebird');
+var contractModel = require('../../data/schemas/contrato.model');
+var sinon = require('sinon');
+var mongooseMockHelper = require('./mongoose-mock.helper');
 
-var direccion = {
-	codigoPostal: '8000',
-	direccion: 'test test',
-	ciudad: 'test city',
-	provincia: 'test',
-	pais: 'arg'
-};
-
-var newCliente = {
-	direccion: direccion,
-	nombre: 'test',
-	apellido: 'test',
-};
-
-var newPropiedad = {
-	direccion: direccion,
-	ambientes: 1,
-	banios: 1,
-	expensas: 1,
-	metrosCuadrados: 1,
-};
-
-var newContrato = {
+var newContract = {
 	fechaHasta: new Date(2015, 6, 18),
 	fechaDesde: new Date(2013, 8, 18),
 	tipoInteres: 'Semestral',
@@ -43,103 +22,112 @@ var newContrato = {
 };
 
 describe('contratoRepository', function() {
-	before(function(done) {
-		mockgoose(mongoose).then(function(){
-			mongoose.connect(dbUrl, function(err){
-				init_data(done);
-			});
-		});
-	});
-	after(function(done) {
-		mockgoose.reset(function(){
-			done();
-		});
-	});
-	function init_data(done) {
-		clienteRepository.create(newCliente).then(function(obj) {
-			newCliente._id = obj._id;
-			newPropiedad.propietario = obj._id;
-			newContrato.inquilino = obj._id;
-			newContrato.garante = obj._id;
-			propiedadRepository.create(newPropiedad).then(function(prop) {
-				newPropiedad._id = prop._id;
-				newContrato.propiedad = prop._id;
-				done();
-			});
-		});
-	}
-
 	describe('create', function() {
-		it('should create a new contract when it is a valid contract', function(done) {
+		afterEach(function(){
+			if (contractModel.create.restore) contractModel.create.restore();
+		});
+ 
+		it('should return the recently created contract when there are no errors', function(done) {
+			var contractModelStub = sinon.stub(contractModel, 'create');
+			var contract = mongooseMockHelper.getDocMock(newContract); 
+			contractModelStub.returns(Promise.resolve(contract));
 
-			repository.create(newContrato).then(function(obj) {
+			repository.create(newContract).then(function(obj) {
 				expect(obj).to.exist;
-				newContrato._id = obj._id;
 				done();
 			})
 		});
 
-		it('should return an error object when the tenant is not specified', function(done) {
-			var newContrato2 = {
-				fechaHasta: new Date(2015, 6, 18),
-				fechaDesde: new Date(2013, 8, 18),
-				tipoInteres: 'Semestral',
-				interes: 10,
-				alquiler: 1000,
-				deposito: 100,
-				multaDiaria: 100
-			};
+		it('should return an error when there is an error while creating the contract', function(done) {
+			var contractModelStub = sinon.stub(contractModel, 'create');
+			contractModelStub.returns(Promise.reject(new Error('error')));
 
-			repository.create(newContrato2).catch(function(e) {
+			repository.create(newContract).catch(function(e) {
 				expect(e).not.to.be.null;
-				expect(e.errors.inquilino.message).to.exist;
 				done();
 			});
 		});
 	});
 
 	describe('getAll', function() {
-		it('should return the recently created contrato as part of the result', function(done) {
+		afterEach(function(){
+			if (contractModel.find.restore) contractModel.find.restore();
+		});
+		it('should return all of the contracts when there are not errors', function(done) {
+			var contractModelStub = sinon.stub(contractModel, 'find');
+			var queryMock = mongooseMockHelper.getLeanQueryMock(Promise.resolve([{_id: '123'}]));
+			contractModelStub.returns(queryMock);
 
 			repository.getAll().then(function(objs) {
 				expect(objs).to.have.length.above(0);
-				expect(objs.map(function(item) {
-					return item._id
-				})).to.contain(newContrato._id);
 				done();
 			});
 		});
 	});
 
 	describe('get', function() {
-		it('should return the recently created contrato as part of the result', function(done) {
-
-			repository.get(newContrato._id).then(function(obj) {
-				expect(obj._id).to.eql(newContrato._id);
+		afterEach(function(){
+			if (contractModel.findById.restore) contractModel.findById.restore();
+		});
+		it('should return the requested contract when there are not errors while getting it', function(done) {
+			var contractDoc = mongooseMockHelper.getDocMock({_id: '123'});
+      var queryMock = mongooseMockHelper.getQueryMock(Promise.resolve(contractDoc));
+			var contractStub = sinon.stub(contractModel, 'findById');
+			contractStub.returns(queryMock);
+			repository.get('123').then(function(obj) {
+				expect(obj._id).to.eql('123');
 				done();
 			});
 		});
 
-		it('should return an error when the id doesnt exist', function(done) {
-			repository.get(newContrato._id + "a").catch(function(e) {
+		it('should return an error when there are errors while getting the contract', function(done) {
+			var queryMock = mongooseMockHelper.getQueryMock(Promise.reject(new Error('error')));
+			var contractStub = sinon.stub(contractModel, 'findById');
+			contractStub.returns(queryMock);
+			
+			repository.get("123").catch(function(e) {
 				expect(e).to.exist;
 				done();
 			});
-		})
+		});
+
+    it('should return null when the id is valid but the object was not found', function(done) {
+      var queryMock = mongooseMockHelper.getQueryMock(Promise.resolve(null));
+			var contractStub = sinon.stub(contractModel, 'findById');
+			contractStub.returns(queryMock);
+      
+			repository.get('123').then(function(obj) {
+        expect(obj).to.be.null;
+        done();
+      });
+    })
 	});
 
 	describe('update', function() {
-		it('should update the contrato when the alquiler is modified', function(done) {
-			newContrato.alquiler = 2000;
-			repository.update(newContrato._id, newContrato).then(function(obj) {
-				newContrato = obj;
+		afterEach(function(){
+			if (contractModel.findById.restore) contractModel.findById.restore();
+		});
+	
+		it('should the updated contract when there are not errors while updating the contact', function(done) {
+	 		var contractDoc = mongooseMockHelper.getDocMock({alquiler: 2000});
+      var queryMock = mongooseMockHelper.getQueryMock(Promise.resolve(contractDoc));
+			var contractStub = sinon.stub(contractModel, 'findById');
+			contractStub.returns(queryMock);
+			var contractDocStub = sinon.stub(contractDoc, "save");
+			contractDocStub.returns(Promise.resolve(contractDoc));
+
+			repository.update('123', newContract).then(function(obj) {
 				expect(obj.alquiler).to.eql(2000);
 				done();
 			});
 		});
 
 		it('should return an error when the id doest exist', function(done) {
-			repository.update(newContrato._id + 'a', newContrato).catch(function(e) {
+      var queryMock = mongooseMockHelper.getQueryMock(Promise.reject(new Error('error')));
+			var contractStub = sinon.stub(contractModel, 'findById');
+			contractStub.returns(queryMock);
+
+			repository.update('123', newContract).catch(function(e) {
 				expect(e).to.exist;
 				done();
 			});
@@ -147,15 +135,26 @@ describe('contratoRepository', function() {
 	});
 
 	describe('remove', function() {
-		it('should return an error when the object was not removed', function(done) {
-			repository.remove(newContrato._id + "a").catch(function(e) {
+		afterEach(function(){
+			if (contractModel.findByIdAndRemove.restore) contractModel.findByIdAndRemove.restore();
+		});
+
+		it('should return an error when there was an error while removing the contract', function(done) {
+			var queryMock = mongooseMockHelper.getQueryMock(Promise.reject(new Error('error')));
+			var contractStub = sinon.stub(contractModel, 'findByIdAndRemove');
+			contractStub.returns(queryMock);
+			repository.remove("123").catch(function(e) {
 				expect(e).to.exist;
 				done();
 			});
-		})
+		});
 
-		it('should return a null error when the recently created contract was removed successfuly', function(done) {
-			repository.remove(newContrato._id).then(function(e) {
+		it('should return a null error when a contract is removed successfuly', function(done) {
+			var queryMock = mongooseMockHelper.getQueryMock(Promise.resolve(null));
+			var contractStub = sinon.stub(contractModel, 'findByIdAndRemove');
+			contractStub.returns(queryMock);
+
+			repository.remove('123').then(function(e) {
 				expect(e).not.to.exist;
 				done();
 			});
