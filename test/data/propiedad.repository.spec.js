@@ -1,28 +1,13 @@
 /*jshint ignore: start */
-
-var dbUrl = 'mongodb://@127.0.0.1:27017/test';
-var mongoose = require('mongoose');
 var expect = require('chai').expect;
-var clienteRepository = require('../../data/cliente.repository');
 var propiedadRepository = require('../../data/propiedades.repository');
-var mockgoose = require('mockgoose');
-mongoose.Promise = require('bluebird');
+var Promise = require('bluebird');
+var mongooseMockHelper = require('./mongoose-mock.helper');
+var realEstateModel = require('../../data/schemas/propiedad.model');
+var sinon = require('sinon');
 
-var direccion = {
-	codigoPostal: '8000',
-	direccion: 'test test',
-	ciudad: 'test city',
-	provincia: 'test',
-	pais: 'arg'
-};
-
-var newCliente = {
-	direccion: direccion,
-	nombre: 'test',
-	apellido: 'test',
-};
-var newPropiedad = {
-	direccion: direccion,
+var newrealEstate = {
+	direccion: {},
 	ambientes: 1,
 	banios: 1,
 	expensas: 1,
@@ -30,87 +15,80 @@ var newPropiedad = {
 };
 
 describe('propiedadRepository', function() {
-	before(function(done) {
-		mockgoose(mongoose).then(function(){
-			mongoose.connect(dbUrl, function(err){
-				clienteRepository.create(newCliente).then(function(obj) {
-					newCliente._id = obj._id;
-					newPropiedad.propietario = obj._id;
-					done();
-				});
-			});
-		});
-	});
-	after(function(done) {
-		mockgoose.reset(function(){
-			done();
-		});
-	});
-
 	describe('create', function() {
+		afterEach(function(){
+			if (realEstateModel.create.restore) realEstateModel.create.restore();
+		});
 		it('should create a new real estate when it is a valid real estate', function(done) {
-
-			propiedadRepository.create(newPropiedad).then(function(obj) {
+			var realEstateModelStub = sinon.stub(realEstateModel, 'create');
+			var realEstateMock = mongooseMockHelper.getDocMock(newrealEstate); 
+			realEstateModelStub.returns(Promise.resolve(realEstateMock));
+			
+			propiedadRepository.create(newrealEstate).then(function(obj) {
 				expect(obj).to.exist;
-				newPropiedad._id = obj._id;
 				done();
 			});
 		});
 
-		it('should return an error object when the landlord of the real estate is not specified', function(done) {
-			var propiedad = {
-				direccion: {
-					codigoPostal: '8000',
-					direccion: 'Charlone 650',
-					ciudad: 'bahia blanca',
-					provincia: 'buenos aires',
-					pais: 'argentina'
-				},
-				ambientes: 1,
-				banios: 1,
-				expensas: 1,
-				metrosCuadrados: 1,
-			};
+		it('should return an error object when there was an error while creating the real estate', function(done) {
+			var realEstateModelStub = sinon.stub(realEstateModel, 'create');
+			realEstateModelStub.returns(Promise.reject(new Error('error')));
 
-			propiedadRepository.create(propiedad).catch(function(e) {
+			propiedadRepository.create(newrealEstate).catch(function(e) {
 				expect(e).not.to.be.null;
-				expect(e.errors.propietario.message).to.exist;
 				done();
 			});
 		});
 	});
 
 	describe('getAll', function() {
-		it('should return the recently created propiedad as part of the result', function(done) {
+		
+		afterEach(function(){
+			if (realEstateModel.find.restore) realEstateModel.find.restore();
+		});
 
+		it('should return all of the real estates as part of the result when there are not errors while getting the real estates', function(done) {
+			var realEstateModelStub = sinon.stub(realEstateModel, 'find');
+			var queryMock = mongooseMockHelper.getLeanQueryMock(Promise.resolve([{_id: '123'}]));
+			realEstateModelStub.returns(queryMock);
+			
 			propiedadRepository.getAll().then(function(objs) {
 				expect(objs).to.have.length.above(0);
-				expect(objs.map(function(item) {
-					return item._id
-				})).to.contain(newPropiedad._id);
 				done();
 			});
 		});
 	});
 
 	describe('get', function() {
-		it('should return the recently created real estate as part of the result', function(done) {
-			propiedadRepository.get(newPropiedad._id).then(function(obj) {
-				expect(obj._id).to.eql(newPropiedad._id);
+		afterEach(function(){
+			if (realEstateModel.findById.restore) realEstateModel.findById.restore();
+		});
+		it('should return a real estate as part of the result when there are not errors while getting the real estate', function(done) {
+			var realEstateDoc = mongooseMockHelper.getDocMock({_id: '123'});
+      var queryMock = mongooseMockHelper.getQueryMock(Promise.resolve(realEstateDoc));
+			var realEstateStub = sinon.stub(realEstateModel, 'findById');
+			realEstateStub.returns(queryMock);
+			propiedadRepository.get('123').then(function(obj) {
+				expect(obj._id).to.eql('123');
 				done();
 			});
 		});
 
-		it('should return an error when the id is invalid', function(done) {
-			propiedadRepository.get(newPropiedad._id + "a").catch(function(e) {
+		it('should return an error when there was an error while getting the real estate', function(done) {
+			var queryMock = mongooseMockHelper.getQueryMock(Promise.reject(new Error('123')));
+			var realEstateStub = sinon.stub(realEstateModel, 'findById');
+			realEstateStub.returns(queryMock);
+			propiedadRepository.get('123').catch(function(e) {
 				expect(e).to.exist;
 				done();
 			});
 		});
 
 		it('should return null when the id is valid but the object was not found', function(done) {
-			// 556c217f3bb8bc6017a8f2e8
-			propiedadRepository.get('556c217f3bb8bc6017a8f2e5').then(function(obj) {
+			var queryMock = mongooseMockHelper.getQueryMock(Promise.resolve(null));
+			var realEstateStub = sinon.stub(realEstateModel, 'findById');
+			realEstateStub.returns(queryMock);
+			propiedadRepository.get('123').then(function(obj) {
 				expect(obj).to.be.null;
 				done();
 			});
@@ -118,26 +96,30 @@ describe('propiedadRepository', function() {
 	});
 
 	describe('update', function() {
-		it('should update the real estate when the postal code, address and city are modified', function(done) {
-			newPropiedad.direccion = {
-				codigoPostal: '9000',
-				direccion: 'new address',
-				ciudad: 'new city',
-				provincia: 'new pronvince',
-				pais: 'new contry'
-			};
-			newPropiedad.ambientes = 4;
-			propiedadRepository.update(newPropiedad._id, newPropiedad).then(function(obj) {
-				newPropiedad = obj;
-				expect(newPropiedad.direccion.direccion).to.eql('new address');
-				expect(newPropiedad.direccion.codigoPostal).to.eql('9000');
-				expect(newPropiedad.ambientes).to.eql(4);
+		afterEach(function(){
+			if (realEstateModel.findById.restore) realEstateModel.findById.restore();
+		});
+
+		it('should return an updated a real estate when the real estate is updated successfully', function(done) {
+			var realEstateDoc = mongooseMockHelper.getDocMock({ambientes: 4});
+      var queryMock = mongooseMockHelper.getQueryMock(Promise.resolve(realEstateDoc));
+			var realEstateStub = sinon.stub(realEstateModel, 'findById');
+			realEstateStub.returns(queryMock);
+			var realEstateDocStub = sinon.stub(realEstateDoc, "save");
+			realEstateDocStub.returns(Promise.resolve(realEstateDoc));
+
+			propiedadRepository.update('123', newrealEstate).then(function(obj) {
+				expect(obj.ambientes).to.eql(4);
 				done();
 			});
 		});
 
-		it('should return an error when the id doest exist', function(done) {
-			propiedadRepository.update(newPropiedad._id + 'a', newPropiedad).catch(function(e) {
+		it('should return an error when there is an error while updating the real estate', function(done) {
+      var queryMock = mongooseMockHelper.getQueryMock(Promise.reject(new Error('error')));
+			var realEstateStub = sinon.stub(realEstateModel, 'findById');
+			realEstateStub.returns(queryMock);
+
+			propiedadRepository.update('123', newrealEstate).catch(function(e) {
 				expect(e).to.exist;
 				done();
 			});
@@ -145,15 +127,26 @@ describe('propiedadRepository', function() {
 	});
 
 	describe('remove', function() {
-		it('should return an error when the object was not removed', function(done) {
-			propiedadRepository.remove(newPropiedad._id + "a").catch(function(e) {
+		afterEach(function(){
+			if (realEstateModel.findByIdAndRemove.restore) realEstateModel.findByIdAndRemove.restore();
+		});
+		it('should return an error when there was while removing the real estate', function(done) {
+			var queryMock = mongooseMockHelper.getQueryMock(Promise.reject(new Error('error')));
+			var realEstateStub = sinon.stub(realEstateModel, 'findByIdAndRemove');
+			realEstateStub.returns(queryMock);
+			
+			propiedadRepository.remove("123").catch(function(e) {
 				expect(e).to.exist;
 				done();
 			});
 		});
 
-		it('should return a null error when the recently created propiedad was removed successfuly', function(done) {
-			propiedadRepository.remove(newPropiedad._id).then(function(e) {
+		it('should return a null error when a real estate was removed successfuly', function(done) {
+			var queryMock = mongooseMockHelper.getQueryMock(Promise.resolve(null));
+			var realEstateStub = sinon.stub(realEstateModel, 'findByIdAndRemove');
+			realEstateStub.returns(queryMock);
+
+			propiedadRepository.remove('123').then(function(e) {
 				expect(e).not.to.exist;
 				done();
 			});

@@ -10,7 +10,10 @@ function getLeanQueryMock(promise){
 	return {
 		lean: function(){
 			return getQueryMock(promise);
-		} 	
+		},
+	  populate: function(){
+			return getLeanQueryMock(promise);
+		}	
 	};
 }
 
